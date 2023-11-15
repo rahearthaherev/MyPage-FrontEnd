@@ -1,25 +1,26 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-
-
-const inter = Inter({ subsets: ['latin'] })
+import type { Metadata } from "next";
+import "./globals.css";
+import RecoilRootWrapper from "./recoil/RecoilRootWrapper";
+import SideVar from "./views/sidevar";
 
 export const metadata: Metadata = {
   title: "JDG's Page",
-  description: '',
-}
+  description: "",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html>
       <body>
-        {children}
+        <RecoilRootWrapper>
+          <SideVar></SideVar>
+          {children}
+        </RecoilRootWrapper>
       </body>
     </html>
-  )
+  );
 }
