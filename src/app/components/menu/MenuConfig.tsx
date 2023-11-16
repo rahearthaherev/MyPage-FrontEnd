@@ -35,18 +35,6 @@ export default function SettingButton() {
           <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
             Menu Config
           </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClick}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
           <MenuConfig closeFunction={handleClick}></MenuConfig>
         </BootstrapDialog>
       </React.Fragment>

@@ -1,6 +1,6 @@
 import * as React from "react";
-import IMenuItem from "../interfaces/IMenuItem";
-import * as Icon from "../constants/Icon";
+import IMenuItem from "../../interfaces/IMenuItem";
+import * as Icon from "../../constants/Icon";
 import HomeIcon from "@mui/icons-material/Home";
 import AboutIcon from "@mui/icons-material/InfoOutlined";
 import ProjectIcon from "@mui/icons-material/AccountTreeOutlined";
@@ -20,8 +20,8 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
-import { IsVarOpenAtom } from "../recoil/atoms";
-import ISideMenu from "../interfaces/ISideMenu";
+import { IsVarOpenAtom } from "../../recoil/atoms";
+import ISideMenu from "../../interfaces/ISideMenu";
 
 export default function MenuList(props: ISideMenu) {
   const [detailMenuList, setDetailMenuList] = React.useState<IMenuItem[]>([]);

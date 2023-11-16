@@ -12,8 +12,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { DRAWERWIDTH } from "../constants";
 import { useRecoilState } from "recoil";
 import { IsVarOpenAtom } from "../recoil/atoms";
-import DetailMenu from "../components/DetailMenu";
-import SettingButton from "../components/MenuConfig";
+import DetailMenu from "../components/menu/DetailMenu";
+import SettingButton from "../components/menu/MenuConfig";
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: DRAWERWIDTH,
