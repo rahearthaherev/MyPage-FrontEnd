@@ -22,7 +22,6 @@ interface IMenuConfig {
 }
 
 export function MenuConfig(props: IMenuConfig) {
-  const [selectedItem, setSelectedItem] = React.useState("");
   const [dto, setDto] = React.useState<IMenuDTO>();
   const menuContext = React.useContext(MenuListContext);
   const menuDetailList = menuContext?.menuDetailList;
@@ -69,7 +68,6 @@ export function MenuConfig(props: IMenuConfig) {
 
     const handleSelectionClick = async (event: any) => {
       handleSelection(event);
-      setSelectedItem(event.target.innerText);
       getId(event.target.innerText);
     };
 
@@ -106,21 +104,21 @@ export function MenuConfig(props: IMenuConfig) {
   });
 
   const getId = (selectedItem: string) => {
-    menuDetailList?.map((item) => {
-      if (item.menu_name === selectedItem) {
-        setDto({
-          selected: selectedItem,
-          id: item.menu_sub_key,
-          detail_id: item.detail_key,
-        });
-      }
-    });
     menuCategory?.map((category) => {
       if (category.menu_type === selectedItem) {
         setDto({
-          selected: selectedItem,
           id: category.menu_key,
           detail_id: category.detail_key,
+          selected: "category",
+        });
+      }
+    });
+    menuDetailList?.map((item) => {
+      if (item.menu_name === selectedItem) {
+        setDto({
+          id: item.menu_sub_key,
+          detail_id: item.detail_key,
+          selected: "menu",
         });
       }
     });

@@ -15,7 +15,7 @@ import DetailMenu from "../components/menu/DetailMenu";
 import SettingButton from "../components/menu/MenuConfig";
 import ISideMenu from "../interfaces/ISideMenu";
 import axios from "axios";
-import ISideMenuList from "../interfaces/IDefaultFunction";
+import ISideMenuList from "../interfaces/ISideMenuList";
 import IMenuItem from "../interfaces/IMenuItem";
 import IMenuCategory from "../interfaces/IMenuCategory";
 

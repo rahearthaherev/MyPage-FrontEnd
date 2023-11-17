@@ -1,6 +1,8 @@
+import AlertPopup from "@/app/views/alert";
 import { MenuListContext } from "@/app/views/sidevar";
 import { Alert, Box, Collapse, Input } from "@mui/material";
 import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import React from "react";
 
@@ -10,6 +12,8 @@ export default function MenuCRUD(props: IMenuDTO) {
   const [inputText, setInputText] = React.useState("");
   const dto = React.useRef<IMenuDTO>();
   const menuContext = React.useContext(MenuListContext);
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorState, setErrorState] = React.useState(false);
 
   const menuAdd = async () => {
     dto.current = { ...props, updated: inputText };
@@ -18,10 +22,22 @@ export default function MenuCRUD(props: IMenuDTO) {
       setUdError(false);
       return;
     }
-    const resp = await axios.post(
-      "http://localhost:6974/sidemenu/menuadd",
-      dto.current
-    );
+    if (aError) {
+      setAError(false);
+    }
+    if (udError) {
+      setUdError(false);
+    }
+
+    const resp = await axios
+      .post("http://localhost:6974/sidemenu/menuadd", dto.current)
+      .then(() => {
+        setInputText("");
+      })
+      .catch((error: Error) => {
+        setErrorMessage(error.message);
+        setErrorState(true);
+      });
     menuContext?.resetMenu();
   };
 
@@ -36,10 +52,23 @@ export default function MenuCRUD(props: IMenuDTO) {
       setUdError(true);
       return;
     }
-    const resp = await axios.post(
-      "http://localhost:6974/sidemenu/menuupdate",
-      dto.current
-    );
+    if (aError) {
+      setAError(false);
+    }
+    if (udError) {
+      setUdError(false);
+    }
+
+    const resp = await axios
+      .post("http://localhost:6974/sidemenu/menuupdate", dto.current)
+      .then(() => {
+        setInputText("");
+      })
+      .catch((error: Error) => {
+        setErrorMessage(error.message);
+        setErrorState(true);
+      });
+    menuContext?.resetMenu();
   };
 
   const menuDelete = async () => {
@@ -50,25 +79,47 @@ export default function MenuCRUD(props: IMenuDTO) {
       setUdError(true);
       return;
     }
-    const resp = await axios.post(
-      "http://localhost:6974/sidemenu/menudelete",
-      dto.current
-    );
+    if (aError) {
+      setAError(false);
+    }
+    if (udError) {
+      setUdError(false);
+    }
+    const resp = await axios
+      .post("http://localhost:6974/sidemenu/menudelete", dto.current)
+      .catch((error: Error) => {
+        console.log("test");
+        setErrorMessage("하위 항목이 남아 있는지 확인해주세요.");
+        setErrorState(true);
+      });
+    menuContext?.resetMenu();
   };
 
   return (
     <>
       <Box sx={{ marginBottom: "10px" }}>
-        <Input
-          placeholder="Content"
-          value={inputText}
-          onChange={(e: any) => {
-            setInputText(e.target.value);
-          }}
-        />
-        <Button onClick={menuAdd}>Add</Button>
-        <Button onClick={menuUpdate}>Update</Button>
-        <Button onClick={menuDelete}>Delete</Button>
+        <Box display="flex" justifyContent="flex-end">
+          <Input
+            placeholder="Content"
+            value={inputText}
+            onChange={(e: any) => {
+              setInputText(e.target.value);
+            }}
+            style={{
+              minWidth: "90px",
+              width: "100%",
+            }}
+          />
+          <ButtonGroup>
+            <Button onClick={menuAdd}>A</Button>
+            <Button onClick={menuUpdate} color="secondary">
+              U
+            </Button>
+            <Button onClick={menuDelete} color="error">
+              D
+            </Button>
+          </ButtonGroup>
+        </Box>
         <Collapse in={udError}>
           <Alert severity="error" sx={{ mb: 2 }}>
             For update or delete, You have to select content
@@ -80,6 +131,11 @@ export default function MenuCRUD(props: IMenuDTO) {
           </Alert>
         </Collapse>
       </Box>
+      <AlertPopup
+        message={errorMessage}
+        errorState={errorState}
+        setErrorState={() => setErrorState(false)}
+      />
     </>
   );
 }
