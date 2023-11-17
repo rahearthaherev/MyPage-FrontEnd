@@ -2,10 +2,7 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-
 import SettingsIcon from "@mui/icons-material/Settings";
 import { MenuConfig } from "./MenuConfigMain";
 
@@ -20,7 +17,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function SettingButton() {
   const [open, setOpen] = React.useState(false);
-
   const handleClick = () => {
     setOpen(!open);
   };

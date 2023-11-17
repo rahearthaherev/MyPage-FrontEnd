@@ -1,7 +1,4 @@
 import * as React from "react";
-import IMenuCategory from "../../interfaces/IMenuCategory";
-import IMenuItem from "../../interfaces/IMenuItem";
-import axios from "axios";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Typography from "@mui/material/Typography";
@@ -17,16 +14,20 @@ import {
   useTreeItem,
   TreeItemContentProps,
 } from "@mui/x-tree-view/TreeItem";
-import { Input } from "@mui/material";
 import MenuCRUD from "./MenuCRUD";
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
+import { MenuListContext } from "@/app/views/sidevar";
 
 interface IMenuConfig {
   closeFunction: () => void;
 }
 
 export function MenuConfig(props: IMenuConfig) {
+  const [selectedItem, setSelectedItem] = React.useState("");
+  const [dto, setDto] = React.useState<IMenuDTO>();
+  const menuContext = React.useContext(MenuListContext);
+  const menuDetailList = menuContext?.menuDetailList;
+  const menuCategory = menuContext?.menuCategory;
+
   function addMenu() {}
   const CustomContent = React.forwardRef(function CustomContent(
     props: TreeItemContentProps,
@@ -105,7 +106,7 @@ export function MenuConfig(props: IMenuConfig) {
   });
 
   const getId = (selectedItem: string) => {
-    detailMenuList.map((item) => {
+    menuDetailList?.map((item) => {
       if (item.menu_name === selectedItem) {
         setDto({
           selected: selectedItem,
@@ -114,38 +115,16 @@ export function MenuConfig(props: IMenuConfig) {
         });
       }
     });
-    detailMenuCategory.map((menu) => {
-      if (menu.menu_type === selectedItem) {
+    menuCategory?.map((category) => {
+      if (category.menu_type === selectedItem) {
         setDto({
           selected: selectedItem,
-          id: menu.menu_key,
-          detail_id: menu.detail_key,
+          id: category.menu_key,
+          detail_id: category.detail_key,
         });
       }
     });
   };
-
-  const [detailMenuList, setDetailMenuList] = React.useState<IMenuItem[]>([]);
-  const [detailMenuCategory, setDetailMenuCategory] = React.useState<
-    IMenuCategory[]
-  >([]);
-  const [selectedItem, setSelectedItem] = React.useState("");
-  const [dto, setDto] = React.useState<IMenuDTO>();
-
-  const getMenu = async () => {
-    await axios.get("http://localhost:6974/sidemenu/menuitem").then((resp) => {
-      setDetailMenuList(resp.data);
-    });
-    await axios
-      .get("http://localhost:6974/sidemenu/menucategory")
-      .then((resp) => {
-        setDetailMenuCategory(resp.data);
-      });
-  };
-
-  React.useEffect(() => {
-    getMenu();
-  }, []);
 
   return (
     <>
@@ -157,18 +136,18 @@ export function MenuConfig(props: IMenuConfig) {
             defaultCollapseIcon={<ExpandMoreIcon />}
             defaultExpandIcon={<ChevronRightIcon />}
           >
-            {detailMenuCategory.map((type) => {
+            {menuCategory?.map((type) => {
               return (
                 <CustomTreeItem
                   key={type.index}
                   nodeId={type.menu_key}
                   label={type.menu_type}
                 >
-                  {detailMenuList.map((item) => {
+                  {menuDetailList?.map((item, index) => {
                     if (type.detail_key === item.detail_key) {
                       return (
                         <CustomTreeItem
-                          key={item.index}
+                          key={index}
                           nodeId={item.menu_sub_key}
                           label={item.menu_name}
                         ></CustomTreeItem>

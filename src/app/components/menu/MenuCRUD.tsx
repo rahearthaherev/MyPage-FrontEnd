@@ -1,16 +1,15 @@
-import { RenderingAtom } from "@/app/recoil/atoms";
+import { MenuListContext } from "@/app/views/sidevar";
 import { Alert, Box, Collapse, Input } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import React from "react";
-import { useRecoilState } from "recoil";
 
 export default function MenuCRUD(props: IMenuDTO) {
-  const [rendering, setRendering] = useRecoilState(RenderingAtom);
   const [udError, setUdError] = React.useState(false);
   const [aError, setAError] = React.useState(false);
   const [inputText, setInputText] = React.useState("");
   const dto = React.useRef<IMenuDTO>();
+  const menuContext = React.useContext(MenuListContext);
 
   const menuAdd = async () => {
     dto.current = { ...props, updated: inputText };
@@ -23,7 +22,7 @@ export default function MenuCRUD(props: IMenuDTO) {
       "http://localhost:6974/sidemenu/menuadd",
       dto.current
     );
-    setRendering(!rendering);
+    menuContext?.resetMenu();
   };
 
   const menuUpdate = async () => {

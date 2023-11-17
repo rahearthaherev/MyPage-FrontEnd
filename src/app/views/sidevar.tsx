@@ -8,12 +8,16 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
 import { DRAWERWIDTH } from "../constants";
 import { useRecoilState } from "recoil";
 import { IsVarOpenAtom } from "../recoil/atoms";
 import DetailMenu from "../components/menu/DetailMenu";
 import SettingButton from "../components/menu/MenuConfig";
+import ISideMenu from "../interfaces/ISideMenu";
+import axios from "axios";
+import ISideMenuList from "../interfaces/IDefaultFunction";
+import IMenuItem from "../interfaces/IMenuItem";
+import IMenuCategory from "../interfaces/IMenuCategory";
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: DRAWERWIDTH,
@@ -61,15 +65,44 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideVar() {
-  const [open, setOpen] = useRecoilState(IsVarOpenAtom);
+export const MenuListContext = React.createContext<ISideMenuList | undefined>(
+  undefined
+);
 
+export default function SideVar() {
+  //
+  const [menuCategory, setMenuCategory] = React.useState<IMenuCategory[]>([]);
+  const [detailMenuList, setDetailMenuList] = React.useState<IMenuItem[]>([]);
+
+  const printmenu = async () => {
+    await axios
+      .get("http://localhost:6974/sidemenu/menucategory")
+      .then((resp) => {
+        setMenuCategory(resp.data);
+      });
+
+    await axios.get("http://localhost:6974/sidemenu/menuitem").then((resp) => {
+      setDetailMenuList(resp.data);
+    });
+  };
+
+  React.useEffect(() => {
+    printmenu();
+  }, []);
+
+  const menus: ISideMenuList = {
+    menuCategory: menuCategory,
+    menuDetailList: detailMenuList,
+    resetMenu: printmenu,
+  };
+  //
+  const [open, setOpen] = useRecoilState(IsVarOpenAtom);
   const handleDrawer = () => {
     setOpen(!open);
   };
 
   return (
-    <>
+    <MenuListContext.Provider value={menus}>
       <CssBaseline />
       <Drawer variant="permanent" open={open} anchor="right">
         <DrawerHeader>
@@ -81,6 +114,6 @@ export default function SideVar() {
         <DetailMenu></DetailMenu>
         <Divider />
       </Drawer>
-    </>
+    </MenuListContext.Provider>
   );
 }
