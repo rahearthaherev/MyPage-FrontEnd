@@ -1,4 +1,5 @@
 import { Box, Grid, Typography, styled } from "@mui/material";
+import * as React from "react";
 
 const HeadText = styled(Typography)({
   fontFamily: "Playpen Sans, cursive",
@@ -19,8 +20,22 @@ const Text = styled(Typography)({
 });
 
 export default function Home() {
+  const homeFocusRef = React.useRef<HTMLInputElement>(null);
+  const aboutFocusRef = React.useRef(null);
+  const projectsFocusRef = React.useRef(null);
+  const skillFocusRef = React.useRef(null);
+  const contact = React.useRef(null);
+
+  React.useEffect(() => {
+    if (window.location.hash === "#home" && homeFocusRef.current) {
+      homeFocusRef.current.focus();
+    }
+  }, []);
   return (
-    <Box sx={{ width: "100%", backgroundColor: "white", padding: "10px;" }}>
+    <Box
+      sx={{ width: "100%", backgroundColor: "white", padding: "10px;" }}
+      ref={homeFocusRef}
+    >
       <Grid container alignItems="center" justifyContent="center">
         <Grid item sm={3} xs={12} style={{ textAlign: "center" }}>
           <img

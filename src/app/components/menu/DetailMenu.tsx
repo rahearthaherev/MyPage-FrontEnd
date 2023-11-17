@@ -12,7 +12,9 @@ export default function DetailMenu() {
         return (
           <MenuList
             key={category.menu_key}
+            menu_key={category.menu_key}
             detail_key={category.detail_key}
+            menu_type={category.menu_type}
           ></MenuList>
         );
       })}

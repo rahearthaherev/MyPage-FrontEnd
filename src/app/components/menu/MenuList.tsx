@@ -18,13 +18,20 @@ import {
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { IsVarOpenAtom } from "../../recoil/atoms";
-import ISideMenu from "../../interfaces/ISideMenu";
 import { MenuListContext } from "@/app/views/sidevar";
+import { useRouter } from "next/navigation";
+import IMenuCategory from "@/app/interfaces/IMenuCategory";
 
-export default function MenuList(props: ISideMenu) {
+export default function MenuList(props: IMenuCategory) {
   const open = useRecoilValue(IsVarOpenAtom);
   const menuContext = React.useContext(MenuListContext);
   const menuDetailList = menuContext?.menuDetailList;
+  const url = React.useRef("/");
+  const router = useRouter();
+
+  const handleClick = (url: string) => {
+    router.push(url);
+  };
 
   return (
     <>
@@ -32,9 +39,19 @@ export default function MenuList(props: ISideMenu) {
       <List>
         {menuDetailList?.map((item, index) => {
           if (item.detail_key === props.detail_key) {
+            if (item.detail_key === "00001") {
+              url.current = `/#${item.menu_name}`;
+            } else {
+              url.current = `/board/${item.menu_name}/${item.detail_key}`;
+            }
+            const uri = url.current;
+
             return (
               <ListItem key={index} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
+                  onClick={() => {
+                    handleClick(uri);
+                  }}
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
