@@ -5,13 +5,30 @@ import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import axios from "axios";
+import React from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
+import { useRouter } from "next/navigation";
 
-export default async function Header(props: { title: string; typeId: string }) {
-  const navItems = ["a"];
-  const resp = axios.get("http://localhost:6974/board/header");
-  const data = resp.data;
-  console.log(props.title);
+export default function Header(props: IMenuItem) {
+  const router = useRouter();
+  const uri = React.useRef("/board/");
+  const [menuList, setMenuList] = React.useState<IMenuItem[] | undefined>(
+    undefined
+  );
+  const handleMenuClick = (url: string) => {
+    router.push(url);
+  };
+  const getMenu = async () => {
+    await axios
+      .post("http://localhost:6974/board/header", props)
+      .then((resp) => {
+        setMenuList(resp.data);
+      });
+  };
+  React.useEffect(() => {
+    getMenu();
+  }, []);
+
   return (
     <>
       <CssBaseline />
@@ -22,21 +39,30 @@ export default async function Header(props: { title: string; typeId: string }) {
             component="div"
             sx={{
               flexGrow: 1,
-              display: { xs: "none", sm: "block" },
+              display: { sm: "block" },
               fontSize: 30,
               marginLeft: "64px",
             }}
           >
-            {props.title}
+            {props.menu_name}
           </Typography>
           <Box
             sx={{ display: { xs: "none", sm: "block" }, marginRight: "150px" }}
           >
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff" }}>
-                {item}
-              </Button>
-            ))}
+            {menuList?.map((item, index) => {
+              const url = uri.current + item.menu_name;
+              return (
+                <Button
+                  key={index}
+                  sx={{ color: "#fff" }}
+                  onClick={() => {
+                    handleMenuClick(url);
+                  }}
+                >
+                  {item.menu_name}
+                </Button>
+              );
+            })}
           </Box>
         </Toolbar>
       </AppBar>

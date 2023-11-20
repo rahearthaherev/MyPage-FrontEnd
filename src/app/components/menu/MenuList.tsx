@@ -29,7 +29,7 @@ export default function MenuList(props: IMenuCategory) {
   const url = React.useRef("/");
   const router = useRouter();
 
-  const handleClick = (url: string) => {
+  const handleMenuClick = (url: string) => {
     router.push(url);
   };
 
@@ -42,7 +42,7 @@ export default function MenuList(props: IMenuCategory) {
             if (item.detail_key === "00001") {
               url.current = `/#${item.menu_name}`;
             } else {
-              url.current = `/board/${item.menu_name}/${item.detail_key}`;
+              url.current = `/board/?title=${item.menu_name}&key=${item.menu_sub_key}`;
             }
             const uri = url.current;
 
@@ -50,7 +50,7 @@ export default function MenuList(props: IMenuCategory) {
               <ListItem key={index} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   onClick={() => {
-                    handleClick(uri);
+                    handleMenuClick(uri);
                   }}
                   sx={{
                     minHeight: 48,
