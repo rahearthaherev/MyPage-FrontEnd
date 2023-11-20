@@ -17,6 +17,7 @@ export default function Header(props: IMenuItem) {
   );
   const handleMenuClick = (url: string) => {
     router.push(url);
+    router.refresh();
   };
   const getMenu = async () => {
     await axios
@@ -50,7 +51,9 @@ export default function Header(props: IMenuItem) {
             sx={{ display: { xs: "none", sm: "block" }, marginRight: "150px" }}
           >
             {menuList?.map((item, index) => {
-              const url = uri.current + item.menu_name;
+              const url =
+                uri.current +
+                `?title=${item.menu_name}&key=${item.menu_sub_key}`;
               return (
                 <Button
                   key={index}

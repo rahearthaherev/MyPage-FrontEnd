@@ -31,6 +31,7 @@ export default function MenuList(props: IMenuCategory) {
 
   const handleMenuClick = (url: string) => {
     router.push(url);
+    router.refresh();
   };
 
   return (
