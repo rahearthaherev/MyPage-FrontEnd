@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -8,13 +8,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import IBoard from "@/app/interfaces/IBoard";
 import IMenuItem from "@/app/interfaces/IMenuItem";
+import { useRouter } from "next/navigation";
 
 interface Column {
   id: "index" | "title" | "author" | "create_time" | "modified_time";
@@ -53,11 +53,16 @@ const columns: Column[] = [
 export default function BoardMain(props: IMenuItem) {
   const [page, setPage] = React.useState(0);
   const [boardList, setBoardList] = React.useState<IBoard[]>([]);
+  const router = useRouter();
+  const url = React.useRef("/board/write/");
   const rowsPerPage: number = 15;
   const time = React.useRef("");
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+  };
+  const handleWriteButton = (url: string) => {
+    router.push(url);
   };
   const getBoard = async () => {
     await axios
@@ -93,7 +98,7 @@ export default function BoardMain(props: IMenuItem) {
                     style={{
                       minWidth: column.minWidth,
                       width: column.width,
-                      fontSize: column.fontSize,
+                      fontWeight: "bold",
                     }}
                   >
                     {column.label}
@@ -111,17 +116,13 @@ export default function BoardMain(props: IMenuItem) {
                       role="checkbox"
                       tabIndex={-1}
                       key={row.board_key}
-                      style={{ height: "52px" }}
+                      style={{ height: "51px" }}
                     >
                       {columns.map((column) => {
                         switch (column.id) {
                           case "index":
                             return (
-                              <TableCell
-                                key={column.id}
-                                align={column.align}
-                                sx={{}}
-                              >
+                              <TableCell key={column.id} align={column.align}>
                                 {boardList.length - index}
                               </TableCell>
                             );
@@ -177,7 +178,7 @@ export default function BoardMain(props: IMenuItem) {
         </TableContainer>
         <Box sx={{ display: "flex" }}>
           <InputBase
-            sx={{ ml: 1, flex: 1 }}
+            sx={{ ml: 1, flex: 2 }}
             placeholder="Search"
             inputProps={{ "aria-label": "search google maps" }}
           />
@@ -191,8 +192,28 @@ export default function BoardMain(props: IMenuItem) {
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
-            sx={{ width: "200px", float: "right", flex: 3 }}
+            sx={{ width: "200px", float: "right", flex: 7 }}
           />
+          <Box
+            sx={{ float: "right", flex: 1, display: "flex" }}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Button
+              variant="outlined"
+              color="error"
+              size="small"
+              onClick={() => {
+                url.current =
+                  url.current +
+                  `?title=${props.menu_name}&key=${props.menu_sub_key}`;
+                console.log(url.current);
+                handleWriteButton(url.current);
+              }}
+            >
+              Write
+            </Button>
+          </Box>
         </Box>
       </Paper>
     </Box>

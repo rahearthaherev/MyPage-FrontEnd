@@ -1,3 +1,4 @@
+"use client";
 import CssBaseline from "@mui/material/CssBaseline";
 import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
@@ -7,9 +8,17 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import React from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function Header(props: IMenuItem) {
+export default function Header() {
+  const params = useSearchParams();
+  const props: IMenuItem = {
+    menu_name: params.get("title")!,
+    menu_sub_key: params.get("key")!,
+    detail_key: "",
+    menu_icon: "",
+  };
+
   const router = useRouter();
   const uri = React.useRef("/board/");
   const [menuList, setMenuList] = React.useState<IMenuItem[] | undefined>(
@@ -33,7 +42,7 @@ export default function Header(props: IMenuItem) {
   return (
     <>
       <CssBaseline />
-      <AppBar component="nav" sx={{ backgroundColor: "grey" }}>
+      <AppBar component="nav" sx={{ backgroundColor: "darkgray" }}>
         <Toolbar>
           <Typography
             variant="h6"
