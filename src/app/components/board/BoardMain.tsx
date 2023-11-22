@@ -13,9 +13,9 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import IBoard from "@/app/interfaces/IBoard";
-import IMenuItem from "@/app/interfaces/IMenuItem";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { BoardAtom } from "@/app/recoil/atoms";
+import { useRecoilValue } from "recoil";
 
 interface Column {
   id: "index" | "title" | "author" | "create_time" | "modified_time";
@@ -51,13 +51,13 @@ const columns: Column[] = [
   },
 ];
 
-export default function BoardMain(props: IMenuItem) {
+export default function BoardMain() {
   const [page, setPage] = React.useState(0);
   const [boardList, setBoardList] = React.useState<IBoard[]>([]);
   const router = useRouter();
-  const url = React.useRef("/board/write/");
   const rowsPerPage: number = 15;
   const time = React.useRef("");
+  const boardRecoil = useRecoilValue(BoardAtom);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -71,7 +71,7 @@ export default function BoardMain(props: IMenuItem) {
   const getBoard = async () => {
     await axios
       .post("http://localhost:6974/board/list", {
-        menu_sub_key: props.menu_sub_key,
+        menu_sub_key: boardRecoil.menu_sub_key,
         search: "",
       })
       .then((resp) => {
@@ -81,7 +81,7 @@ export default function BoardMain(props: IMenuItem) {
 
   React.useEffect(() => {
     getBoard();
-  }, [props]);
+  }, [boardRecoil]);
 
   return (
     <Box
@@ -216,11 +216,7 @@ export default function BoardMain(props: IMenuItem) {
               color="error"
               size="small"
               onClick={() => {
-                url.current =
-                  url.current +
-                  `?title=${props.menu_name}&key=${props.menu_sub_key}`;
-                console.log(url.current);
-                handleWriteButton(url.current);
+                handleWriteButton("/board/write");
               }}
             >
               Write

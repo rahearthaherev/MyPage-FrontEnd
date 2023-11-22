@@ -6,19 +6,25 @@ import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRecoilValue } from "recoil";
+import { BoardAtom } from "@/app/recoil/atoms";
+
+function usePrevious(value: any) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
 
 export default function Header() {
-  const params = useSearchParams();
-  const props: IMenuItem = {
-    menu_name: params.get("title")!,
-    menu_sub_key: params.get("key")!,
-    detail_key: "",
-    menu_icon: "",
-  };
-
+  const boardRecoil = useRecoilValue(BoardAtom);
+  const prevBoardRecoil = usePrevious(boardRecoil);
   const router = useRouter();
   const uri = React.useRef("/board/");
   const [menuList, setMenuList] = React.useState<IMenuItem[] | undefined>(
@@ -30,14 +36,18 @@ export default function Header() {
   };
   const getMenu = async () => {
     await axios
-      .post("http://localhost:6974/board/header", props)
+      .post("http://localhost:6974/board/header", boardRecoil)
       .then((resp) => {
         setMenuList(resp.data);
       });
   };
+
   React.useEffect(() => {
-    getMenu();
-  }, []);
+    // 변경 전과 후의 값이 다를 때 getMenu() 호출
+    if (prevBoardRecoil !== boardRecoil) {
+      getMenu();
+    }
+  }, [prevBoardRecoil, boardRecoil]); // boardRecoil 값 변화 감지
 
   return (
     <>
@@ -54,7 +64,7 @@ export default function Header() {
               marginLeft: "64px",
             }}
           >
-            {props.menu_name}
+            {boardRecoil.menu_name}
           </Typography>
           <Box
             sx={{ display: { xs: "none", sm: "block" }, marginRight: "150px" }}

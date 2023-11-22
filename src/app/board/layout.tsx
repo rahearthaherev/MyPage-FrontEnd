@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Header from "../components/board/Header";
 import { Box } from "@mui/material";
+import Header from "../components/board/Header";
 
 export const metadata: Metadata = {
   title: "JDG's Board",

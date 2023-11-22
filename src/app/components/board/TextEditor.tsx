@@ -1,20 +1,25 @@
 import * as React from "react";
 import styled from "styled-components";
 import axios from "axios";
-
-import ReactQuill from "react-quill";
+import { ImageActions } from "@xeger/quill-image-actions";
+import { ImageFormats } from "@xeger/quill-image-formats";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DeltaStatic, RangeStatic } from "quill";
-import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Box, Button, InputBase, Paper } from "@mui/material";
 import IBoard from "@/app/interfaces/IBoard";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRecoilValue } from "recoil";
+import { BoardAtom } from "@/app/recoil/atoms";
 
 interface IEditor {
   htmlStr: string;
   setHtmlStr: React.Dispatch<React.SetStateAction<string>>;
   buttonHandler: () => void;
 }
+
+Quill.register("modules/imageActions", ImageActions);
+Quill.register("modules/imageFormats", ImageFormats);
 
 const CustomToolbar = () => (
   <div id="toolbar" style={{ borderTop: "0", borderBottom: "0" }}>
@@ -46,19 +51,38 @@ const CustomToolbar = () => (
     </span>
   </div>
 );
-
+const formats = [
+  "align",
+  "background",
+  "blockquote",
+  "bold",
+  "code-block",
+  "color",
+  "float",
+  "font",
+  "header",
+  "height",
+  "image",
+  "italic",
+  "link",
+  "script",
+  "strike",
+  "size",
+  "underline",
+  "width",
+];
 function Editor() {
   const [htmlStr, setHtmlStr] = React.useState<string>("");
   const [title, setTitle] = React.useState<string>("");
   const quillRef = React.useRef<ReactQuill>(null);
   const router = useRouter();
-  const params = useSearchParams();
+  const boardRecoil = useRecoilValue(BoardAtom);
 
   // 이미지 업로드 핸들러, modules 설정보다 위에 있어야 정상 적용
 
   const buttonHandler = async () => {
-    const listTitle = params.get("title");
-    const key = params.get("key");
+    const listTitle = boardRecoil.menu_name;
+    const key = boardRecoil.menu_sub_key;
     const board: IBoard = {
       title: title,
       author: "JDG",
@@ -139,6 +163,8 @@ function Editor() {
   // useMemo를 사용하지 않고 handler를 등록할 경우 타이핑 할때마다 focus가 벗어남
   const modules = React.useMemo(
     () => ({
+      imageActions: {},
+      imageFormats: {},
       toolbar: {
         // container에 등록되는 순서대로 tool 배치
         container: "#toolbar",
@@ -183,6 +209,7 @@ function Editor() {
       </Box>
       <CustomToolbar />
       <CustomReactQuill
+        formats={formats}
         ref={quillRef}
         theme="snow"
         modules={modules}
