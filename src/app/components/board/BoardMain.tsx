@@ -15,6 +15,7 @@ import axios from "axios";
 import IBoard from "@/app/interfaces/IBoard";
 import IMenuItem from "@/app/interfaces/IMenuItem";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Column {
   id: "index" | "title" | "author" | "create_time" | "modified_time";
@@ -64,6 +65,9 @@ export default function BoardMain(props: IMenuItem) {
   const handleWriteButton = (url: string) => {
     router.push(url);
   };
+  const handleInPage = (key: string) => {
+    router.push(`/board/${key}`);
+  };
   const getBoard = async () => {
     await axios
       .post("http://localhost:6974/board/list", {
@@ -110,6 +114,7 @@ export default function BoardMain(props: IMenuItem) {
               {boardList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: IBoard, index) => {
+                  const url = "/board/" + row.board_key!;
                   return (
                     <TableRow
                       hover
@@ -128,7 +133,14 @@ export default function BoardMain(props: IMenuItem) {
                             );
                           case "title":
                             return (
-                              <TableCell key={column.id} align={column.align}>
+                              <TableCell
+                                key={column.id}
+                                align={column.align}
+                                onClick={() => {
+                                  handleInPage(row.board_key!);
+                                }}
+                                style={{ cursor: "pointer" }}
+                              >
                                 {row.title}
                               </TableCell>
                             );

@@ -1,21 +1,74 @@
 import * as React from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { NextPage } from "next";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DeltaStatic, RangeStatic } from "quill";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import { Box, Button, InputBase, Paper } from "@mui/material";
+import IBoard from "@/app/interfaces/IBoard";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface IEditor {
   htmlStr: string;
   setHtmlStr: React.Dispatch<React.SetStateAction<string>>;
+  buttonHandler: () => void;
 }
 
-const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
+const CustomToolbar = () => (
+  <div id="toolbar" style={{ borderTop: "0", borderBottom: "0" }}>
+    <span className="ql-formats">
+      <select className="ql-size" defaultValue="medium">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+        <option value="huge">Huge</option>
+      </select>
+      <select className="ql-font"></select>
+    </span>
+    <span className="ql-formats">
+      <button className="ql-bold" />
+      <button className="ql-italic" />
+      <button className="ql-underline" />
+      <button className="ql-strike" />
+      <button className="ql-blockquote" />
+    </span>
+    <span className="ql-formats">
+      <select className="ql-color" />
+      <select className="ql-background" />
+    </span>
+    <span className="ql-formats">
+      <button className="ql-image" />
+    </span>
+    <span className="ql-formats">
+      <button className="ql-clean" />
+    </span>
+  </div>
+);
+
+function Editor() {
+  const [htmlStr, setHtmlStr] = React.useState<string>("");
+  const [title, setTitle] = React.useState<string>("");
   const quillRef = React.useRef<ReactQuill>(null);
+  const router = useRouter();
+  const params = useSearchParams();
 
   // 이미지 업로드 핸들러, modules 설정보다 위에 있어야 정상 적용
+
+  const buttonHandler = async () => {
+    const listTitle = params.get("title");
+    const key = params.get("key");
+    const board: IBoard = {
+      title: title,
+      author: "JDG",
+      menu_sub_key: key!,
+      content: htmlStr,
+    };
+    await axios.post("http://localhost:6974/board/submit", board).then(() => {
+      router.push(`/board?title=${listTitle}&key=${key}`);
+    });
+  };
   const imageHandler = () => {
     // file input 임의 생성
     const input = document.createElement("input");
@@ -88,33 +141,12 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
     () => ({
       toolbar: {
         // container에 등록되는 순서대로 tool 배치
-        container: [
-          [{ font: [] }], // font 설정
-          [{ header: [1, 2, 3, 4, 5, 6, false] }], // header 설정
-          [
-            "size",
-            "bold",
-            "italic",
-            "underline",
-            "strike",
-            "blockquote",
-            "code-block",
-            "formula",
-          ], // 굵기, 기울기, 밑줄 등 부가 tool 설정
-          [
-            { list: "ordered" },
-            { list: "bullet" },
-            { indent: "-1" },
-            { indent: "+1" },
-          ], // 리스트, 인덴트 설정
-          ["link", "image", "video"], // 링크, 이미지, 비디오 업로드 설정
-          [{ align: [] }, { color: [] }, { background: [] }], // 정렬, 글씨 색깔, 글씨 배경색 설정
-          ["clean"], // toolbar 설정 초기화 설정
-        ],
+        container: "#toolbar",
 
         // custom 핸들러 설정
         handlers: {
           image: imageHandler, // 이미지 tool 사용에 대한 핸들러 설정
+          button: { buttonHandler },
         },
       },
       clipboard: {
@@ -129,46 +161,45 @@ const Editor: NextPage<IEditor> = ({ htmlStr, setHtmlStr }) => {
     []
   );
 
-  // toolbar에 사용되는 tool format
-  const formats = [
-    "font",
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "code-block",
-    "formula",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "video",
-    "align",
-    "color",
-    "background",
-  ];
-
   return (
-    <CustomReactQuill
-      ref={quillRef}
-      theme="snow"
-      modules={modules}
-      formats={formats}
-      value={htmlStr}
-      placeholder="내용을 입력하세요."
-      onChange={(content, delta, source, editor) =>
-        setHtmlStr(editor.getHTML())
-      }
-    />
+    <Paper>
+      <Box border={1} borderTop={0} borderColor="lightgray">
+        <InputBase
+          placeholder="제목을 입력하세요."
+          sx={{ height: "45px", padding: "15px" }}
+          value={title}
+          onChange={(e: any) => {
+            setTitle(e.target.value);
+          }}
+        ></InputBase>
+        <Button
+          variant="contained"
+          color="warning"
+          style={{ float: "right", marginTop: "4px" }}
+          onClick={buttonHandler}
+        >
+          Submit
+        </Button>
+      </Box>
+      <CustomToolbar />
+      <CustomReactQuill
+        ref={quillRef}
+        theme="snow"
+        modules={modules}
+        value={htmlStr}
+        placeholder="내용을 입력하세요."
+        onChange={(content, delta, source, editor) =>
+          setHtmlStr(editor.getHTML())
+        }
+      />
+    </Paper>
   );
-};
+}
 
 export default Editor;
 
 // style
 const CustomReactQuill = styled(ReactQuill)`
-  height: 300px;
+  height: 84vh;
+  border: 0px;
 `;
