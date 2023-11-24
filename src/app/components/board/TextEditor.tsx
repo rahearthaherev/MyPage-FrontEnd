@@ -4,11 +4,10 @@ import axios from "axios";
 import { ImageActions } from "@xeger/quill-image-actions";
 import { ImageFormats } from "@xeger/quill-image-formats";
 import ReactQuill, { Quill } from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import { DeltaStatic, RangeStatic } from "quill";
 import { Box, Button, InputBase, Paper } from "@mui/material";
 import IBoard from "@/app/interfaces/IBoard";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useRecoilValue } from "recoil";
 import { BoardAtom } from "@/app/recoil/atoms";
 
@@ -74,24 +73,38 @@ const formats = [
 function Editor() {
   const [htmlStr, setHtmlStr] = React.useState<string>("");
   const [title, setTitle] = React.useState<string>("");
+
   const quillRef = React.useRef<ReactQuill>(null);
   const router = useRouter();
   const boardRecoil = useRecoilValue(BoardAtom);
+  const parmas = useSearchParams();
+  const listTitle = boardRecoil.menu_name;
+  const key = boardRecoil.menu_sub_key;
 
+  const [board, setBoard] = React.useState<IBoard>({
+    board_key: parmas.get("page_key")!,
+    title: title,
+    author: "JDG",
+    menu_sub_key: key!,
+    content: htmlStr,
+  });
   // 이미지 업로드 핸들러, modules 설정보다 위에 있어야 정상 적용
 
   const buttonHandler = async () => {
-    const listTitle = boardRecoil.menu_name;
-    const key = boardRecoil.menu_sub_key;
-    const board: IBoard = {
+    const boardSetting: IBoard = {
+      board_key: board.board_key,
       title: title,
+      create_time: board.create_time!,
       author: "JDG",
-      menu_sub_key: key!,
+      menu_sub_key: board.menu_sub_key,
       content: htmlStr,
     };
-    await axios.post("http://localhost:6974/board/submit", board).then(() => {
-      router.push(`/board?title=${listTitle}&key=${key}`);
-    });
+
+    await axios
+      .post("http://localhost:6974/board/submit", boardSetting)
+      .then(() => {
+        router.push(`/board?title=${listTitle}&key=${key}`);
+      });
   };
   const imageHandler = () => {
     // file input 임의 생성
@@ -186,6 +199,22 @@ function Editor() {
     }),
     []
   );
+  const getPage = async (key: string) => {
+    await axios
+      .post("http://localhost:6974/board/getpage", [key])
+      .then((resp) => {
+        setBoard(resp.data);
+        setHtmlStr(resp.data.content);
+        setTitle(resp.data.title);
+      });
+  };
+
+  React.useEffect(() => {
+    const key: string = parmas.get("page_key")!;
+    if (key) {
+      getPage(key);
+    }
+  }, [parmas]);
 
   return (
     <Paper>
@@ -226,7 +255,9 @@ function Editor() {
 export default Editor;
 
 // style
-const CustomReactQuill = styled(ReactQuill)`
+const CustomReactQuill = styled(ReactQuill).attrs((props) => ({
+  ...props,
+}))`
   height: 84vh;
   border: 0px;
 `;

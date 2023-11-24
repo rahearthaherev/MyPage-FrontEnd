@@ -128,7 +128,7 @@ export default function BoardMain() {
                           case "index":
                             return (
                               <TableCell key={column.id} align={column.align}>
-                                {boardList.length - index}
+                                {boardList.length - index - rowsPerPage * page}
                               </TableCell>
                             );
                           case "title":
@@ -137,7 +137,9 @@ export default function BoardMain() {
                                 key={column.id}
                                 align={column.align}
                                 onClick={() => {
-                                  handleInPage(row.board_key!);
+                                  handleInPage(
+                                    String(row.board_key!).padStart(5, "0")
+                                  );
                                 }}
                                 style={{ cursor: "pointer" }}
                               >
@@ -157,17 +159,18 @@ export default function BoardMain() {
                                 align={column.align}
                                 sx={{ fontSize: column.fontSize }}
                               >
-                                {row.create_time?.split(".")[0]}
+                                {row.create_time?.split(".")[0].split("T")[0]}{" "}
+                                {row.create_time?.split(".")[0].split("T")[1]}
                               </TableCell>
                             );
                           case "modified_time":
-                            if (
-                              row.modified_time !== null &&
-                              row.modified_time !== undefined
-                            ) {
-                              time.current = row.modified_time.split(".")[0];
-                            } else {
+                            if (row.modified_time == null) {
                               time.current = "";
+                            } else {
+                              time.current =
+                                row.modified_time.split(".")[0].split("T")[0] +
+                                " " +
+                                row.modified_time?.split(".")[0].split("T")[1];
                             }
                             return (
                               <TableCell
