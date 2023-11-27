@@ -7,6 +7,7 @@ import BulbIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import ContactIcon from "@mui/icons-material/ContactSupportOutlined";
 import BoardIcon from "@mui/icons-material/Grading";
 import DocumentIcon from "@mui/icons-material/TextSnippetOutlined";
+import ClothsIcon from "@mui/icons-material/CheckroomOutlined";
 import DefaultIcon from "@mui/icons-material/FormatIndentIncreaseOutlined";
 import {
   Divider,
@@ -42,6 +43,8 @@ export default function MenuList(props: IMenuCategory) {
           if (item.detail_key === props.detail_key) {
             if (item.detail_key === "00001") {
               url.current = `/#${item.menu_name}`;
+            } else if (item.detail_key === "00004") {
+              url.current = `/projects/styling`;
             } else {
               url.current = `/board/?title=${item.menu_name}&key=${item.menu_sub_key}`;
             }
@@ -66,7 +69,7 @@ export default function MenuList(props: IMenuCategory) {
                       justifyContent: "center",
                     }}
                   >
-                    {toIcon(item.menu_icon)}
+                    {toIcon(item.menu_icon!)}
                   </ListItemIcon>
                   <ListItemText
                     primary={item.menu_name}
@@ -98,6 +101,8 @@ function toIcon(value: string) {
       return <BoardIcon />;
     case Icon.Document:
       return <DocumentIcon />;
+    case Icon.Cloth:
+      return <ClothsIcon />;
     default:
       return <DefaultIcon />;
   }

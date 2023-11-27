@@ -27,7 +27,6 @@ export function MenuConfig(props: IMenuConfig) {
   const menuDetailList = menuContext?.menuDetailList;
   const menuCategory = menuContext?.menuCategory;
 
-  function addMenu() {}
   const CustomContent = React.forwardRef(function CustomContent(
     props: TreeItemContentProps,
     ref

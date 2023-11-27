@@ -5,3 +5,4 @@ export const Skill = "bulb";
 export const Contact = "contact";
 export const Board = "board";
 export const Document = "document";
+export const Cloth = "cloth";
