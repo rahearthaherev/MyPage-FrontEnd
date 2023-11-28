@@ -7,27 +7,41 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import * as React from "react";
 import axios from "axios";
 import { IClothesItem } from "@/app/interfaces/IClothes";
+import { useRouter } from "next/navigation";
 
 export default function ClothesTree(props: IClothesTreeProps) {
-  const { type, setSelectedType, setItem } = props;
+  const { type, resetTrigger, setSelectedType, setItem } = props;
   const [clothesList, setClothesList] = React.useState<IClothesItem[]>([]);
 
   const getClothesList = async () => {
     await axios
-      .get("http://localhost:6974/projects/styling/gettype")
+      .get("http://localhost:6974/projects/styling/getlist")
       .then((resp: any) => {
         setClothesList(resp.data);
       });
   };
 
+  const setSeletedItem = (type: string, item: string) => {
+    setSelectedType(type);
+    setItem(item);
+  };
   React.useEffect(() => {
     getClothesList();
-  }, []);
+  }, [props.resetTrigger]);
   return (
     <Grid item xs={12}>
-      <Typography variant="h4" sx={{ marginBottom: "5px" }}>
-        ◆持ち物
-      </Typography>
+      <Box display="flex" alignItems="center">
+        <img
+          src="/assets/images/ワードローブ.png"
+          alt="ワードローブ"
+          width="80px"
+          height="80px"
+          style={{ border: "1px solid black" }}
+        />
+        <Typography variant="h4" sx={{ marginLeft: "15px" }}>
+          ワードローブ
+        </Typography>
+      </Box>
       <TreeView
         aria-label="file system navigator"
         defaultCollapseIcon={<ExpandMoreIcon />}
@@ -37,6 +51,7 @@ export default function ClothesTree(props: IClothesTreeProps) {
           flexGrow: 1,
           maxWidth: 400,
           overflowY: "auto",
+          marginTop: "30px",
         }}
       >
         {type.map((type, index) => {
@@ -49,13 +64,28 @@ export default function ClothesTree(props: IClothesTreeProps) {
                 height="20px"
               ></img>
               <TreeItem
-                nodeId={index.toString()}
+                nodeId={type.type}
                 label={type.type}
                 sx={{ display: "block" }}
                 onClick={(e: any) => {
-                  setSelectedType(e.target.innerText);
+                  setSeletedItem(type.type, "");
                 }}
-              ></TreeItem>
+              >
+                {clothesList.map((cloth, index) => {
+                  if (cloth.type === type.type) {
+                    return (
+                      <TreeItem
+                        nodeId={cloth.index?.toString()!}
+                        key={index}
+                        label={`・${cloth.name}`}
+                        onClick={() => {
+                          setSeletedItem(type.type, cloth.name);
+                        }}
+                      ></TreeItem>
+                    );
+                  }
+                })}
+              </TreeItem>
             </Box>
           );
         })}

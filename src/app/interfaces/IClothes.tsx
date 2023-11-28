@@ -8,4 +8,5 @@ export interface IClothesItem {
   type: string;
   name: string;
   index?: number;
+  status?: number;
 }

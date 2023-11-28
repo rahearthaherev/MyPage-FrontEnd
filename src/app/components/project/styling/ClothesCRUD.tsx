@@ -1,7 +1,5 @@
 import { IClothesItem } from "@/app/interfaces/IClothes";
-import IClothesTreeProps, {
-  IClothesCRUDProps,
-} from "@/app/interfaces/IClothesProps";
+import { IClothesCRUDProps } from "@/app/interfaces/IClothesProps";
 import {
   Button,
   ButtonGroup,
@@ -13,6 +11,7 @@ import {
   styled,
 } from "@mui/material";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "label + &": {
@@ -47,13 +46,11 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function ClothesCRUD(props: IClothesCRUDProps) {
-  const { type, seletedType, item, setSelectedType, setItem } = props;
+  const { type, seletedType, item, setSelectedType, setItem, resetTree } =
+    props;
 
   const selectType = (e: any) => {
     setSelectedType(e.target.value);
-  };
-  const selectItem = (e: any) => {
-    setItem(e.target.innerText);
   };
 
   const AddCloth = async () => {
@@ -66,6 +63,19 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
       .post("http://localhost:6974/projects/styling/addcloth", cloth)
       .then(() => {
         setItem("");
+        resetTree();
+      });
+  };
+
+  const DeleteCloth = async () => {
+    const cloth: IClothesItem = {
+      type: seletedType,
+      name: item,
+    };
+    await axios
+      .post("http://localhost:6974/projects/styling/deletecloth", cloth)
+      .then(() => {
+        resetTree();
       });
   };
 
@@ -97,6 +107,7 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
             onChange={(e: any) => {
               setItem(e.target.value);
             }}
+            sx={{ width: "135px" }}
           />
         </FormControl>
       </Grid>
@@ -105,7 +116,12 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
           <Button variant="outlined" sx={{ width: "80px" }} onClick={AddCloth}>
             Add
           </Button>
-          <Button variant="outlined" color="error" sx={{ width: "80px" }}>
+          <Button
+            variant="outlined"
+            color="error"
+            sx={{ width: "80px" }}
+            onClick={DeleteCloth}
+          >
             Delete
           </Button>
         </ButtonGroup>
