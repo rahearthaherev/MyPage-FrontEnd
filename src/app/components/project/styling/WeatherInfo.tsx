@@ -35,7 +35,7 @@ function toIcon(value: string) {
 export default function WeatherInfo(props: IStylingProps) {
   const getWeatherDataForStyling = async () => {
     await axios
-      .get("http://localhost:6974/projects/styling/styling")
+      .get("http://localhost:6974/projects/styling/weatherinfo")
       .then((resp: any) => {
         props.setStylingData(resp.data);
         console.log(resp.data);

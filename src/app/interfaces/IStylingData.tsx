@@ -4,6 +4,6 @@ export default interface IStylingData {
   currentTemperature: number;
   windSpeed: number;
   humidity: number;
-  cloudCover: number;
+  icon: string;
   precipProbability: number;
 }

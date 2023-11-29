@@ -3,6 +3,7 @@
 import { atom } from "recoil";
 import IBoard from "../interfaces/IBoard";
 import IMenuItem from "../interfaces/IMenuItem";
+import IQuick from "../interfaces/IQuick";
 
 export const IsVarOpenAtom = atom<boolean>({
   key: "open",
@@ -14,5 +15,12 @@ export const BoardAtom = atom<IMenuItem>({
   default: {
     menu_name: "",
     menu_sub_key: "",
+  },
+});
+
+export const QuickAtom = atom<IQuick>({
+  key: "quick",
+  default: {
+    position: 0,
   },
 });

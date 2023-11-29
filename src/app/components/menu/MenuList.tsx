@@ -17,11 +17,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useRecoilValue } from "recoil";
-import { IsVarOpenAtom } from "../../recoil/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { IsVarOpenAtom, QuickAtom } from "../../recoil/atoms";
 import { MenuListContext } from "@/app/views/sidevar";
 import { useRouter } from "next/navigation";
 import IMenuCategory from "@/app/interfaces/IMenuCategory";
+import { log } from "console";
 
 export default function MenuList(props: IMenuCategory) {
   const open = useRecoilValue(IsVarOpenAtom);
@@ -29,8 +30,10 @@ export default function MenuList(props: IMenuCategory) {
   const menuDetailList = menuContext?.menuDetailList;
   const url = React.useRef("/");
   const router = useRouter();
+  const [scrollPosition, setScrollPosition] = useRecoilState(QuickAtom);
 
   const handleMenuClick = (url: string) => {
+    setScrollPosition({ position: window.scrollY });
     router.push(url);
     router.refresh();
   };
