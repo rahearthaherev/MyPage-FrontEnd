@@ -67,7 +67,7 @@ export default function WeatherInfo(props: IStylingProps) {
   return (
     <>
       <Typography variant="h4" margin={1}>
-        Today's Weather
+        Today&apos;s Weather
       </Typography>
       <Box display="flex" alignItems="flex-start">
         <Box display="flex" alignItems="center">

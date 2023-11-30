@@ -9,7 +9,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import * as React from "react";
 
-export default function projectPage() {
+export default function ProjectPage() {
   const [seletedType, setSelectedType] = React.useState<string>("Type");
   const [item, setItem] = React.useState<string>("");
   const [typeList, setTypeList] = React.useState<IClothesType[]>([]);
@@ -91,7 +91,7 @@ export default function projectPage() {
           sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
         >
           <Typography variant="h4" margin={1}>
-            Today's Styling
+            Today&apos;s Styling
           </Typography>
         </Box>
       </Grid>

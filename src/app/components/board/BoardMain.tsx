@@ -81,7 +81,7 @@ export default function BoardMain() {
 
   React.useEffect(() => {
     getBoard();
-  }, [boardRecoil]);
+  }, [boardRecoil, getBoard]);
 
   return (
     <Box

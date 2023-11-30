@@ -1,3 +1,4 @@
+import { QuickAtom } from "@/app/recoil/atoms";
 import {
   Chip,
   HeadText,
@@ -8,24 +9,11 @@ import {
 import { Grid, Box } from "@mui/material";
 import * as React from "react";
 import { useRecoilValue } from "recoil";
-import { QuickAtom } from "@/app/recoil/atoms";
 
 export default function Projects() {
-  const projectsFocusRef = React.useRef<HTMLInputElement>(null);
-  const scrollY = useRecoilValue(QuickAtom);
-
-  const setScrollY = async () => {
-    await window.scrollTo({ top: scrollY.position });
-  };
-  React.useEffect(() => {
-    if (window.location.hash === "#Projects" && projectsFocusRef.current) {
-      setScrollY();
-      projectsFocusRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  });
   return (
     <>
-      <Grid item xs={12} sx={{ marginTop: "30px" }} ref={projectsFocusRef}>
+      <Grid item xs={12} sx={{ marginTop: "100px" }}>
         <HeadText variant="h5" textAlign="center" sx={{ margin: "30px" }}>
           Projects
         </HeadText>
@@ -123,9 +111,20 @@ export default function Projects() {
               <Chip>JP1</Chip>
             </SkillBox>
           </ProjectPaper>
-          <ProjectPaper elevation={3}>
+          <ProjectPaper
+            elevation={3}
+            onClick={() => {}}
+            sx={{
+              transition: "background-color 0.3s ease",
+
+              "&:hover": {
+                backgroundColor: "rgb(230, 230, 230)",
+                cursor: "pointer",
+              },
+            }}
+          >
             <Box display="flex">
-              <Text fontWeight="600">Today's Styling</Text>
+              <Text fontWeight="600">Today&apos;s Styling</Text>
               <Text sx={{ marginLeft: "auto" }}>2023.11~</Text>
             </Box>
             <Box sx={{ marginBottom: "10px" }}>

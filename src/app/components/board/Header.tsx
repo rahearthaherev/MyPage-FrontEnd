@@ -47,7 +47,7 @@ export default function Header() {
     if (prevBoardRecoil !== boardRecoil) {
       getMenu();
     }
-  }, [prevBoardRecoil, boardRecoil]); // boardRecoil 값 변화 감지
+  }, [prevBoardRecoil, boardRecoil, getMenu]); // boardRecoil 값 변화 감지
 
   return (
     <>

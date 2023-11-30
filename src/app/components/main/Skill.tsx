@@ -1,24 +1,13 @@
-import { Grid, Box, Divider } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import * as React from "react";
 import { CardBoard, HeadText } from "../custom/customComponent";
-import { useRecoilValue } from "recoil";
 import { QuickAtom } from "@/app/recoil/atoms";
+import { useRecoilValue } from "recoil";
 
 export default function Skill() {
-  const skillFocusRef = React.useRef<HTMLInputElement>(null);
-  const scrollY = useRecoilValue(QuickAtom);
-  const setScrollY = async () => {
-    await window.scrollTo({ top: scrollY.position });
-  };
-  React.useEffect(() => {
-    if (window.location.hash === "#Skill" && skillFocusRef.current) {
-      setScrollY();
-      skillFocusRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  });
   return (
     <>
-      <Grid item xs={12} ref={skillFocusRef} sx={{ marginTop: "30px" }}>
+      <Grid item xs={12} sx={{ marginTop: "100px" }}>
         <HeadText variant="h5" textAlign="center" sx={{ margin: "30px" }}>
           Skills
         </HeadText>

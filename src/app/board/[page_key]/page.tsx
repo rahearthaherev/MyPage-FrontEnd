@@ -19,7 +19,7 @@ const HTMLRenderer = (htmlString: string) => {
   return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
 };
 
-export default function boardPage() {
+export default function BoardPage() {
   const params = useParams();
   const router = useRouter();
   const boardRecoil = useRecoilValue(BoardAtom);
@@ -50,7 +50,7 @@ export default function boardPage() {
 
   useEffect(() => {
     getBoard();
-  }, []);
+  }, [getBoard]);
 
   return (
     <Paper

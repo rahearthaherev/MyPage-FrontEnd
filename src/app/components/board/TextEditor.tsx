@@ -197,7 +197,7 @@ function Editor() {
         ],
       },
     }),
-    []
+    [buttonHandler]
   );
   const getPage = async (key: string) => {
     await axios

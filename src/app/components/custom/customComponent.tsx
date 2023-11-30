@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, styled } from "@mui/material";
+import { Box, Grid, Paper, Typography, styled } from "@mui/material";
 
 export const HeadText = styled(Typography)({
   fontFamily: "Playpen Sans, cursive",
@@ -78,4 +78,11 @@ export const CardBoard = styled(Typography)({
     backgroundColor: "rgb(230, 230, 230)",
     cursor: "pointer",
   },
+});
+
+export const ViewBox = styled(Grid)({
+  width: "100%",
+  height: "100%",
+  padding: "0px",
+  margin: "0px",
 });

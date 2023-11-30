@@ -16,13 +16,52 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { IsVarOpenAtom, QuickAtom } from "../../recoil/atoms";
 import { MenuListContext } from "@/app/views/sidevar";
 import { useRouter } from "next/navigation";
 import IMenuCategory from "@/app/interfaces/IMenuCategory";
-import { log } from "console";
+import { styled } from "@mui/material/styles";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import MuiAccordion, { AccordionProps } from "@mui/material/Accordion";
+import MuiAccordionSummary, {
+  AccordionSummaryProps,
+} from "@mui/material/AccordionSummary";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
+
+const Accordion = styled((props: AccordionProps) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  "&:not(:last-child)": {
+    borderBottom: 0,
+  },
+  "&:before": {
+    display: "none",
+  },
+}));
+
+const AccordionSummary = styled((props: AccordionSummaryProps) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  flexDirection: "row-reverse",
+  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+    transform: "rotate(90deg)",
+  },
+  "& .MuiAccordionSummary-content": {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: "1px solid rgba(0, 0, 0, .125)",
+}));
 
 export default function MenuList(props: IMenuCategory) {
   const open = useRecoilValue(IsVarOpenAtom);
@@ -31,6 +70,12 @@ export default function MenuList(props: IMenuCategory) {
   const url = React.useRef("/");
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useRecoilState(QuickAtom);
+  const [expanded, setExpanded] = React.useState<string | false>("panel1");
+
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpanded(newExpanded ? panel : false);
+    };
 
   const handleMenuClick = (url: string) => {
     setScrollPosition({ position: window.scrollY });
@@ -40,50 +85,66 @@ export default function MenuList(props: IMenuCategory) {
 
   return (
     <>
-      <Divider />
-      <List>
-        {menuDetailList?.map((item, index) => {
-          if (item.detail_key === props.detail_key) {
-            if (item.detail_key === "00001") {
-              url.current = `/#${item.menu_name}`;
-            } else if (item.detail_key === "00004") {
-              url.current = `/projects/styling`;
-            } else {
-              url.current = `/board/?title=${item.menu_name}&key=${item.menu_sub_key}`;
-            }
-            const uri = url.current;
+      <Accordion
+        expanded={expanded === "panel1"}
+        onChange={handleChange("panel1")}
+        sx={{ borderLeft: "0px", padding: "0px" }}
+      >
+        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+          <Typography sx={{ display: open ? 1 : "none" }}>
+            {props.menu_type}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails sx={{ border: "0px", padding: "0px" }}>
+          <List>
+            {menuDetailList?.map((item, index) => {
+              if (item.detail_key === props.detail_key) {
+                if (item.detail_key === "00001") {
+                  url.current = `/#${item.menu_name}`;
+                } else if (item.detail_key === "00004") {
+                  url.current = `/projects/styling`;
+                } else {
+                  url.current = `/board/?title=${item.menu_name}&key=${item.menu_sub_key}`;
+                }
+                const uri = url.current;
 
-            return (
-              <ListItem key={index} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  onClick={() => {
-                    handleMenuClick(uri);
-                  }}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
+                return (
+                  <ListItem
+                    key={index}
+                    disablePadding
+                    sx={{ display: "block" }}
                   >
-                    {toIcon(item.menu_icon!)}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.menu_name}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          }
-        })}
-      </List>
+                    <ListItemButton
+                      onClick={() => {
+                        handleMenuClick(uri);
+                      }}
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {toIcon(item.menu_icon!)}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.menu_name}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              }
+            })}
+          </List>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 }

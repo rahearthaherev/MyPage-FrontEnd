@@ -13,7 +13,6 @@ import { useRecoilState } from "recoil";
 import { IsVarOpenAtom } from "../recoil/atoms";
 import DetailMenu from "../components/menu/DetailMenu";
 import SettingButton from "../components/menu/MenuConfig";
-import ISideMenu from "../interfaces/ISideMenu";
 import axios from "axios";
 import ISideMenuList from "../interfaces/ISideMenuList";
 import IMenuItem from "../interfaces/IMenuItem";
@@ -112,7 +111,6 @@ export default function SideVar() {
           </IconButton>
         </DrawerHeader>
         <DetailMenu></DetailMenu>
-        <Divider />
       </Drawer>
     </MenuListContext.Provider>
   );
