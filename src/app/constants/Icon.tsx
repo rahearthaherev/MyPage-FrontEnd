@@ -1,5 +1,3 @@
-import exp from "constants";
-
 export const Home = "home";
 export const About = "about";
 export const Project = "project";
@@ -8,6 +6,7 @@ export const Contact = "contact";
 export const Board = "board";
 export const Document = "document";
 export const Cloth = "cloth";
+export const Calendar = "calendar";
 
 export const Clear = "clear";
 export const Fog = "fog";

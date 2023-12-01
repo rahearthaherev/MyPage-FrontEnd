@@ -60,7 +60,7 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
     };
     console.log(cloth);
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/addcloth", cloth)
+      .post("http://192.168.100.90:6974/projects/styling/addcloth", cloth)
       .then(() => {
         setItem("");
         resetTree();
@@ -73,7 +73,7 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
       name: item,
     };
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/deletecloth", cloth)
+      .post("http://192.168.100.90:6974/projects/styling/deletecloth", cloth)
       .then(() => {
         resetTree();
       });

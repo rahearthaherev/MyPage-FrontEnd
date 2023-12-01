@@ -9,6 +9,7 @@ import BoardIcon from "@mui/icons-material/Grading";
 import DocumentIcon from "@mui/icons-material/TextSnippetOutlined";
 import ClothsIcon from "@mui/icons-material/CheckroomOutlined";
 import DefaultIcon from "@mui/icons-material/FormatIndentIncreaseOutlined";
+import CalendarIcon from "@mui/icons-material/CalendarMonthOutlined";
 import {
   Divider,
   List,
@@ -70,11 +71,11 @@ export default function MenuList(props: IMenuCategory) {
   const url = React.useRef("/");
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useRecoilState(QuickAtom);
-  const [expanded, setExpanded] = React.useState<string | false>("panel1");
+  const [expanded, setExpanded] = React.useState<boolean>(false);
 
   const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded ? panel : false);
+    () => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpanded(!expanded);
     };
 
   const handleMenuClick = (url: string) => {
@@ -86,8 +87,8 @@ export default function MenuList(props: IMenuCategory) {
   return (
     <>
       <Accordion
-        expanded={expanded === "panel1"}
-        onChange={handleChange("panel1")}
+        expanded={expanded}
+        onChange={handleChange()}
         sx={{ borderLeft: "0px", padding: "0px" }}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
@@ -102,7 +103,16 @@ export default function MenuList(props: IMenuCategory) {
                 if (item.detail_key === "00001") {
                   url.current = `/#${item.menu_name}`;
                 } else if (item.detail_key === "00004") {
-                  url.current = `/projects/styling`;
+                  switch (item.menu_name) {
+                    case "Today's Styling":
+                      url.current = `/projects/styling`;
+                      break;
+                    case "Scheduler":
+                      url.current = `/projects/scheduler`;
+                      break;
+                    default:
+                      url.current = `/projects`;
+                  }
                 } else {
                   url.current = `/board/?title=${item.menu_name}&key=${item.menu_sub_key}`;
                 }
@@ -167,6 +177,8 @@ function toIcon(value: string) {
       return <DocumentIcon />;
     case Icon.Cloth:
       return <ClothsIcon />;
+    case Icon.Calendar:
+      return <CalendarIcon />;
     default:
       return <DefaultIcon />;
   }

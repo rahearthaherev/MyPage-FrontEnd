@@ -38,7 +38,7 @@ export default function TextEditor() {
 
   const getPage = async (key: string) => {
     await axios
-      .post("http://192.168.100.90:7000/board/getpage", [key])
+      .post("http://192.168.100.90:6974/board/getpage", [key])
       .then((resp) => {
         setBoard(resp.data);
         setHtmlStr(resp.data.content);

@@ -1,13 +1,9 @@
 "use client";
-import "react-quill/dist/quill.snow.css";
 import { Box, TextField } from "@mui/material";
 import dynamic from "next/dynamic";
 import styled from "styled-components";
 import * as React from "react";
-
-const Editor = dynamic(() => import("../../components/board/TextEditor"), {
-  ssr: false,
-});
+import TextEditor from "@/app/components/board/TextEditor";
 
 export default function writePage() {
   return (
@@ -19,7 +15,7 @@ export default function writePage() {
           backgroundColor: "rgb(250, 250 ,250)",
         }}
       >
-        <Editor />
+        <TextEditor />
       </Box>
     </>
   );

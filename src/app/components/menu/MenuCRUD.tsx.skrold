@@ -30,7 +30,7 @@ export default function MenuCRUD(props: IMenuDTO) {
     }
 
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menuadd", dto.current)
+      .post("http://192.168.100.90:6974/sidemenu/menuadd", dto.current)
       .then(() => {
         setInputText("");
       })
@@ -60,7 +60,7 @@ export default function MenuCRUD(props: IMenuDTO) {
     }
 
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menuupdate", dto.current)
+      .post("http://192.168.100.90:6974/sidemenu/menuupdate", dto.current)
       .then(() => {
         setInputText("");
       })
@@ -86,7 +86,7 @@ export default function MenuCRUD(props: IMenuDTO) {
       setUdError(false);
     }
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menudelete", dto.current)
+      .post("http://192.168.100.90:6974/sidemenu/menudelete", dto.current)
       .catch((error: Error) => {
         console.log("test");
         setErrorMessage("하위 항목이 남아 있는지 확인해주세요.");

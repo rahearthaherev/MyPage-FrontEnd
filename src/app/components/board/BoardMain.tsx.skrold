@@ -70,7 +70,7 @@ export default function BoardMain() {
   };
   const getBoard = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/list", {
+      .post("http://192.168.100.90:6974/board/list", {
         menu_sub_key: boardRecoil.menu_sub_key,
         search: "",
       })

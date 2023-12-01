@@ -5,7 +5,6 @@ import IMenuItem from "../interfaces/IMenuItem";
 import BoardMain from "../components/board/BoardMain";
 import { useRecoilState } from "recoil";
 import { BoardAtom } from "../recoil/atoms";
-import Header from "../components/board/Header";
 
 export default function BoardPage() {
   const [boardRecoil, setBoardRecoil] = useRecoilState(BoardAtom);

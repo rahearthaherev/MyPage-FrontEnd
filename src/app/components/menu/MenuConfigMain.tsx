@@ -105,6 +105,7 @@ export function MenuConfig(props: IMenuConfig) {
   const getId = (selectedItem: string) => {
     menuCategory?.map((category) => {
       if (category.menu_type === selectedItem) {
+        console.log("id: " + category.detail_key);
         setDto({
           id: category.menu_key,
           detail_id: category.detail_key,
@@ -114,6 +115,7 @@ export function MenuConfig(props: IMenuConfig) {
     });
     menuDetailList?.map((item) => {
       if (item.menu_name === selectedItem) {
+        console.log("id: " + item.detail_key);
         setDto({
           id: item.menu_sub_key,
           detail_id: item.detail_key,

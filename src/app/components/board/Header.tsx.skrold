@@ -36,7 +36,7 @@ export default function Header() {
   };
   const getMenu = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/header", boardRecoil)
+      .post("http://192.168.100.90:6974/board/header", boardRecoil)
       .then((resp) => {
         setMenuList(resp.data);
       });
