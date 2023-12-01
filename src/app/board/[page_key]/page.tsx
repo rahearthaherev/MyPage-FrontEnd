@@ -50,7 +50,7 @@ export default function BoardPage() {
 
   useEffect(() => {
     getBoard();
-  }, [getBoard]);
+  }, []);
 
   return (
     <Paper

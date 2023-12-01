@@ -25,7 +25,7 @@ export default function BoardPage() {
     ) {
       setBoardRecoil(props);
     }
-  }, [props, boardRecoil, setBoardRecoil]);
+  }, [props, boardRecoil]);
 
   return (
     <>

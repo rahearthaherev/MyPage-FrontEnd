@@ -4,8 +4,9 @@ import dynamic from "next/dynamic";
 import styled from "styled-components";
 import * as React from "react";
 import TextEditor from "@/app/components/board/TextEditor";
+import "react-quill/dist/quill.snow.css";
 
-export default function writePage() {
+export default function WritePage() {
   return (
     <>
       <Box
