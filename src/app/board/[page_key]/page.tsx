@@ -15,10 +15,8 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import "react-quill/dist/quill.snow.css";
-
-const HTMLRenderer = (htmlString: string) => {
-  return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
-};
+import ReactQuill from "react-quill";
+import styled from "styled-components";
 
 export default function BoardPage() {
   const params = useParams();
@@ -103,10 +101,23 @@ export default function BoardPage() {
       <Divider></Divider>
       <Box
         sx={{
-          padding: "15px",
+          padding: "0px",
         }}
-        ref={contentHTML}
-      ></Box>
+      >
+        <ReactQuillViewer
+          value={board?.content}
+          readOnly={true}
+          theme="snow"
+          modules={{ toolbar: false }}
+          style={{ border: "none" }}
+        />
+      </Box>
     </Paper>
   );
 }
+
+const ReactQuillViewer = styled(ReactQuill).attrs((props) => ({
+  ...props,
+}))`
+  border: 0px;
+`;

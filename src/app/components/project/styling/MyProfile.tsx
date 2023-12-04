@@ -130,9 +130,3 @@ export default function MyProfile(props: IMyProfileProps) {
     </>
   );
 }
-
-const InfoText = styled.div`
-  padding-left: 15px;
-  border: 0;
-  line-height: 100%;
-`;

@@ -10,6 +10,7 @@ import IBoard from "@/app/interfaces/IBoard";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useRecoilValue } from "recoil";
 import { BoardAtom } from "@/app/recoil/atoms";
+import { before } from "node:test";
 
 interface IEditor {
   htmlStr: string;
@@ -36,7 +37,11 @@ const CustomToolbar = () => (
       <button className="ql-italic" />
       <button className="ql-underline" />
       <button className="ql-strike" />
+      <select className="ql-align"></select>
+    </span>
+    <span className="ql-formats">
       <button className="ql-blockquote" />
+      <button className="ql-code-block" />
     </span>
     <span className="ql-formats">
       <select className="ql-color" />
@@ -73,8 +78,10 @@ const formats = [
 
 export default function TextEditor() {
   const [htmlStr, setHtmlStr] = React.useState<string>("");
-  const quillRef = React.useRef<ReactQuill>(null);
   const [title, setTitle] = React.useState<string>("");
+  const isImg = React.useRef<boolean>(false);
+  const beforeContents = React.useRef<string>("");
+  const quillRef = React.useRef<ReactQuill>(null);
   const router = useRouter();
   const boardRecoil = useRecoilValue(BoardAtom);
   const parmas = useSearchParams();
@@ -138,13 +145,15 @@ export default function TextEditor() {
           index,
           `<img src=${res.data} alt=${"alt text"} />`
         );
+        console.log("tp4");
       }
     };
   };
   const imagePastedHandler = (node: Node, delta: DeltaStatic): DeltaStatic => {
     if (node instanceof HTMLElement && node.tagName.toUpperCase() === "IMG") {
       const imageSrc = (node as HTMLImageElement).getAttribute("src");
-
+      isImg.current = true;
+      console.log("tp3");
       if (imageSrc) {
         fetch(imageSrc)
           .then((response) => response.blob())
@@ -214,6 +223,8 @@ export default function TextEditor() {
     }
   }, [parmas]);
 
+  React.useEffect(() => {}, []);
+
   return (
     <Paper>
       <Box border={1} borderTop={0} borderColor="lightgray">
@@ -242,9 +253,16 @@ export default function TextEditor() {
         modules={modules}
         value={htmlStr}
         placeholder="내용을 입력하세요."
-        onChange={(content, delta, source, editor) =>
-          setHtmlStr(editor.getHTML())
-        }
+        onChange={(content, delta, source, editor) => {
+          if (isImg.current) {
+            setHtmlStr(beforeContents.current);
+            console.log("tp1" + beforeContents.current);
+            console.log("tp9 : " + editor.getHTML());
+            isImg.current = false;
+          } else {
+            console.log("tp2 : " + editor.getHTML());
+          }
+        }}
       />
     </Paper>
   );
