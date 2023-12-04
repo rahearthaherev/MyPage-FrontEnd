@@ -219,7 +219,7 @@ export default function TextEditor() {
       <Box border={1} borderTop={0} borderColor="lightgray">
         <InputBase
           placeholder="제목을 입력하세요."
-          sx={{ height: "45px", padding: "15px" }}
+          sx={{ height: "45px", padding: "15px", width: "90%" }}
           value={title}
           onChange={(e: any) => {
             setTitle(e.target.value);

@@ -14,6 +14,7 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useRecoilValue } from "recoil";
+import "react-quill/dist/quill.snow.css";
 
 const HTMLRenderer = (htmlString: string) => {
   return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
