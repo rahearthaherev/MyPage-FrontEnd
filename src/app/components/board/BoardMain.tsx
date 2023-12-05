@@ -62,8 +62,10 @@ export default function BoardMain() {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  const handleWriteButton = (url: string) => {
-    router.push(url);
+  const handleWriteButton = () => {
+    router.push(
+      `/board/write?title=${boardRecoil.menu_name}&key=${boardRecoil.menu_sub_key}`
+    );
   };
   const handleInPage = (key: string) => {
     router.push(`/board/${key}`);
@@ -87,7 +89,7 @@ export default function BoardMain() {
     <Box
       sx={{
         width: { lg: "1080px", xs: "100vh" },
-        paddingTop: "70px",
+        paddingTop: "65px",
       }}
     >
       <Paper sx={{ width: "100%" }}>
@@ -218,9 +220,7 @@ export default function BoardMain() {
               variant="outlined"
               color="error"
               size="small"
-              onClick={() => {
-                handleWriteButton("/board/write");
-              }}
+              onClick={handleWriteButton}
             >
               Write
             </Button>

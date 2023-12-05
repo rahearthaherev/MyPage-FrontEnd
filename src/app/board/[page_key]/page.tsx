@@ -11,20 +11,19 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { RichTextEditor, Editor } from "@mantine/rte";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { useRecoilValue } from "recoil";
-import "react-quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";
-import styled from "styled-components";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 export default function BoardPage() {
   const params = useParams();
   const router = useRouter();
-  const boardRecoil = useRecoilValue(BoardAtom);
+  const [boardRecoil, setBoardRecoil] = useRecoilState(BoardAtom);
   const [key, setKey] = React.useState([params.page_key]);
   const [board, setBoard] = React.useState<IBoard | undefined>(undefined);
   const contentHTML = React.useRef<HTMLDivElement>(null);
+
   const getBoard = async () => {
     await axios
       .post("http://192.168.100.90:7000/board/getpage", key)
@@ -104,20 +103,16 @@ export default function BoardPage() {
           padding: "0px",
         }}
       >
-        <ReactQuillViewer
-          value={board?.content}
-          readOnly={true}
-          theme="snow"
-          modules={{ toolbar: false }}
-          style={{ border: "none" }}
-        />
+        {/* 뷰어의 경우 테두리 제거 */}
+        <style>
+          {`
+            .mantine-RichTextEditor-root {
+              border: none !important;
+            }
+          `}
+        </style>
+        <RichTextEditor value={board?.content} readOnly />
       </Box>
     </Paper>
   );
 }
-
-const ReactQuillViewer = styled(ReactQuill).attrs((props) => ({
-  ...props,
-}))`
-  border: 0px;
-`;

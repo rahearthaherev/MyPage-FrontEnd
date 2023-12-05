@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import React, { useEffect, useRef } from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useRecoilValue } from "recoil";
 import { BoardAtom } from "@/app/recoil/atoms";
 
@@ -52,7 +52,7 @@ export default function Header() {
   return (
     <>
       <CssBaseline />
-      <AppBar component="nav" sx={{ backgroundColor: "darkgray" }}>
+      <AppBar component="nav" sx={{ backgroundColor: "rgb(100, 100, 100)" }}>
         <Toolbar>
           <Typography
             variant="h6"
