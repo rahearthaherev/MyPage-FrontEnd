@@ -1,73 +1,80 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
-import Schedule from '@mui/icons-material/Schedule';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import React, { useState, useRef } from 'react';
+import { Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 
-const DateScheduler = ({ onClose }) => {
+const CalendarScheduler = () => {
   const [selectedDate, setSelectedDate] = useState(null);
+  const [schedule, setSchedule] = useState([]);
+  const [newEvent, setNewEvent] = useState('');
+  const forceUpdate = useRef(0);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    console.log('날짜 선택 확인:', date); // 콘솔에 날짜 선택 로그 출력
   };
 
-  const handleSchedule = () => {
-    // Handle scheduling logic here
-    onClose();
+  const handleAddEvent = () => {
+    if (selectedDate && newEvent) {
+      setSchedule([...schedule, { date: selectedDate, event: newEvent }]);
+      setNewEvent('');
+      forceUpdate.current += 1;
+      console.log('일정 추가 확인:', schedule); // 콘솔에 일정 추가 로그 출력
+    }
   };
 
   return (
-    <>
-      <Typography variant="body1" gutterBottom>
-        Select a date for scheduling:
+    <div key={forceUpdate.current}>
+      <Typography variant="h4" gutterBottom>
+        캘린더 스케줄러
       </Typography>
-      <DatePicker
-        label="Select Date"
-        value={selectedDate}
-        onChange={handleDateChange}
-        textField={(props) => <TextField {...props} margin="normal" fullWidth />}
-      />
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Cancel
-        </Button>
-        <Button onClick={handleSchedule} color="primary">
-          Schedule
-        </Button>
-      </DialogActions>
-    </>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <StaticDatePicker
+        orientation='portrait'
+          displayStaticWrapperAs="desktop"
+          value={selectedDate}
+          onChange={handleDateChange}
+          textField={(startProps) => (
+            <TextField {...startProps} variant="standard" margin="normal" fullWidth style={{ width: '400px' }} />
+          )}
+        
+        />
+        <div style={{ marginTop: '16px' }}>
+          <Typography variant="h6" gutterBottom>
+            {selectedDate && selectedDate.toDateString ? `선택한 날짜의 일정: ${selectedDate.toDateString()}` : '날짜를 선택하세요'}
+          </Typography>
+          <List>
+            {(selectedDate && schedule.length > 0) ? (
+              schedule
+                .filter((event) => event.date && typeof event.date.toDateString === 'function' && event.date.toDateString() === (selectedDate?.toDateString() || ''))
+                .map((event) => (
+                  <ListItem key={event.id}>
+                    <ListItemText primary={`${event.date.toLocaleTimeString()}: ${event.event}`} />
+                  </ListItem>
+                ))
+            ) : (
+              <ListItem>
+                <ListItemText primary="일정이 없습니다." />
+              </ListItem>
+            )}
+          </List>
+          <TextField
+            label="새로운 일정"
+            value={newEvent}
+            onChange={(e) => setNewEvent(e.target.value)}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+          />
+          <Button variant="contained" color="primary" onClick={handleAddEvent}>
+            일정 추가
+          </Button>
+        </div>
+      </LocalizationProvider>
+    </div>
   );
 };
 
-const Scheduler = () => {
-  const [openDialog, setOpenDialog] = useState(false);
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <div>
-        <Button variant="contained" color="primary" startIcon={<Schedule />} onClick={handleOpenDialog}>
-          Schedule
-        </Button>
-
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Schedule Event</DialogTitle>
-          <DialogContent>
-            <DateScheduler onClose={handleCloseDialog} />
-          </DialogContent>
-        </Dialog>
-      </div>
-    </LocalizationProvider>
-  );
-};
-
-export default Scheduler;
+export default CalendarScheduler;
