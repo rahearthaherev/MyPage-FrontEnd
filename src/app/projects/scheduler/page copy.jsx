@@ -1,4 +1,6 @@
+//mui를 사용한 기본 캘린더 
 "use client";
+
 
 import React, { useState, useRef } from 'react';
 import { Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
@@ -32,12 +34,14 @@ const CalendarScheduler = () => {
       </Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <StaticDatePicker
+        orientation='portrait'
           displayStaticWrapperAs="desktop"
           value={selectedDate}
           onChange={handleDateChange}
           textField={(startProps) => (
             <TextField {...startProps} variant="standard" margin="normal" fullWidth style={{ width: '400px' }} />
           )}
+        
         />
         <div style={{ marginTop: '16px' }}>
           <Typography variant="h6" gutterBottom>

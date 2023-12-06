@@ -1,78 +1,125 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
-import { Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+import React, { useState } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const CalendarScheduler = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [schedule, setSchedule] = useState([]);
-  const [newEvent, setNewEvent] = useState('');
-  const forceUpdate = useRef(0);
+  const [events, setEvents] = useState([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    console.log('날짜 선택 확인:', date); // 콘솔에 날짜 선택 로그 출력
+  const handleDateClick = (arg) => {
+    setSelectedDate(arg.dateStr);
+    setIsModalOpen(true);
   };
 
-  const handleAddEvent = () => {
-    if (selectedDate && newEvent) {
-      setSchedule([...schedule, { date: selectedDate, event: newEvent }]);
-      setNewEvent('');
-      forceUpdate.current += 1;
-      console.log('일정 추가 확인:', schedule); // 콘솔에 일정 추가 로그 출력
+  const handleEventClick = (info) => {
+    if (info && info.event) {
+      setTitle(info.event.title || '');
+      setDescription(info.event.extendedProps.description || '');
+      setSelectedDate(info.event.startStr || '');
+      setIsModalOpen(true);
     }
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddEvent = () => {
+    if (title && selectedDate) {
+      setEvents([...events, { title, description, date: selectedDate }]);
+      setIsModalOpen(false);
+      setTitle('');
+      setDescription('');
+      setSelectedDate('');
+    }
+  };
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
-    <div key={forceUpdate.current}>
-      <Typography variant="h4" gutterBottom>
-        캘린더 스케줄러
-      </Typography>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <StaticDatePicker
-        orientation='portrait'
-          displayStaticWrapperAs="desktop"
-          value={selectedDate}
-          onChange={handleDateChange}
-          textField={(startProps) => (
-            <TextField {...startProps} variant="standard" margin="normal" fullWidth style={{ width: '400px' }} />
-          )}
-        
+    <div style={{ width: '80%', margin: 'auto', display: 'flex' }}>
+      <div style={{ flex: 1 }}>
+        <h2>캘린더 스케줄러</h2>
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+          events={events}
+          dateClick={handleDateClick}
+          eventClick={handleEventClick}
+          style={{ width: '100%' }}
         />
-        <div style={{ marginTop: '16px' }}>
-          <Typography variant="h6" gutterBottom>
-            {selectedDate && selectedDate.toDateString ? `선택한 날짜의 일정: ${selectedDate.toDateString()}` : '날짜를 선택하세요'}
-          </Typography>
-          <List>
-            {(selectedDate && schedule.length > 0) ? (
-              schedule
-                .filter((event) => event.date && typeof event.date.toDateString === 'function' && event.date.toDateString() === (selectedDate?.toDateString() || ''))
-                .map((event) => (
-                  <ListItem key={event.id}>
-                    <ListItemText primary={`${event.date.toLocaleTimeString()}: ${event.event}`} />
-                  </ListItem>
-                ))
-            ) : (
-              <ListItem>
-                <ListItemText primary="일정이 없습니다." />
-              </ListItem>
-            )}
-          </List>
+      </div>
+      <div style={{ width: 300, marginLeft: 20 }}>
+        {/* 오른쪽에 추가된 내용 */}
+        {isModalOpen && (
+          <Modal open={isModalOpen} onClose={handleCloseModal}>
+            <Box sx={{ ...modalStyle, width: '100%' }}>
+              <Typography variant="h6" gutterBottom>
+                이벤트 상세 정보
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                날짜: {selectedDate}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                제목: {title}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                설명: {description}
+              </Typography>
+              <Button onClick={handleCloseModal} color="primary" sx={{ mt: 2 }}>
+                닫기
+              </Button>
+            </Box>
+          </Modal>
+        )}
+        {/* 추가된 내용 */}
+        <div style={{ marginTop: 20 }}>
           <TextField
-            label="새로운 일정"
-            value={newEvent}
-            onChange={(e) => setNewEvent(e.target.value)}
-            variant="outlined"
-            margin="normal"
+            label="일정 제목"
             fullWidth
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-          <Button variant="contained" color="primary" onClick={handleAddEvent}>
+          <TextField
+            label="상세 내용"
+            fullWidth
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            multiline
+            rows={4}
+            sx={{ mt: 2 }}
+          />
+          <Button onClick={handleAddEvent} color="primary" sx={{ mt: 2 }}>
             일정 추가
           </Button>
         </div>
-      </LocalizationProvider>
+      </div>
     </div>
   );
 };
