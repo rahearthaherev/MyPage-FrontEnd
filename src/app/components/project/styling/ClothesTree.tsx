@@ -7,10 +7,9 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import * as React from "react";
 import axios from "axios";
 import { IClothesItem } from "@/app/interfaces/IClothes";
-import { useRouter } from "next/navigation";
 
 export default function ClothesTree(props: IClothesTreeProps) {
-  const { type, resetTrigger, setSelectedType, setItem } = props;
+  const { type, resetTrigger, setSelectedType, setItem, setStatus } = props;
   const [clothesList, setClothesList] = React.useState<IClothesItem[]>([]);
 
   const getClothesList = async () => {
@@ -21,9 +20,10 @@ export default function ClothesTree(props: IClothesTreeProps) {
       });
   };
 
-  const setSeletedItem = (type: string, item: string) => {
+  const setSeletedItem = (type: string, item: string, status: number) => {
     setSelectedType(type);
     setItem(item);
+    setStatus(status);
   };
   React.useEffect(() => {
     getClothesList();
@@ -68,7 +68,7 @@ export default function ClothesTree(props: IClothesTreeProps) {
                 label={type.type}
                 sx={{ display: "block" }}
                 onClick={(e: any) => {
-                  setSeletedItem(type.type, "");
+                  setSeletedItem(type.type, "", 0);
                 }}
               >
                 {clothesList.map((cloth, index) => {
@@ -77,9 +77,9 @@ export default function ClothesTree(props: IClothesTreeProps) {
                       <TreeItem
                         nodeId={cloth.index?.toString()!}
                         key={index}
-                        label={`・${cloth.name}`}
+                        label={`・${cloth.name}${clothStatus(cloth.status!)}`}
                         onClick={() => {
-                          setSeletedItem(type.type, cloth.name);
+                          setSeletedItem(type.type, cloth.name, cloth.status!);
                         }}
                       ></TreeItem>
                     );
@@ -92,4 +92,17 @@ export default function ClothesTree(props: IClothesTreeProps) {
       </TreeView>
     </Grid>
   );
+}
+
+function clothStatus(status: number) {
+  switch (status) {
+    case 0:
+      return "";
+    case 1:
+      return "(洗濯前)";
+    case 2:
+      return "(洗濯中)";
+    case 3:
+      return "(乾燥中)";
+  }
 }
