@@ -8,9 +8,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import React, { useEffect, useRef } from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
-import { useRouter } from "next/navigation";
-import { useRecoilValue } from "recoil";
-import { BoardAtom } from "@/app/recoil/atoms";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function usePrevious(value: any) {
   const ref = useRef();
@@ -23,31 +21,41 @@ function usePrevious(value: any) {
 }
 
 export default function Header() {
-  const boardRecoil = useRecoilValue(BoardAtom);
-  const prevBoardRecoil = usePrevious(boardRecoil);
+  const params = useSearchParams();
+  const prevParam = usePrevious(params);
   const router = useRouter();
   const uri = React.useRef("/board/");
   const [menuList, setMenuList] = React.useState<IMenuItem[] | undefined>(
     undefined
   );
+
+  const props: IMenuItem = React.useMemo(
+    () => ({
+      menu_name: params.get("title")!,
+      menu_sub_key: params.get("key")!,
+    }),
+    [params]
+  );
+
   const handleMenuClick = (url: string) => {
     router.push(url);
     router.refresh();
   };
   const getMenu = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/header", boardRecoil)
+      .post("http://192.168.100.90:7000/board/header", props)
       .then((resp) => {
-        setMenuList(resp.data);
+        const menuList: IMenuItem[] = resp.data;
+        setMenuList(menuList);
       });
   };
 
   React.useEffect(() => {
     // 변경 전과 후의 값이 다를 때 getMenu() 호출
-    if (prevBoardRecoil !== boardRecoil) {
+    if (prevParam !== params) {
       getMenu();
     }
-  }, [prevBoardRecoil, boardRecoil, getMenu]); // boardRecoil 값 변화 감지
+  }, [prevParam, params, getMenu]); // boardRecoil 값 변화 감지
 
   return (
     <>
@@ -64,7 +72,7 @@ export default function Header() {
               marginLeft: "64px",
             }}
           >
-            {boardRecoil.menu_name}
+            {props.menu_name}
           </Typography>
           <Box
             sx={{ display: { xs: "none", sm: "block" }, marginRight: "150px" }}

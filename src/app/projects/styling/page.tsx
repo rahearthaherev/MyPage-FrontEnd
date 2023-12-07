@@ -82,7 +82,7 @@ export default function ProjectPage() {
             borderRadius={2}
             height="100%"
             width="100%"
-            sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
+            sx={{ backgroundColor: "", marginLeft: "15px", padding: "15px" }}
           >
             <Grid>
               <ClothesTree
@@ -108,7 +108,7 @@ export default function ProjectPage() {
           border={2}
           borderColor="lightgray"
           borderRadius={2}
-          height="calc(100% - 30px)"
+          height="calc(100% - 15px)"
           width="100%"
           sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
         >
