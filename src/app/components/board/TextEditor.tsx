@@ -2,10 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { RichTextEditor } from "@mantine/rte";
 import { Box, Button, InputBase } from "@mui/material";
 import IBoard from "@/app/interfaces/IBoard";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useRecoilValue } from "recoil";
-import { BoardAtom } from "@/app/recoil/atoms";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import IMenuItem from "@/app/interfaces/IMenuItem";
 
 const initialValue = "<p></p>";
 
@@ -44,16 +43,22 @@ export default function Editor() {
   const [title, setTitle] = useState<string>("");
   const [value, onChange] = useState(initialValue);
   const router = useRouter();
-  const boardRecoil = useRecoilValue(BoardAtom);
   const parmas = useSearchParams();
-  const listTitle = boardRecoil.menu_name;
-  const key = boardRecoil.menu_sub_key;
+  const uParams = useSearchParams();
+
+  const props: IMenuItem = useMemo(
+    () => ({
+      menu_name: uParams.get("title")!,
+      menu_sub_key: uParams.get("key")!,
+    }),
+    [uParams]
+  );
 
   const [board, setBoard] = useState<IBoard>({
     board_key: parmas.get("page_key")!,
     title: title,
     author: "JDG",
-    menu_sub_key: key!,
+    menu_sub_key: props.menu_sub_key!,
     content: value,
   });
 
@@ -85,7 +90,9 @@ export default function Editor() {
     await axios
       .post("http://192.168.100.90:7000/board/submit", boardSetting)
       .then(() => {
-        router.push(`/board?title=${listTitle}&key=${key}`);
+        router.push(
+          `/board?title=${props.menu_name}&key=${props.menu_sub_key}`
+        );
       });
   };
 

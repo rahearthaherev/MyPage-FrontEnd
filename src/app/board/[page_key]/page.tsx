@@ -1,7 +1,6 @@
 "use client";
 
 import IBoard from "@/app/interfaces/IBoard";
-import { BoardAtom } from "@/app/recoil/atoms";
 import {
   Box,
   Button,
@@ -11,16 +10,26 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { RichTextEditor, Editor } from "@mantine/rte";
+import { RichTextEditor } from "@mantine/rte";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import IMenuItem from "@/app/interfaces/IMenuItem";
+import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
 
 export default function BoardPage() {
+  const [open, setOpen] = React.useState(false);
   const params = useParams();
   const router = useRouter();
-  const [boardRecoil, setBoardRecoil] = useRecoilState(BoardAtom);
+  const uParams = useSearchParams();
   const [key, setKey] = React.useState([params.page_key]);
+  const props: IMenuItem = React.useMemo(
+    () => ({
+      menu_name: uParams.get("title")!,
+      menu_sub_key: uParams.get("key")!,
+    }),
+    [uParams]
+  );
+
   const [board, setBoard] = React.useState<IBoard | undefined>(undefined);
   const contentHTML = React.useRef<HTMLDivElement>(null);
 
@@ -35,14 +44,17 @@ export default function BoardPage() {
       });
   };
   const handleModifyButton = () => {
-    router.push(`/board/write?page_key=${key}`);
+    router.push(
+      `/board/write?page_key=${key}&title=${props.menu_name}&key=${props.menu_sub_key}`
+    );
   };
 
   const handleDeleteButton = async () => {
     await axios.post("http://192.168.100.90:7000/board/deleteboard", board);
+    setOpen(!open);
     router.refresh();
     const title = router.push(
-      `/board?title=${boardRecoil.menu_name}&key=${boardRecoil.menu_sub_key}`
+      `/board?title=${props.menu_name}&key=${props.menu_sub_key}`
     );
   };
 
@@ -88,7 +100,9 @@ export default function BoardPage() {
               </Button>
               <Button
                 variant="contained"
-                onClick={handleDeleteButton}
+                onClick={() => {
+                  setOpen(!open);
+                }}
                 color="error"
               >
                 Delete
@@ -113,6 +127,13 @@ export default function BoardPage() {
         </style>
         <RichTextEditor value={board?.content} readOnly />
       </Box>
+      <ConfirmationMessage
+        open={open}
+        setOpen={() => {
+          setOpen(!open);
+        }}
+        func={handleDeleteButton}
+      ></ConfirmationMessage>
     </Paper>
   );
 }

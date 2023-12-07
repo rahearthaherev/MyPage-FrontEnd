@@ -14,6 +14,7 @@ import * as React from "react";
 export default function ProjectPage() {
   const [seletedType, setSelectedType] = React.useState<string>("Type");
   const [item, setItem] = React.useState<string>("");
+  const [status, setStatus] = React.useState<number>(0);
   const [typeList, setTypeList] = React.useState<IClothesType[]>([]);
   const [personalInfo, setPersonalInfo] = React.useState<IPersonalInfo>({
     height: 0,
@@ -90,11 +91,13 @@ export default function ProjectPage() {
                 resetTrigger={resetTrigger}
                 setSelectedType={setSelectedType}
                 setItem={setItem}
+                setStatus={setStatus}
               />
               <ClothesCRUD
                 type={typeList}
                 seletedType={seletedType}
                 item={item}
+                status={status}
                 setSelectedType={setSelectedType}
                 setItem={setItem}
                 resetTree={resetTree}
