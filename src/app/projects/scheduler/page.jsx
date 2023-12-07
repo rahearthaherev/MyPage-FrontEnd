@@ -17,22 +17,28 @@ const CalendarScheduler = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 수정: 선택된 이벤트 정보 저장
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
   const handleDateClick = (arg) => {
     setSelectedDate(arg.dateStr);
+    setTitle('');
+    setDescription('');
     setIsModalOpen(true);
+    setSelectedEvent(null); // 수정: 날짜를 클릭할 때 선택된 이벤트 초기화
   };
 
   const handleEventClick = (info) => {
-    if (info && info.event) {
+    if (info.event) {
       setTitle(info.event.title || '');
       setDescription(info.event.extendedProps.description || '');
       setSelectedDate(info.event.startStr || '');
+
+      // 수정: 이벤트를 클릭할 때 선택된 이벤트 정보 저장
+      setSelectedEvent(info.event);
+
       setIsModalOpen(true);
     }
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
   };
 
   const handleAddEvent = () => {
@@ -42,6 +48,7 @@ const CalendarScheduler = () => {
       setTitle('');
       setDescription('');
       setSelectedDate('');
+      setSelectedEvent(null);
     }
   };
 
@@ -50,7 +57,8 @@ const CalendarScheduler = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: '60%',
+    maxWidth: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -76,49 +84,61 @@ const CalendarScheduler = () => {
         />
       </div>
       <div style={{ width: 300, marginLeft: 20 }}>
-        {/* 오른쪽에 추가된 내용 */}
+        {selectedEvent && ( // 수정: 선택된 이벤트 정보가 있을 때만 표시
+          <Box sx={{ ...modalStyle, width: '100%' }}>
+            <Typography variant="h6" gutterBottom>
+              이벤트 상세 정보
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              날짜: {new Date(selectedEvent.startStr).toLocaleDateString('ko-KR')}
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              제목: {selectedEvent.title || ''}
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              설명: {selectedEvent.extendedProps.description || ''}
+            </Typography>
+            {/* 수정: 모달에 닫기 버튼 추가 */}
+            <Button onClick={() => setIsModalOpen(false)} color="primary" sx={{ mt: 2 }}>
+              닫기
+            </Button>
+          </Box>
+        )}
         {isModalOpen && (
-          <Modal open={isModalOpen} onClose={handleCloseModal}>
-            <Box sx={{ ...modalStyle, width: '100%' }}>
+          <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <Box sx={modalStyle}>
               <Typography variant="h6" gutterBottom>
                 이벤트 상세 정보
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                날짜: {selectedDate}
+                날짜: {new Date(selectedDate).toLocaleDateString('ko-KR')}
               </Typography>
-              <Typography variant="subtitle1" gutterBottom>
-                제목: {title}
-              </Typography>
-              <Typography variant="subtitle1" gutterBottom>
-                설명: {description}
-              </Typography>
-              <Button onClick={handleCloseModal} color="primary" sx={{ mt: 2 }}>
+              <TextField
+                margin="dense"
+                label="일정 제목"
+                type="text"
+                fullWidth
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <TextField
+                margin="dense"
+                label="상세 내용"
+                type="text"
+                fullWidth
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <Button onClick={handleAddEvent} color="primary">
+                일정 추가
+              </Button>
+              {/* 수정: 모달에 닫기 버튼 추가 */}
+              <Button onClick={() => setIsModalOpen(false)} color="primary" sx={{ mt: 2 }}>
                 닫기
               </Button>
             </Box>
           </Modal>
         )}
-        {/* 추가된 내용 */}
-        <div style={{ marginTop: 20 }}>
-          <TextField
-            label="일정 제목"
-            fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <TextField
-            label="상세 내용"
-            fullWidth
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            multiline
-            rows={4}
-            sx={{ mt: 2 }}
-          />
-          <Button onClick={handleAddEvent} color="primary" sx={{ mt: 2 }}>
-            일정 추가
-          </Button>
-        </div>
       </div>
     </div>
   );
