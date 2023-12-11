@@ -5,7 +5,7 @@ import IQuick from "../interfaces/IQuick";
 
 export const IsVarOpenAtom = atom<boolean>({
   key: "open",
-  default: false,
+  default: true,
 });
 
 export const QuickAtom = atom<IQuick>({

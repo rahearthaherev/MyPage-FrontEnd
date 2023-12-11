@@ -19,7 +19,7 @@ export default function RootLayout({
         sx={{
           display: "flex",
           backgroundColor: "rgb(250, 250, 250)",
-          height: "100vh",
+          minHeight: "100vh",
           width: "100%",
         }}
       >

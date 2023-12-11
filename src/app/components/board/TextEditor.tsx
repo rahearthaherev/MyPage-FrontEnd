@@ -143,7 +143,7 @@ export default function Editor() {
       <style>
         {`
             .ql-editor{
-              height: 82vh;
+              min-height: calc(100vh - 165px);
             }
           `}
       </style>

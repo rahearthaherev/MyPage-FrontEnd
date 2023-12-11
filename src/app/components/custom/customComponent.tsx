@@ -2,8 +2,9 @@ import { Box, Grid, Paper, Typography, styled } from "@mui/material";
 
 export const HeadText = styled(Typography)({
   fontFamily: "Playpen Sans, cursive",
-  color: "gray",
+  color: "grey",
   margin: "5px",
+  fontSize: "25px",
   "@media (max-width: 500px)": {
     fontSize: "15px",
   },
@@ -11,8 +12,19 @@ export const HeadText = styled(Typography)({
 
 export const Text = styled(Typography)({
   fontFamily: "Playpen Sans, cursive",
-  color: "gray",
+  color: "grey",
   margin: "5px",
+  fontSize: "20px",
+  "@media (max-width: 500px)": {
+    fontSize: "10px",
+  },
+});
+
+export const CardText = styled(Typography)({
+  fontFamily: "Playpen Sans, cursive",
+  color: "grey",
+  margin: "5px",
+  fontSize: "15px",
   "@media (max-width: 500px)": {
     fontSize: "10px",
   },
@@ -80,9 +92,14 @@ export const CardBoard = styled(Typography)({
   },
 });
 
-export const ViewBox = styled(Grid)({
+export const ViewBox = styled(Box)({
   width: "100%",
-  height: "100%",
+  height: "100vh",
   padding: "0px",
   margin: "0px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  overflowY: "auto",
 });

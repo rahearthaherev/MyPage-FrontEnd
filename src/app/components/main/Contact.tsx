@@ -9,7 +9,7 @@ export default function Contact() {
   const [copy, setCopy] = React.useState("copy");
 
   return (
-    <Grid item xs={12} sx={{ marginTop: "100px" }}>
+    <Grid item xs={12}>
       <Divider light />
       <HeadText variant="h6">Contact</HeadText>
       <Box>

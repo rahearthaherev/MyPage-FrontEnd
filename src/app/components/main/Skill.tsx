@@ -1,14 +1,12 @@
 import { Grid, Box } from "@mui/material";
 import * as React from "react";
 import { CardBoard, HeadText } from "../custom/customComponent";
-import { QuickAtom } from "@/app/recoil/atoms";
-import { useRecoilValue } from "recoil";
 
 export default function Skill() {
   return (
     <>
-      <Grid item xs={12} sx={{ marginTop: "100px" }}>
-        <HeadText variant="h5" textAlign="center" sx={{ margin: "30px" }}>
+      <Grid item xs={12}>
+        <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "30px" }}>
           Skills
         </HeadText>
         <Box
@@ -18,6 +16,7 @@ export default function Skill() {
             display: "grid",
             gridTemplateColumns: { md: "1fr 1fr", xs: "1fr" },
             gap: 2,
+            padding: "15px",
           }}
         >
           <Box>

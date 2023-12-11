@@ -1,6 +1,6 @@
 import { Grid, Slider, createTheme, ThemeProvider, Paper } from "@mui/material";
 import * as React from "react";
-import { HeadText, Text } from "../custom/customComponent";
+import { CardText, HeadText, Text } from "../custom/customComponent";
 import { grey } from "@mui/material/colors";
 
 const theme = createTheme({
@@ -28,7 +28,11 @@ const defaultMark = [
   },
   {
     value: 2020,
-    label: "コンピュータ工学複数専攻",
+    label: "コンピュータ工学専攻",
+  },
+  {
+    value: 2018,
+    label: "社会服務要員",
   },
   {
     value: 2014,
@@ -47,48 +51,53 @@ export default function About() {
   React.useEffect(() => {
     if (year >= 2024) {
       setDescription(
-        <Text>
-          株式会社トマトに在職中(2022.09~)
+        <CardText>
+          NTTトコもプロジェクト参加(2023.12~2024.02)
           <br />
-          Today&apos;s Styling 個人プロジェクト開発中(2023.11~)
-        </Text>
+          Today&apos;s Styling 個人プロジェクト(2023.11~)
+        </CardText>
       );
     } else if (year >= 2023) {
       setDescription(
-        <Text>Today&apos;s Styling 個人プロジェクト開発(2023.11~)</Text>
+        <CardText>
+          NTTトコもプロジェクト参加(2023.12~2024.02)
+          <br />
+          Today&apos;s Styling 個人プロジェクト(2023.11~)
+        </CardText>
       );
     } else if (year >= 2022) {
       setDescription(
-        <Text>
-          株式会社トマトに入社(2022.09~)
-          <br />
-          Sparrow プロジェクト参加(2022.09~2022.11) <br />
+        <CardText>
           AURORA プロジェクト参加(2022.12~2023.11)
-        </Text>
+          <br />
+          Sparrow プロジェクト参加(2022.09~2022.11)
+          <br />
+          株式会社トマトに入社(2022.09~)
+        </CardText>
       );
     } else if (year >= 2021) {
       setDescription(
-        <Text>
-          FaceStamp プロジェクト参加(2021.03~2021.10) <br />
-          Groupware プロジェクト参加(2021.11~2022.08)
-        </Text>
+        <CardText>
+          プロジェクト参加(2021.03~2021.08)
+          <br />
+          Groupware プロジェクト参加(2021.09~2022.08) FaceStamp
+        </CardText>
       );
     } else if (year >= 2020) {
-      console.log("test");
-      setDescription(<Text>コンピュータ工学複数専攻(2020.03~2022.08)</Text>);
+      setDescription(
+        <CardText>コンピュータ工学複数専攻(2020.03~2022.08)</CardText>
+      );
     } else if (year >= 2018) {
-      console.log("test");
-      setDescription(<Text>産業機能要員勤務(2018.03~2020.06)</Text>);
+      setDescription(<CardText>産業機能要員勤務(2018.03~2020.06)</CardText>);
     } else if (year >= 2014) {
-      console.log("test");
-      setDescription(<Text>経営学部入学(2014.03~2022.08)</Text>);
+      setDescription(<CardText>経営学部入学(2014.03~2022.08)</CardText>);
     }
   }, [year]);
 
   return (
     <>
-      <Grid item xs={12} sx={{ marginTop: "100px" }}>
-        <HeadText variant="h5" textAlign="center" sx={{ margin: "30px" }}>
+      <Grid item xs={12} sx={{ width: "100%" }}>
+        <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "30px" }}>
           About
         </HeadText>
         <ThemeProvider theme={theme}>

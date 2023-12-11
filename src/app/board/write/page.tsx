@@ -9,6 +9,7 @@ export default function WritePage() {
       <Box
         sx={{
           width: { lg: "1080px", xs: "100vh" },
+          height: "100%",
           paddingTop: "64px",
           backgroundColor: "rgb(250, 250 ,250)",
         }}
