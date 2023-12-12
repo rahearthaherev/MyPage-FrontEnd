@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography, styled } from "@mui/material";
+import { Box, Paper, Typography, styled } from "@mui/material";
 
 export const HeadText = styled(Typography)({
   fontFamily: "Playpen Sans, cursive",
@@ -33,21 +33,22 @@ export const CardText = styled(Typography)({
 export const ProjectPaper = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   color: theme.palette.text.secondary,
-  height: 300,
-  maxWidth: "422px",
+  height: 350,
+  minWidth: "600px",
   padding: "10px",
   lineHeight: "300px",
 }));
 
-export const Chip = styled(Typography)({
+export const Chip = styled(Box)({
   fontFamily: "Playpen Sans, cursive",
   minWidth: "60px",
   height: "30px",
-  border: "1px solid gray",
+  border: "2px solid lightgray",
   borderRadius: "15px",
   textAlign: "center",
   lineHeight: "25px",
   fontSize: "15px",
+  color: "grey",
   paddingLeft: "15px",
   paddingRight: "15px",
   "@media (max-width: 500px)": {
@@ -79,14 +80,16 @@ export const CardBoard = styled(Typography)({
   paddingLeft: "15px",
   paddingRight: "15px",
   color: "gray",
+  backgroundColor: "white",
   "@media (max-width: 500px)": {
     fontSize: "10px",
     height: 30,
     lineHeight: "30px",
   },
 
-  transition: "background-color 0.3s ease",
+  transition: "all 0.3s ease-in-out, background-color 0.3s ease",
   "&:hover": {
+    transform: "scale(1.1)",
     backgroundColor: "rgb(230, 230, 230)",
     cursor: "pointer",
   },
@@ -102,4 +105,5 @@ export const ViewBox = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   overflowY: "auto",
+  overflowX: "hidden",
 });

@@ -9,8 +9,7 @@ export default function Contact() {
   const [copy, setCopy] = React.useState("copy");
 
   return (
-    <Grid item xs={12}>
-      <Divider light />
+    <Grid item xs={12} sx={{ marginBottom: "300px" }}>
       <HeadText variant="h6">Contact</HeadText>
       <Box>
         <Text>
@@ -32,6 +31,7 @@ export default function Contact() {
             />
           </Tooltip>
         </Text>
+        <Text>Phone Number : 080 - 7432 - 1915</Text>
       </Box>
     </Grid>
   );

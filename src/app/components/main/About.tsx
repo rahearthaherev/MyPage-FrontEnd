@@ -96,7 +96,7 @@ export default function About() {
 
   return (
     <>
-      <Grid item xs={12} sx={{ width: "100%" }}>
+      <Grid item xs={12} sx={{ width: "100%", marginBottom: "300px" }}>
         <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "30px" }}>
           About
         </HeadText>

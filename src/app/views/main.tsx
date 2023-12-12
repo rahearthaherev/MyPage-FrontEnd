@@ -11,7 +11,7 @@ import { ViewBox } from "../components/custom/customComponent";
 
 export default function Main() {
   const scrollBox = React.useRef<HTMLElement>(null);
-  const [scrollIndex, setScrollIndex] = React.useState(1);
+
   React.useEffect(() => {
     const wheelHandler = (e: any) => {
       e.preventDefault();

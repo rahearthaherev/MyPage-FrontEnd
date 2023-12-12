@@ -5,18 +5,19 @@ import { CardBoard, HeadText } from "../custom/customComponent";
 export default function Skill() {
   return (
     <>
-      <Grid item xs={12}>
+      <Grid item xs={12} sx={{ marginBottom: "180px" }}>
         <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "30px" }}>
           Skills
         </HeadText>
         <Box
           sx={{
             borderRadius: 2,
-            bgcolor: "background.default",
             display: "grid",
+            bgcolor: "white",
             gridTemplateColumns: { md: "1fr 1fr", xs: "1fr" },
             gap: 2,
-            padding: "15px",
+            padding: "30px",
+            border: "2px solid lightgrey",
           }}
         >
           <Box>
@@ -27,7 +28,7 @@ export default function Skill() {
               display="flex"
               flexWrap="wrap"
               sx={{
-                gap: "10px",
+                gap: "15px",
                 borderRight: "1px solid lightgray",
                 "@media (max-width: 500px)": {
                   borderRight: "0px solid lightgray",
@@ -39,7 +40,6 @@ export default function Skill() {
               <CardBoard>Javascript</CardBoard>
               <CardBoard>Typescript</CardBoard>
               <CardBoard>Next.js</CardBoard>
-              <CardBoard>Recoil</CardBoard>
               <CardBoard>Material UI</CardBoard>
               <CardBoard>Recoil</CardBoard>
               <CardBoard>Java</CardBoard>
