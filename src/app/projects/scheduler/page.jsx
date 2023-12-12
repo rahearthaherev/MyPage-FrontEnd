@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -34,6 +34,27 @@ const CalendarScheduler = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  useEffect(() => {
+    console.log('Events after update:', events);
+  }, [events]);
+  const tmp = React.useRef([]);
+ const getUpdatedScheduleList = () => {
+  tmp.current.push(events.map((event) =>
+          event === selectedEvent
+            ? {
+                ...event,
+                title: title,
+                extendedProps: {
+                  ...event.extendedProps,
+                  description: description,
+                },
+                start: selectedDate,
+              }
+            : event
+        ));
+        console.log(`list : ${tmp.current}`);
+        return tmp.current;
+ }
 
   const handleDateClick = (arg) => {
     setSelectedDate(arg.dateStr);
@@ -58,38 +79,25 @@ const CalendarScheduler = () => {
     console.log('Selected Date:', selectedDate);
     console.log('Selected Event:', selectedEvent);
     console.log('Description:', description);
-  
-    if (title && selectedDate) {
-      const tmp = [];
-      const updatedEvents = selectedEvent
 
-        ? 
-        tmp.push(
-        events.map((event) =>
-            event === selectedEvent
-              ? {
-                  ...event,
-                  title: title,
-                  extendedProps: {
-                    ...event.extendedProps,
-                    description: description,
-                  },
-                  start: selectedDate,
-                }
-              : event
-          )
-          )
-        : [
-            ...events,
-            {
-              title: title,
-              extendedProps: {
-                description: description,
-              },
-              start: selectedDate,
+    if (title && selectedDate) {
+      let updatedEvents = [];
+
+      if (selectedEvent) {
+        updatedEvents = getUpdatedScheduleList();
+      } else {
+        updatedEvents = [
+          ...events,
+          {
+            title: title,
+            extendedProps: {
+              description: description,
             },
-          ];
-     
+            start: selectedDate,
+          },
+        ];
+      }
+
       console.log('Updated Events:', updatedEvents);
 
       setEvents(updatedEvents);
@@ -102,7 +110,7 @@ const CalendarScheduler = () => {
   };
 
   const modalStyle = {
-    position: 'absolute', 
+    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -155,17 +163,17 @@ const CalendarScheduler = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
-             <TextField
+              <TextField
                 margin="dense"
                 label="상세 내용"
                 type="text"
                 fullWidth
                 value={description}
                 onChange={(e) => {
-                console.log('New Description Value:', e.target.value);
-                setDescription(e.target.value);
+                  console.log('New Description Value:', e.target.value);
+                  setDescription(e.target.value);
                 }}
-            />
+              />
               <Button onClick={handleSaveEvent} color="primary">
                 일정 {selectedEvent ? '수정' : '추가'}
               </Button>
