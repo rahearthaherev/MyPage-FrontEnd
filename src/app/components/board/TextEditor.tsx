@@ -89,9 +89,11 @@ export default function Editor() {
     console.log(boardSetting);
     await axios
       .post("http://192.168.100.90:7000/board/submit", boardSetting)
-      .then(() => {
+      .then((resp) => {
+        const result: IBoard = resp.data;
+        console.log(result);
         router.push(
-          `/board?title=${props.menu_name}&key=${props.menu_sub_key}`
+          `/board/${result.board_key}?title=${props.menu_name}&key=${props.menu_sub_key}`
         );
       });
   };
@@ -141,7 +143,7 @@ export default function Editor() {
       <style>
         {`
             .ql-editor{
-              height: 82vh;
+              min-height: calc(100vh - 165px);
             }
           `}
       </style>

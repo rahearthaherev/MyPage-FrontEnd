@@ -133,7 +133,7 @@ export default function BoardPage() {
           setOpen(!open);
         }}
         func={handleDeleteButton}
-      ></ConfirmationMessage>
+      />
     </Paper>
   );
 }
