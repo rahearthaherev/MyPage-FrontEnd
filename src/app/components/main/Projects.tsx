@@ -291,7 +291,7 @@ export default function Projects() {
                 />
               );
             } else {
-              return <DotIcon fontSize="small" color="action" key={999} />;
+              return <DotIcon fontSize="small" color="action" key={index} />;
             }
           })}
         </Box>

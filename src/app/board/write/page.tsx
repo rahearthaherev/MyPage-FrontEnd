@@ -1,7 +1,7 @@
 "use client";
+// import Editor from "@/app/components/board/TextEditor";
 import { Box } from "@mui/material";
 import * as React from "react";
-import Editor from "@/app/components/board/TextEditor";
 
 export default function WritePage() {
   return (
@@ -14,7 +14,7 @@ export default function WritePage() {
           backgroundColor: "rgb(250, 250 ,250)",
         }}
       >
-        <Editor />
+        {/* <Editor /> */}
       </Box>
     </>
   );
