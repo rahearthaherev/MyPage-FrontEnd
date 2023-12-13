@@ -9,7 +9,7 @@ export default function Home() {
       // 서버로 파일 다운로드 요청
       const response = await axios({
         method: "GET",
-        url: "http://192.168.100.90:7000/download", // 실제 파일 다운로드 경로
+        url: process.env.NEXT_PUBLIC_SPRING_SERVER + "/download", // 실제 파일 다운로드 경로
         responseType: "blob", // 파일 다운로드를 위해 blob 형식으로 받기
       });
 

@@ -75,13 +75,13 @@ export default function SideVar() {
 
   const printmenu = async () => {
     await axios
-      .get("http://192.168.100.90:7000/sidemenu/menucategory")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menucategory")
       .then((resp) => {
         setMenuCategory(resp.data);
       });
 
     await axios
-      .get("http://192.168.100.90:7000/sidemenu/menuitem")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menuitem")
       .then((resp) => {
         setDetailMenuList(resp.data);
       });

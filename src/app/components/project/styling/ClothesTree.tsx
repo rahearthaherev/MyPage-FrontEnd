@@ -14,7 +14,7 @@ export default function ClothesTree(props: IClothesTreeProps) {
 
   const getClothesList = async () => {
     await axios
-      .get("http://192.168.100.90:7000/projects/styling/getlist")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/getlist")
       .then((resp: any) => {
         setClothesList(resp.data);
       });

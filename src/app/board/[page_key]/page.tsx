@@ -35,7 +35,7 @@ export default function BoardPage() {
 
   const getBoard = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/getpage", key)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/getpage", key)
       .then((resp: any) => {
         setBoard(resp.data);
         if (contentHTML.current) {
@@ -50,7 +50,7 @@ export default function BoardPage() {
   };
 
   const handleDeleteButton = async () => {
-    await axios.post("http://192.168.100.90:7000/board/deleteboard", board);
+    await axios.post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/deleteboard", board);
     setOpen(!open);
     router.refresh();
     const title = router.push(

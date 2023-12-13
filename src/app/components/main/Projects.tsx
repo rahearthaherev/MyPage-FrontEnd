@@ -130,6 +130,8 @@ export default function Projects() {
               "&::-webkit-scrollbar": {
                 display: "none",
               },
+              border: "3px solid lightgrey",
+              borderRadius: "15px",
             }}
             ref={sliderBox}
           >
@@ -285,6 +287,7 @@ export default function Projects() {
                   className="rotate-animation"
                   fontSize="small"
                   color="action"
+                  key={index}
                 />
               );
             } else {

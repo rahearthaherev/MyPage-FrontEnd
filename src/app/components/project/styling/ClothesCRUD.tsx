@@ -68,7 +68,7 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
     };
     console.log(cloth);
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/addcloth", cloth)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/addcloth", cloth)
       .then(() => {
         setItem("");
         resetTree();
@@ -82,7 +82,7 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
       status: 0,
     };
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/deletecloth", cloth)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/deletecloth", cloth)
       .then(() => {
         resetTree();
       });
@@ -97,7 +97,7 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
     };
 
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/updatestatus", cloth)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/updatestatus", cloth)
       .then(() => {
         resetTree();
       });

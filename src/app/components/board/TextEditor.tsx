@@ -88,7 +88,7 @@ export default function Editor() {
     };
     console.log(boardSetting);
     await axios
-      .post("http://192.168.100.90:7000/board/submit", boardSetting)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/submit", boardSetting)
       .then((resp) => {
         const result: IBoard = resp.data;
         console.log(result);
@@ -100,7 +100,7 @@ export default function Editor() {
 
   const getPage = async (key: string) => {
     await axios
-      .post("http://192.168.100.90:7000/board/getpage", [key])
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/getpage", [key])
       .then((resp) => {
         setBoard(resp.data);
         onChange(resp.data.content);

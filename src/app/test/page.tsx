@@ -17,7 +17,7 @@ export default function () {
 
   const getSkillStackList = async () => {
     await axios
-      .get("http://192.168.100.90:7000/getskillstacklist")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillstacklist")
       .then((resp: any) => {
         setSkillStackList(resp.data);
       });
@@ -25,7 +25,7 @@ export default function () {
 
   const getSkillStackType = async () => {
     await axios
-      .get("http://192.168.100.90:7000/getskillstacktype")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillstacktype")
       .then((resp: any) => {
         setSkillStackType(resp.data);
       });
