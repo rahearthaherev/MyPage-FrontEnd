@@ -34,29 +34,34 @@ const CalendarScheduler = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
   useEffect(() => {
-    console.log('Events after update:', events);
-  }, [events]);
-  const tmp = React.useRef([]);
- const getUpdatedScheduleList = () => {
-  tmp.current.push(events.map((event) =>
-          event === selectedEvent
-            ? {
-                ...event,
-                title: title,
-                extendedProps: {
-                  ...event.extendedProps,
-                  description: description,
-                },
-                start: selectedDate,
-              }
-            : event
-        ));
-        console.log(`list : ${tmp.current}`);
-        return tmp.current;
- }
+    // 페이지 로드 시 로컬 스토리지에서 이벤트 로드
+    const storedEvents = loadEventsFromLocalStorage();
+    setEvents(storedEvents);
+    console.log(storedEvents)
+  }, []);
+
+  const getUpdatedScheduleList = () => {
+    return events.map((eventItem) =>
+      eventItem === selectedEvent
+        ? {
+            ...eventItem,
+            title: title,
+            extendedProps: {
+              ...eventItem.extendedProps,
+              description: description,
+            },
+            start: selectedDate,
+          }
+        : eventItem
+    );
+  };
+  
+  
 
   const handleDateClick = (arg) => {
+    
     setSelectedDate(arg.dateStr);
     setTitle('');
     setDescription('');
@@ -74,39 +79,50 @@ const CalendarScheduler = () => {
     }
   };
 
+ 
   const handleSaveEvent = () => {
-    console.log('Title:', title);
-    console.log('Selected Date:', selectedDate);
-    console.log('Selected Event:', selectedEvent);
-    console.log('Description:', description);
-
     if (title && selectedDate) {
       let updatedEvents = [];
-
+  
       if (selectedEvent) {
+        // 기존 이벤트 수정
         updatedEvents = getUpdatedScheduleList();
       } else {
+        // 새 이벤트 추가
         updatedEvents = [
           ...events,
           {
-            title: title,
+            title: title, //일정 제목
             extendedProps: {
-              description: description,
+              description: description, // 상세 내용
             },
-            start: selectedDate,
+            start: selectedDate, //시작 일자
           },
         ];
       }
-
-      console.log('Updated Events:', updatedEvents);
-
+  
+      // setEvents로 상태 업데이트
       setEvents(updatedEvents);
+  
+      // 로컬 스토리지에 저장
+      saveEventsToLocalStorage(updatedEvents);
+  
       setIsModalOpen(false);
       setTitle('');
       setDescription('');
       setSelectedDate('');
       setSelectedEvent(null);
     }
+  };
+  const saveEventsToLocalStorage = (updatedEvents) => {
+    setEvents(updatedEvents);
+    localStorage.setItem('events', JSON.stringify(updatedEvents));
+    console.log('Saving to localStorage:', updatedEvents);
+  };
+
+  const loadEventsFromLocalStorage = () => {
+    const storedEvents = localStorage.getItem('events');
+    return storedEvents ? JSON.parse(storedEvents) : [];
   };
 
   const modalStyle = {
@@ -116,10 +132,10 @@ const CalendarScheduler = () => {
     transform: 'translate(-50%, -50%)',
     width: '60%',
     maxWidth: 400,
-    bgcolor: 'background.paper',
+    backgroundColor: 'background.paper', 
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    padding: 4, 
   };
 
   return (
@@ -137,6 +153,7 @@ const CalendarScheduler = () => {
           events={events}
           dateClick={handleDateClick}
           eventClick={handleEventClick}
+          key={events.length} 
         />
       </div>
       <div style={{ width: 300, marginLeft: 20 }}>
@@ -170,7 +187,6 @@ const CalendarScheduler = () => {
                 fullWidth
                 value={description}
                 onChange={(e) => {
-                  console.log('New Description Value:', e.target.value);
                   setDescription(e.target.value);
                 }}
               />

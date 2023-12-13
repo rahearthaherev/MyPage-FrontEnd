@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 const EventDetail = ({ event }) => (
-  <Box >
+  <Box>
     <Typography variant="h6" gutterBottom>
       이벤트 상세 정보
     </Typography>
@@ -35,7 +35,33 @@ const CalendarScheduler = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
+  useEffect(() => {
+    // 페이지 로드 시 로컬 스토리지에서 이벤트 로드
+    const storedEvents = loadEventsFromLocalStorage();
+    setEvents(storedEvents);
+    console.log(storedEvents)
+  }, []);
+
+  const getUpdatedScheduleList = () => {
+    return events.map((eventItem) =>
+      eventItem === selectedEvent
+        ? {
+            ...eventItem,
+            title: title,
+            extendedProps: {
+              ...eventItem.extendedProps,
+              description: description,
+            },
+            start: selectedDate,
+          }
+        : eventItem
+    );
+  };
+  
+  
+
   const handleDateClick = (arg) => {
+    
     setSelectedDate(arg.dateStr);
     setTitle('');
     setDescription('');
@@ -53,19 +79,50 @@ const CalendarScheduler = () => {
     }
   };
 
+ 
   const handleSaveEvent = () => {
     if (title && selectedDate) {
-      const updatedEvents = selectedEvent
-        ? events.map((event) => (event === selectedEvent ? { ...event, title, description } : event))
-        : [...events, { title, description, date: selectedDate }];
-
+      let updatedEvents = [];
+  
+      if (selectedEvent) {
+        // 기존 이벤트 수정
+        updatedEvents = getUpdatedScheduleList();
+      } else {
+        // 새 이벤트 추가
+        updatedEvents = [
+          ...events,
+          {
+            title: title, //일정 제목
+            extendedProps: {
+              description: description, // 상세 내용
+            },
+            start: selectedDate, //시작 일자
+          },
+        ];
+      }
+  
+      // setEvents로 상태 업데이트
       setEvents(updatedEvents);
+  
+      // 로컬 스토리지에 저장
+      saveEventsToLocalStorage(updatedEvents);
+  
       setIsModalOpen(false);
       setTitle('');
       setDescription('');
       setSelectedDate('');
       setSelectedEvent(null);
     }
+  };
+  const saveEventsToLocalStorage = (updatedEvents) => {
+    setEvents(updatedEvents);
+    localStorage.setItem('events', JSON.stringify(updatedEvents));
+    console.log('Saving to localStorage:', updatedEvents);
+  };
+
+  const loadEventsFromLocalStorage = () => {
+    const storedEvents = localStorage.getItem('events');
+    return storedEvents ? JSON.parse(storedEvents) : [];
   };
 
   const modalStyle = {
@@ -75,10 +132,10 @@ const CalendarScheduler = () => {
     transform: 'translate(-50%, -50%)',
     width: '60%',
     maxWidth: 400,
-    bgcolor: 'background.paper',
+    backgroundColor: 'background.paper', 
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    padding: 4, 
   };
 
   return (
@@ -96,6 +153,7 @@ const CalendarScheduler = () => {
           events={events}
           dateClick={handleDateClick}
           eventClick={handleEventClick}
+          key={events.length} 
         />
       </div>
       <div style={{ width: 300, marginLeft: 20 }}>
@@ -128,12 +186,14 @@ const CalendarScheduler = () => {
                 type="text"
                 fullWidth
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
               />
               <Button onClick={handleSaveEvent} color="primary">
                 일정 {selectedEvent ? '수정' : '추가'}
               </Button>
-              <Button onClick={() => setIsModalOpen(false)} color="primary" >
+              <Button onClick={() => setIsModalOpen(false)} color="primary">
                 닫기
               </Button>
             </Box>
