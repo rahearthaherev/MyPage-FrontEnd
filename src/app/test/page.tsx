@@ -10,7 +10,7 @@ import ISkillStack from "../interfaces/ISkillStack";
 import { Chip } from "../components/custom/customComponent";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-export default function () {
+export default function Test() {
   const [skillStackList, setSkillStackList] = React.useState<ISkillStack[]>([]);
   const [skillStackType, setSkillStackType] = React.useState<string[]>([]);
   const [selectedSkill, setSelectedSKill] = React.useState<string[]>([]);
@@ -103,9 +103,9 @@ export default function () {
         </Button>
       </Box>
       <Box sx={{ display: "flex", flexWrap: "true" }}>
-        {selectedSkill.map((skill) => {
+        {selectedSkill.map((skill, index) => {
           return (
-            <Chip>
+            <Chip key={index}>
               #{skill}
               <RemoveIcon />
             </Chip>
