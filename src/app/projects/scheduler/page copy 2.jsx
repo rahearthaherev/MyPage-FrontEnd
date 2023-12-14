@@ -35,11 +35,11 @@ const CalendarScheduler = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
+ 
+
   useEffect(() => {
-    // 페이지 로드 시 로컬 스토리지에서 이벤트 로드
     const storedEvents = loadEventsFromLocalStorage();
     setEvents(storedEvents);
-    console.log(storedEvents)
   }, []);
 
   const getUpdatedScheduleList = () => {
@@ -57,11 +57,8 @@ const CalendarScheduler = () => {
         : eventItem
     );
   };
-  
-  
 
   const handleDateClick = (arg) => {
-    
     setSelectedDate(arg.dateStr);
     setTitle('');
     setDescription('');
@@ -79,34 +76,28 @@ const CalendarScheduler = () => {
     }
   };
 
- 
   const handleSaveEvent = () => {
     if (title && selectedDate) {
       let updatedEvents = [];
-  
+
       if (selectedEvent) {
-        // 기존 이벤트 수정
         updatedEvents = getUpdatedScheduleList();
       } else {
-        // 새 이벤트 추가
         updatedEvents = [
           ...events,
           {
-            title: title, //일정 제목
+            title: title,
             extendedProps: {
-              description: description, // 상세 내용
+              description: description,
             },
-            start: selectedDate, //시작 일자
+            start: selectedDate,
           },
         ];
       }
-  
-      // setEvents로 상태 업데이트
+
       setEvents(updatedEvents);
-  
-      // 로컬 스토리지에 저장
       saveEventsToLocalStorage(updatedEvents);
-  
+
       setIsModalOpen(false);
       setTitle('');
       setDescription('');
@@ -114,10 +105,9 @@ const CalendarScheduler = () => {
       setSelectedEvent(null);
     }
   };
+
   const saveEventsToLocalStorage = (updatedEvents) => {
-    setEvents(updatedEvents);
     localStorage.setItem('events', JSON.stringify(updatedEvents));
-    console.log('Saving to localStorage:', updatedEvents);
   };
 
   const loadEventsFromLocalStorage = () => {
@@ -132,15 +122,15 @@ const CalendarScheduler = () => {
     transform: 'translate(-50%, -50%)',
     width: '60%',
     maxWidth: 400,
-    backgroundColor: 'background.paper', 
+    backgroundColor: 'white',
     border: '2px solid #000',
     boxShadow: 24,
-    padding: 4, 
+    padding: 4,
   };
 
   return (
-    <div style={{ width: '80%', margin: 'auto' }}>
-      <div style={{ flex: 1 }}>
+    <div style={{ width: '80%', margin: 'auto', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, marginBottom: '20px' }}>
         <h2>캘린더 스케줄러</h2>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
@@ -153,7 +143,8 @@ const CalendarScheduler = () => {
           events={events}
           dateClick={handleDateClick}
           eventClick={handleEventClick}
-          key={events.length} 
+          key={events.length}
+         
         />
       </div>
       <div style={{ width: 300, marginLeft: 20 }}>
@@ -170,26 +161,24 @@ const CalendarScheduler = () => {
                   <Typography variant="subtitle1" gutterBottom>
                     날짜: {new Date(selectedDate).toLocaleDateString('ko-KR')}
                   </Typography>
+                  <TextField
+                    margin="dense"
+                    label="일정 제목"
+                    type="text"
+                    fullWidth
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <TextField
+                    margin="dense"
+                    label="상세 내용"
+                    type="text"
+                    fullWidth
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 </>
               )}
-              <TextField
-                margin="dense"
-                label="일정 제목"
-                type="text"
-                fullWidth
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <TextField
-                margin="dense"
-                label="상세 내용"
-                type="text"
-                fullWidth
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-              />
               <Button onClick={handleSaveEvent} color="primary">
                 일정 {selectedEvent ? '수정' : '추가'}
               </Button>
