@@ -76,20 +76,26 @@ const CalendarScheduler = () => {
 
   const handleSaveEvent = () => {
     if (title && selectedDate) {
-      const updatedEvents = selectedEvent ? getUpdatedScheduleList() : [
-        ...events,
-        {
-          title,
-          extendedProps: {
-            description,
+      let updatedEvents;
+  
+      if (selectedEvent) {
+        updatedEvents = getUpdatedScheduleList();
+      } else {
+        updatedEvents = [
+          ...events,
+          {
+            title,
+            extendedProps: {
+              description,
+            },
+            start: selectedDate,
           },
-          start: selectedDate,
-        },
-      ];
-
+        ];
+      }
+  
       setEvents(updatedEvents);
       saveEventsToLocalStorage(updatedEvents);
-
+  
       setIsModalOpen(false);
       setTitle('');
       setDescription('');
