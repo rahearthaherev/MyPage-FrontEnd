@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <body style={{ overflow: "hidden" }}>
+      <body>
         <RecoilRootWrapper>
           <SideVar></SideVar>
           {children}

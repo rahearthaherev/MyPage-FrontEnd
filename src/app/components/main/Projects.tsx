@@ -17,7 +17,8 @@ import TripleDotIcon from "@mui/icons-material/MoreHorizOutlined";
 export default function Projects() {
   const sliderBox = React.useRef<HTMLElement>(null);
   const [sliderIndex, setSliderIndex] = React.useState(0);
-  const [projectList, setProjectList] = React.useState([1, 2, 3, 4, 5]);
+  const [projectList, setProjectList] = React.useState([1, 2, 3, 4, 5, 6]);
+
   const moveLeft = (isSingle: boolean) => {
     const { scrollLeft } = sliderBox.current!;
     if (sliderIndex === 0) {
@@ -42,7 +43,7 @@ export default function Projects() {
 
   const moveRight = (isSingle: boolean) => {
     const { scrollLeft } = sliderBox.current!;
-    if (sliderIndex === 4) {
+    if (sliderIndex === projectList.length - 1) {
       return;
     }
     if (isSingle) {
@@ -55,10 +56,10 @@ export default function Projects() {
     } else {
       sliderBox.current?.scrollTo({
         top: 0,
-        left: 600 * 4,
+        left: 600 * projectList.length - 1,
         behavior: "smooth",
       });
-      setSliderIndex(4);
+      setSliderIndex(projectList.length - 1);
     }
   };
 
@@ -232,8 +233,42 @@ export default function Projects() {
               }}
             >
               <Box display="flex">
-                <Text fontWeight="600">Today&apos;s Styling</Text>
+                <Text fontWeight="600">MyPage</Text>
                 <Text sx={{ marginLeft: "auto" }}>2023.11~</Text>
+              </Box>
+              <Box sx={{ marginBottom: "10px" }}>
+                <Text>
+                  個人プロジェクト。開発者として自分自身を紹介、そして個人な勉強を整理するためのウェブサイトを構築。
+                </Text>
+              </Box>
+              <SkillBox>
+                <Chip>Typescript</Chip>
+                <Chip>React</Chip>
+                <Chip>Next.js</Chip>
+                <Chip>Material UI</Chip>
+                <Chip>Recoil</Chip>
+                <Chip>Java</Chip>
+                <Chip>SpringBoot</Chip>
+                <Chip>PostgreSQL</Chip>
+                <Chip>AWS</Chip>
+                <Chip>Git</Chip>
+                <Chip>Docker(予定)</Chip>
+              </SkillBox>
+            </ProjectPaper>
+            <ProjectPaper
+              onClick={() => {}}
+              sx={{
+                transition: "background-color 0.3s ease",
+
+                "&:hover": {
+                  backgroundColor: "rgb(230, 230, 230)",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <Box display="flex">
+                <Text fontWeight="600">Today&apos;s Styling</Text>
+                <Text sx={{ marginLeft: "auto" }}>2023.12~</Text>
               </Box>
               <Box sx={{ marginBottom: "10px" }}>
                 <Text>

@@ -28,7 +28,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/projects/scheduler/page.jsx",
-    "src/app/components/board/TextEditor.tsx"
+    "src/app/components/board/TextEditor.tsx",
+    "src/app/test/page.jsx",
+    "src/app/test/test.jsx"
   ],
   "exclude": ["node_modules"]
 }
