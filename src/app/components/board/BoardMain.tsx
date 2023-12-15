@@ -81,7 +81,7 @@ export default function BoardMain() {
   };
   const getBoard = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/list", {
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/list", {
         menu_sub_key: props.menu_sub_key,
         search: "",
       })

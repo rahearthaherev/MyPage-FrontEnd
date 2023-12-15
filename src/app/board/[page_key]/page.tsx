@@ -10,11 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { RichTextEditor } from "@mantine/rte";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
 import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
+import styled from "styled-components";
+import { Editor } from "@tinymce/tinymce-react";
 
 export default function BoardPage() {
   const [open, setOpen] = React.useState(false);
@@ -35,12 +36,9 @@ export default function BoardPage() {
 
   const getBoard = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/getpage", key)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/getpage", key)
       .then((resp: any) => {
         setBoard(resp.data);
-        if (contentHTML.current) {
-          contentHTML.current.innerHTML = resp.data?.content!;
-        }
       });
   };
   const handleModifyButton = () => {
@@ -50,7 +48,10 @@ export default function BoardPage() {
   };
 
   const handleDeleteButton = async () => {
-    await axios.post("http://192.168.100.90:7000/board/deleteboard", board);
+    await axios.post(
+      process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/deleteboard",
+      board
+    );
     setOpen(!open);
     router.refresh();
     const title = router.push(
@@ -62,8 +63,14 @@ export default function BoardPage() {
     getBoard();
   }, []);
 
+  useEffect(() => {
+    if (contentHTML.current) {
+      contentHTML.current.innerHTML = board?.content!;
+    }
+  }, [board]);
+
   return (
-    <Paper
+    <Box
       sx={{
         width: { lg: "1080px", xs: "100vh" },
         paddingTop: "64px",
@@ -72,6 +79,9 @@ export default function BoardPage() {
       <Box
         sx={{
           padding: "15px",
+          backgroundColor: "white",
+          border: "1px solid lightgrey",
+          borderBottom: "none",
         }}
       >
         <Typography variant="h4">{board?.title}</Typography>
@@ -82,7 +92,12 @@ export default function BoardPage() {
             alignItems: "center",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="subtitle2" color="GrayText" marginRight={1}>
               {board?.author}
             </Typography>
@@ -115,17 +130,24 @@ export default function BoardPage() {
       <Box
         sx={{
           padding: "0px",
+          backgroundColor: "rgb(250, 250, 250)",
         }}
       >
-        {/* 뷰어의 경우 테두리 제거 */}
-        <style>
-          {`
-            .mantine-RichTextEditor-root {
-              border: none !important;
-            }
-          `}
-        </style>
-        <RichTextEditor value={board?.content} readOnly />
+        <style>{`
+          .tox-tinymce {
+            border : 1px solid lightgrey;
+            border-radius: 0px;
+          }`}</style>
+        <Editor
+          apiKey="z02cdv9608f71uovwru8ob6wiq5r7avhcd8fr67murk3rq4j"
+          initialValue={board?.content}
+          init={{
+            readonly: true,
+            menubar: false,
+            toolbar: false,
+            min_height: 650,
+          }}
+        />
       </Box>
       <ConfirmationMessage
         open={open}
@@ -134,6 +156,10 @@ export default function BoardPage() {
         }}
         func={handleDeleteButton}
       />
-    </Paper>
+    </Box>
   );
 }
+
+const Content = styled.div`
+  padding: 15px;
+`;

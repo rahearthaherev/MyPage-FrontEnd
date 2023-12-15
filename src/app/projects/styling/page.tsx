@@ -32,7 +32,7 @@ export default function ProjectPage() {
 
   const getType = async () => {
     await axios
-      .get("http://192.168.100.90:7000/projects/styling/gettype")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/gettype")
       .then((resp: any) => {
         setTypeList(resp.data);
       });
@@ -42,85 +42,87 @@ export default function ProjectPage() {
     getType();
   }, []);
   return (
-    <Grid container spacing={2}>
-      <Grid sm={4} xs={9} item>
-        <Grid item xs={12}>
+    <Box sx={{ width: "100%", height: "100%", backgroundColor: "white" }}>
+      <Grid container spacing={2}>
+        <Grid sm={4} xs={9} item>
+          <Grid item xs={12}>
+            <Box
+              border={2}
+              borderColor="lightgray"
+              borderRadius={2}
+              height="100%"
+              width="100%"
+              sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
+            >
+              <WeatherInfo
+                stylingData={stylingData}
+                setStylingData={(data: IStylingData) => {
+                  setStylingData(data);
+                }}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              border={2}
+              borderColor="lightgray"
+              borderRadius={2}
+              height="100%"
+              width="100%"
+              sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
+            >
+              <MyProfile
+                personalInfo={personalInfo}
+                setPersonalInfo={setPersonalInfo}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              border={2}
+              borderColor="lightgray"
+              borderRadius={2}
+              height="100%"
+              width="100%"
+              sx={{ backgroundColor: "", marginLeft: "15px", padding: "15px" }}
+            >
+              <Grid>
+                <ClothesTree
+                  type={typeList}
+                  resetTrigger={resetTrigger}
+                  setSelectedType={setSelectedType}
+                  setItem={setItem}
+                  setStatus={setStatus}
+                />
+                <ClothesCRUD
+                  type={typeList}
+                  seletedType={seletedType}
+                  item={item}
+                  status={status}
+                  setSelectedType={setSelectedType}
+                  setItem={setItem}
+                  resetTree={resetTree}
+                />
+              </Grid>
+            </Box>
+          </Grid>
+        </Grid>
+        <Grid sm={7} xs={9} item>
           <Box
             border={2}
             borderColor="lightgray"
             borderRadius={2}
-            height="100%"
+            height="calc(100% - 15px)"
             width="100%"
             sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
           >
-            <WeatherInfo
-              stylingData={stylingData}
-              setStylingData={(data: IStylingData) => {
-                setStylingData(data);
-              }}
-            />
+            <Typography variant="h4" margin={1}>
+              Today&apos;s Styling
+            </Typography>
           </Box>
         </Grid>
-        <Grid item xs={12}>
-          <Box
-            border={2}
-            borderColor="lightgray"
-            borderRadius={2}
-            height="100%"
-            width="100%"
-            sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
-          >
-            <MyProfile
-              personalInfo={personalInfo}
-              setPersonalInfo={setPersonalInfo}
-            />
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            border={2}
-            borderColor="lightgray"
-            borderRadius={2}
-            height="100%"
-            width="100%"
-            sx={{ backgroundColor: "", marginLeft: "15px", padding: "15px" }}
-          >
-            <Grid>
-              <ClothesTree
-                type={typeList}
-                resetTrigger={resetTrigger}
-                setSelectedType={setSelectedType}
-                setItem={setItem}
-                setStatus={setStatus}
-              />
-              <ClothesCRUD
-                type={typeList}
-                seletedType={seletedType}
-                item={item}
-                status={status}
-                setSelectedType={setSelectedType}
-                setItem={setItem}
-                resetTree={resetTree}
-              />
-            </Grid>
-          </Box>
-        </Grid>
+        <Grid sm={1} item></Grid>
       </Grid>
-      <Grid sm={7} xs={9} item>
-        <Box
-          border={2}
-          borderColor="lightgray"
-          borderRadius={2}
-          height="calc(100% - 15px)"
-          width="100%"
-          sx={{ backgroundColor: "", margin: "15px", padding: "15px" }}
-        >
-          <Typography variant="h4" margin={1}>
-            Today&apos;s Styling
-          </Typography>
-        </Box>
-      </Grid>
-      <Grid sm={1} item></Grid>
-    </Grid>
+    </Box>
   );
 }

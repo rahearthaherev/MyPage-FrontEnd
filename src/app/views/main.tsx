@@ -136,7 +136,7 @@ export default function Main() {
             width: 100%;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: calc(100vh - 64px);
             overflow: auto;
             scrollbar-width: none; /* Firefox용 스크롤바 숨김 */
             -ms-overflow-style: none; /* IE/Edge용 스크롤바 숨김 */

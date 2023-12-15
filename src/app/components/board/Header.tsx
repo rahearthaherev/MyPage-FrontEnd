@@ -43,7 +43,7 @@ export default function Header() {
   };
   const getMenu = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/header", props)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/header", props)
       .then((resp) => {
         const menuList: IMenuItem[] = resp.data;
         setMenuList(menuList);

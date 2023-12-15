@@ -32,7 +32,7 @@ export default function MenuCRUD(props: IMenuDTO) {
     }
 
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menuadd", dto.current)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menuadd", dto.current)
       .then(() => {
         setInputText("");
       })
@@ -62,7 +62,7 @@ export default function MenuCRUD(props: IMenuDTO) {
     }
 
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menuupdate", dto.current)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menuupdate", dto.current)
       .then(() => {
         setInputText("");
       })
@@ -88,7 +88,7 @@ export default function MenuCRUD(props: IMenuDTO) {
       setUdError(false);
     }
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menudelete", dto.current)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menudelete", dto.current)
       .then(() => {
         setOpen(!open);
       })

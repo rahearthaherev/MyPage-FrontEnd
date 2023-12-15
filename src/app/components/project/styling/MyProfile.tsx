@@ -20,7 +20,7 @@ export default function MyProfile(props: IMyProfileProps) {
 
   const getPersonalInfo = async () => {
     await axios
-      .get("http://192.168.100.90:7000/projects/styling/getpersonalinfo")
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/getpersonalinfo")
       .then((resp) => {
         setPersonalInfo(resp.data);
       });
@@ -29,7 +29,7 @@ export default function MyProfile(props: IMyProfileProps) {
   const updatePersonalInfo = async () => {
     if (isEditable) {
       await axios.post(
-        "http://192.168.100.90:7000/projects/styling/updatepersonalinfo",
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/updatepersonalinfo",
         personalInfo
       );
     }
