@@ -14,7 +14,6 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
 import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
-import styled from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
 
 export default function BoardPage() {
@@ -32,7 +31,6 @@ export default function BoardPage() {
   );
 
   const [board, setBoard] = React.useState<IBoard | undefined>(undefined);
-  const contentHTML = React.useRef<HTMLDivElement>(null);
 
   const getBoard = async () => {
     await axios
@@ -54,20 +52,12 @@ export default function BoardPage() {
     );
     setOpen(!open);
     router.refresh();
-    const title = router.push(
-      `/board?title=${props.menu_name}&key=${props.menu_sub_key}`
-    );
+    router.push(`/board?title=${props.menu_name}&key=${props.menu_sub_key}`);
   };
 
   useEffect(() => {
     getBoard();
   }, []);
-
-  useEffect(() => {
-    if (contentHTML.current) {
-      contentHTML.current.innerHTML = board?.content!;
-    }
-  }, [board]);
 
   return (
     <Box
@@ -82,13 +72,15 @@ export default function BoardPage() {
           backgroundColor: "white",
           border: "1px solid lightgrey",
           borderBottom: "none",
+          justifyContent: "space-between",
+          display: "flex",
         }}
       >
-        <Typography variant="h4">{board?.title}</Typography>
+        <Typography variant="h6">{board?.title}</Typography>
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+
             alignItems: "center",
           }}
         >
@@ -96,6 +88,7 @@ export default function BoardPage() {
             sx={{
               display: "flex",
               alignItems: "center",
+              marginRight: "15px",
             }}
           >
             <Typography variant="subtitle2" color="GrayText" marginRight={1}>
@@ -129,15 +122,15 @@ export default function BoardPage() {
       <Divider></Divider>
       <Box
         sx={{
-          padding: "0px",
-          backgroundColor: "rgb(250, 250, 250)",
+          backgroundColor: "white",
         }}
       >
         <style>{`
           .tox-tinymce {
             border : 1px solid lightgrey;
             border-radius: 0px;
-          }`}</style>
+          }
+          `}</style>
         <Editor
           apiKey="z02cdv9608f71uovwru8ob6wiq5r7avhcd8fr67murk3rq4j"
           initialValue={board?.content}
@@ -145,7 +138,7 @@ export default function BoardPage() {
             readonly: true,
             menubar: false,
             toolbar: false,
-            min_height: 650,
+            height: "calc(100vh - 150px)",
           }}
         />
       </Box>
@@ -159,7 +152,3 @@ export default function BoardPage() {
     </Box>
   );
 }
-
-const Content = styled.div`
-  padding: 15px;
-`;

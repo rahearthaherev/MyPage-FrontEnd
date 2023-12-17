@@ -115,6 +115,7 @@ const Editor = () => {
             respondWith.string(() =>
               Promise.reject("See docs to implement AI Assistant")
             ),
+          height: "calc(100vh - 150px)",
         }}
         value={value}
         onEditorChange={(newValue, editor) => {

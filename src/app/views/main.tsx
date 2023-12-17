@@ -11,13 +11,12 @@ import { ViewBox } from "../components/custom/customComponent";
 
 export default function Main() {
   const scrollBox = React.useRef<HTMLElement>(null);
-
   React.useEffect(() => {
     const wheelHandler = (e: any) => {
       e.preventDefault();
       const { deltaY } = e;
-      const { scrollTop } = scrollBox.current!; // 스크롤 위쪽 끝부분 위치
-      const pageHeight = window.innerHeight; // 화면 세로길이, 100vh와 같습니다.
+      const { scrollTop } = scrollBox.current!;
+      const pageHeight = window.innerHeight;
 
       if (deltaY > 0) {
         if (scrollTop >= 0 && scrollTop + 100 < pageHeight) {
