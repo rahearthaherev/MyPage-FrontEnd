@@ -23,7 +23,7 @@ export default function Container() {
           marginRight: "64px",
         }}
       >
-        <Box>
+        <Box sx={{ overflow: "hidden" }}>
           <ResponsiveContainer>
             <Header />
             <Main></Main>

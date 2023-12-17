@@ -158,7 +158,7 @@ export default function Projects() {
             <ProjectPaper>
               <Box display="flex">
                 <Text fontWeight="600">Groupware</Text>
-                <Text sx={{ marginLeft: "auto" }}>2021.11~2022.08</Text>
+                <Text sx={{ marginLeft: "auto" }}>2021.09~2022.08</Text>
               </Box>
               <Box sx={{ marginBottom: "10px" }}>
                 <Text>
