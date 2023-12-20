@@ -1,9 +1,38 @@
 import { HeadText, Text } from "../custom/customComponent";
-import { Grid } from "@mui/material";
+import { Button, Chip, Grid } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/DownloadOutlined";
 import * as React from "react";
+import axios from "axios";
 export default function Home() {
+  const handleDownload = async () => {
+    try {
+      // 서버로 파일 다운로드 요청
+      const response = await axios({
+        method: "GET",
+        url: process.env.NEXT_PUBLIC_SPRING_SERVER + "/download", // 실제 파일 다운로드 경로
+        responseType: "blob", // 파일 다운로드를 위해 blob 형식으로 받기
+      });
+
+      // 파일 다운로드 링크 생성
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "スキルシート＿Jeong-DaeGyun.xlsx"); // 다운로드될 파일의 이름 지정
+      document.body.appendChild(link);
+
+      // 클릭하여 파일 다운로드
+      link.click();
+
+      // 사용이 끝난 링크 및 URL 객체 정리
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      // 에러 처리
+      console.error("파일 다운로드 중 오류가 발생했습니다:", error);
+    }
+  };
   return (
-    <Grid container>
+    <Grid container spacing={4}>
       <Grid item sm={3} xs={12} style={{ textAlign: "center" }}>
         <img
           src="/assets/images/photo.png"
@@ -36,6 +65,48 @@ export default function Home() {
           2024年からはフロントエンドにも興味を持ち、個人プロジェクトに携わりながら、フルスタックデベロッパーとしてのスキルを磨いています。
         </Text>
       </Grid>
+      <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <LinkChip text="Skill Sheet" func={handleDownload} />
+        <LinkChip
+          text="GitHub"
+          func={() => {
+            window.open("https://github.com/rahearthaherev", "_blank");
+          }}
+        />
+      </Grid>
     </Grid>
+  );
+}
+
+function LinkChip(props: { text: string; func?: () => void }) {
+  return (
+    <Button
+      variant="outlined"
+      onClick={props.func}
+      sx={{
+        backgroundColor: "white",
+        height: "100px",
+        width: "200px",
+        borderRadius: "100px",
+        color: "skyblue",
+        fontSize: "20px",
+        margin: "50px",
+        "&:hover": {
+          backgroundColor: "rgb(224, 244, 255)",
+          cursor: "pointer",
+        },
+      }}
+    >
+      {props.text}
+      {props.text === "GitHub" ? (
+        <img
+          src="/assets/images/GitHubIcon.png"
+          alt="github"
+          style={{ width: "24px", height: "24px" }}
+        ></img>
+      ) : (
+        <DownloadIcon />
+      )}
+    </Button>
   );
 }

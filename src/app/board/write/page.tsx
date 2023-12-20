@@ -1,10 +1,12 @@
 "use client";
-import { Box, TextField } from "@mui/material";
-import dynamic from "next/dynamic";
-import styled from "styled-components";
+
+import { Box } from "@mui/material";
 import * as React from "react";
-import TextEditor from "@/app/components/board/TextEditor";
-import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(() => import("@/app/components/board/TextEditor"), {
+  ssr: false,
+});
 
 export default function WritePage() {
   return (
@@ -12,11 +14,13 @@ export default function WritePage() {
       <Box
         sx={{
           width: { lg: "1080px", xs: "100vh" },
+          height: "100%",
           paddingTop: "64px",
-          backgroundColor: "rgb(250, 250 ,250)",
+          backgroundColor: "white",
+          border: "1px solid lightgrey",
         }}
       >
-        <TextEditor />
+        <Editor />
       </Box>
     </>
   );

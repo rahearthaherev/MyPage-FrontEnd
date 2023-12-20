@@ -1,5 +1,6 @@
 import { IClothesItem } from "@/app/interfaces/IClothes";
 import { IClothesCRUDProps } from "@/app/interfaces/IClothesProps";
+import { Box } from "@mantine/core";
 import {
   Button,
   ButtonGroup,
@@ -11,7 +12,6 @@ import {
   styled,
 } from "@mui/material";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "label + &": {
@@ -46,8 +46,15 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function ClothesCRUD(props: IClothesCRUDProps) {
-  const { type, seletedType, item, setSelectedType, setItem, resetTree } =
-    props;
+  const {
+    type,
+    seletedType,
+    item,
+    status,
+    setSelectedType,
+    setItem,
+    resetTree,
+  } = props;
 
   const selectType = (e: any) => {
     setSelectedType(e.target.value);
@@ -57,10 +64,11 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
     const cloth: IClothesItem = {
       type: seletedType,
       name: item,
+      status: 0,
     };
     console.log(cloth);
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/addcloth", cloth)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/addcloth", cloth)
       .then(() => {
         setItem("");
         resetTree();
@@ -71,9 +79,25 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
     const cloth: IClothesItem = {
       type: seletedType,
       name: item,
+      status: 0,
     };
     await axios
-      .post("http://192.168.100.90:7000/projects/styling/deletecloth", cloth)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/deletecloth", cloth)
+      .then(() => {
+        resetTree();
+      });
+  };
+
+  const UpdateClothStatus = async () => {
+    const updatedStatus = status === 3 ? 0 : status + 1;
+    const cloth: IClothesItem = {
+      type: seletedType,
+      name: item,
+      status: updatedStatus,
+    };
+
+    await axios
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/styling/updatestatus", cloth)
       .then(() => {
         resetTree();
       });
@@ -111,20 +135,29 @@ export default function ClothesCRUD(props: IClothesCRUDProps) {
           />
         </FormControl>
       </Grid>
-      <Grid item xs={12} sx={{ textAlign: "right", marginTop: "15px" }}>
-        <ButtonGroup size="small">
-          <Button variant="outlined" sx={{ width: "80px" }} onClick={AddCloth}>
-            Add
+      <Grid item xs={12} sx={{ marginTop: "15px" }}>
+        <Box display="flex">
+          <Button variant="contained" size="small" onClick={UpdateClothStatus}>
+            Update Status
           </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            sx={{ width: "80px" }}
-            onClick={DeleteCloth}
-          >
-            Delete
-          </Button>
-        </ButtonGroup>
+          <ButtonGroup size="small" sx={{ marginLeft: "auto" }}>
+            <Button
+              variant="outlined"
+              sx={{ width: "80px" }}
+              onClick={AddCloth}
+            >
+              Add
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              sx={{ width: "80px" }}
+              onClick={DeleteCloth}
+            >
+              Delete
+            </Button>
+          </ButtonGroup>
+        </Box>
       </Grid>
     </>
   );

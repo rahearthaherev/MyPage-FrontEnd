@@ -1,7 +1,6 @@
 "use client";
 
 import IBoard from "@/app/interfaces/IBoard";
-import { BoardAtom } from "@/app/recoil/atoms";
 import {
   Box,
   Button,
@@ -11,41 +10,49 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { useRecoilValue } from "recoil";
-
-const HTMLRenderer = (htmlString: string) => {
-  return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
-};
+import IMenuItem from "@/app/interfaces/IMenuItem";
+import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
+import { Editor } from "@tinymce/tinymce-react";
 
 export default function BoardPage() {
+  const [open, setOpen] = React.useState(false);
   const params = useParams();
   const router = useRouter();
-  const boardRecoil = useRecoilValue(BoardAtom);
+  const uParams = useSearchParams();
   const [key, setKey] = React.useState([params.page_key]);
+  const props: IMenuItem = React.useMemo(
+    () => ({
+      menu_name: uParams.get("title")!,
+      menu_sub_key: uParams.get("key")!,
+    }),
+    [uParams]
+  );
+
   const [board, setBoard] = React.useState<IBoard | undefined>(undefined);
-  const contentHTML = React.useRef<HTMLDivElement>(null);
+
   const getBoard = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/getpage", key)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/getpage", key)
       .then((resp: any) => {
         setBoard(resp.data);
-        if (contentHTML.current) {
-          contentHTML.current.innerHTML = resp.data?.content!;
-        }
       });
   };
   const handleModifyButton = () => {
-    router.push(`/board/write?page_key=${key}`);
+    router.push(
+      `/board/write?page_key=${key}&title=${props.menu_name}&key=${props.menu_sub_key}`
+    );
   };
 
   const handleDeleteButton = async () => {
-    await axios.post("http://192.168.100.90:7000/board/deleteboard", board);
-    router.refresh();
-    const title = router.push(
-      `/board?title=${boardRecoil.menu_name}&key=${boardRecoil.menu_sub_key}`
+    await axios.post(
+      process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/deleteboard",
+      board
     );
+    setOpen(!open);
+    router.refresh();
+    router.push(`/board?title=${props.menu_name}&key=${props.menu_sub_key}`);
   };
 
   useEffect(() => {
@@ -53,7 +60,7 @@ export default function BoardPage() {
   }, []);
 
   return (
-    <Paper
+    <Box
       sx={{
         width: { lg: "1080px", xs: "100vh" },
         paddingTop: "64px",
@@ -62,17 +69,28 @@ export default function BoardPage() {
       <Box
         sx={{
           padding: "15px",
+          backgroundColor: "white",
+          border: "1px solid lightgrey",
+          borderBottom: "none",
+          justifyContent: "space-between",
+          display: "flex",
         }}
       >
-        <Typography variant="h4">{board?.title}</Typography>
+        <Typography variant="h6">{board?.title}</Typography>
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+
             alignItems: "center",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: "15px",
+            }}
+          >
             <Typography variant="subtitle2" color="GrayText" marginRight={1}>
               {board?.author}
             </Typography>
@@ -90,7 +108,9 @@ export default function BoardPage() {
               </Button>
               <Button
                 variant="contained"
-                onClick={handleDeleteButton}
+                onClick={() => {
+                  setOpen(!open);
+                }}
                 color="error"
               >
                 Delete
@@ -102,10 +122,33 @@ export default function BoardPage() {
       <Divider></Divider>
       <Box
         sx={{
-          padding: "15px",
+          backgroundColor: "white",
         }}
-        ref={contentHTML}
-      ></Box>
-    </Paper>
+      >
+        <style>{`
+          .tox-tinymce {
+            border : 1px solid lightgrey;
+            border-radius: 0px;
+          }
+          `}</style>
+        <Editor
+          apiKey="z02cdv9608f71uovwru8ob6wiq5r7avhcd8fr67murk3rq4j"
+          initialValue={board?.content}
+          init={{
+            readonly: true,
+            menubar: false,
+            toolbar: false,
+            height: "calc(100vh - 150px)",
+          }}
+        />
+      </Box>
+      <ConfirmationMessage
+        open={open}
+        setOpen={() => {
+          setOpen(!open);
+        }}
+        func={handleDeleteButton}
+      />
+    </Box>
   );
 }

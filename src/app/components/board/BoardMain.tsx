@@ -13,9 +13,8 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import IBoard from "@/app/interfaces/IBoard";
-import { useRouter } from "next/navigation";
-import { BoardAtom } from "@/app/recoil/atoms";
-import { useRecoilValue } from "recoil";
+import { useRouter, useSearchParams } from "next/navigation";
+import IMenuItem from "@/app/interfaces/IMenuItem";
 
 interface Column {
   id: "index" | "title" | "author" | "create_time" | "modified_time";
@@ -57,21 +56,33 @@ export default function BoardMain() {
   const router = useRouter();
   const rowsPerPage: number = 15;
   const time = React.useRef("");
-  const boardRecoil = useRecoilValue(BoardAtom);
+  const params = useSearchParams();
+
+  const props: IMenuItem = React.useMemo(
+    () => ({
+      menu_name: params.get("title")!,
+      menu_sub_key: params.get("key")!,
+    }),
+    [params]
+  );
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  const handleWriteButton = (url: string) => {
-    router.push(url);
+  const handleWriteButton = () => {
+    router.push(
+      `/board/write?title=${props.menu_name}&key=${props.menu_sub_key}`
+    );
   };
   const handleInPage = (key: string) => {
-    router.push(`/board/${key}`);
+    router.push(
+      `/board/${key}?title=${props.menu_name}&key=${props.menu_sub_key}`
+    );
   };
   const getBoard = async () => {
     await axios
-      .post("http://192.168.100.90:7000/board/list", {
-        menu_sub_key: boardRecoil.menu_sub_key,
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/list", {
+        menu_sub_key: props.menu_sub_key,
         search: "",
       })
       .then((resp) => {
@@ -81,13 +92,13 @@ export default function BoardMain() {
 
   React.useEffect(() => {
     getBoard();
-  }, [boardRecoil]);
+  }, [props]);
 
   return (
     <Box
       sx={{
         width: { lg: "1080px", xs: "100vh" },
-        paddingTop: "70px",
+        paddingTop: "65px",
       }}
     >
       <Paper sx={{ width: "100%" }}>
@@ -218,9 +229,7 @@ export default function BoardMain() {
               variant="outlined"
               color="error"
               size="small"
-              onClick={() => {
-                handleWriteButton("/board/write");
-              }}
+              onClick={handleWriteButton}
             >
               Write
             </Button>

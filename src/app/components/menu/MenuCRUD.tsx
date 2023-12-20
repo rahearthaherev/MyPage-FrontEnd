@@ -5,8 +5,10 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import React from "react";
+import ConfirmationMessage from "../common/ConfirmationMessage";
 
 export default function MenuCRUD(props: IMenuDTO) {
+  const [open, setOpen] = React.useState(false);
   const [udError, setUdError] = React.useState(false);
   const [aError, setAError] = React.useState(false);
   const [inputText, setInputText] = React.useState("");
@@ -30,7 +32,7 @@ export default function MenuCRUD(props: IMenuDTO) {
     }
 
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menuadd", dto.current)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menuadd", dto.current)
       .then(() => {
         setInputText("");
       })
@@ -60,7 +62,7 @@ export default function MenuCRUD(props: IMenuDTO) {
     }
 
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menuupdate", dto.current)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menuupdate", dto.current)
       .then(() => {
         setInputText("");
       })
@@ -86,9 +88,12 @@ export default function MenuCRUD(props: IMenuDTO) {
       setUdError(false);
     }
     const resp = await axios
-      .post("http://192.168.100.90:7000/sidemenu/menudelete", dto.current)
+      .post(process.env.NEXT_PUBLIC_SPRING_SERVER + "/sidemenu/menudelete", dto.current)
+      .then(() => {
+        setOpen(!open);
+      })
       .catch((error: Error) => {
-        console.log("test");
+        setOpen(!open);
         setErrorMessage("하위 항목이 남아 있는지 확인해주세요.");
         setErrorState(true);
       });
@@ -115,7 +120,12 @@ export default function MenuCRUD(props: IMenuDTO) {
             <Button onClick={menuUpdate} color="secondary">
               U
             </Button>
-            <Button onClick={menuDelete} color="error">
+            <Button
+              onClick={() => {
+                setOpen(!open);
+              }}
+              color="error"
+            >
               D
             </Button>
           </ButtonGroup>
@@ -131,6 +141,13 @@ export default function MenuCRUD(props: IMenuDTO) {
           </Alert>
         </Collapse>
       </Box>
+      <ConfirmationMessage
+        open={open}
+        setOpen={() => {
+          setOpen(!open);
+        }}
+        func={menuDelete}
+      />
       <AlertPopup
         message={errorMessage}
         errorState={errorState}

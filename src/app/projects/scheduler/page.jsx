@@ -114,7 +114,7 @@ const CalendarScheduler = () => {
             start: selectedDate,
           },
         ];
-      }
+      } 
   
       setEvents(updatedEvents);
       saveEventsToLocalStorage(updatedEvents);
