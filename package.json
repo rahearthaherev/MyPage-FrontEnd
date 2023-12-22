@@ -11,16 +11,10 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-<<<<<<< HEAD
     "@fullcalendar/daygrid": "^6.1.10",
     "@fullcalendar/interaction": "^6.1.10",
     "@fullcalendar/react": "^6.1.10",
     "@fullcalendar/timegrid": "^6.1.10",
-=======
-    "@mantine/core": "^5.10.5",
-    "@mantine/hooks": "^5.10.5",
-    "@mantine/rte": "^5.10.5",
->>>>>>> a93a07145fe04f9076e7d9a67f3d97a3c8493d19
     "@mui/icons-material": "^5.14.16",
     "@mui/lab": "^5.0.0-alpha.154",
     "@mui/material": "^5.14.19",
@@ -29,14 +23,8 @@
     "@mui/x-tree-view": "^6.17.0",
     "@tinymce/tinymce-react": "^4.3.2",
     "axios": "^1.6.1",
-<<<<<<< HEAD
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.10",
-=======
-    "draft-js": "^0.11.7",
-    "draftjs-to-html": "^0.9.1",
-    "html-to-draftjs": "^1.5.0",
->>>>>>> a93a07145fe04f9076e7d9a67f3d97a3c8493d19
     "next": "^14.0.3",
     "react": "^18.2.0",
     "react-big-calendar": "^1.8.5",

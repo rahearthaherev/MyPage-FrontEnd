@@ -36,7 +36,7 @@ class Scheduler extends Component {
     this.setState((prevState) => ({
       events: [...prevState.events, prevState.newEvent],
       newEvent: { title: '', description: '', start: '', end: '' },
-      selectedEvent: null,  
+      selectedEvent: null,
     }));
   };
 
