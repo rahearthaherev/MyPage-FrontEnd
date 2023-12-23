@@ -265,6 +265,7 @@ export default function Projects() {
                   onClick={() => {
                     moveTo(index);
                   }}
+                  key={index}
                 >
                   <TripleDotIcon
                     className="rotate-animation"
@@ -280,6 +281,7 @@ export default function Projects() {
                   onClick={() => {
                     moveTo(index);
                   }}
+                  key={index}
                 >
                   <DotIcon fontSize="small" color="action" key={index} />
                 </ButtonBase>
