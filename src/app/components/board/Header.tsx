@@ -70,6 +70,15 @@ export default function Header() {
               display: { sm: "block" },
               fontSize: 30,
               marginLeft: "64px",
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
+            onClick={() => {
+              router.push(
+                uri.current +
+                  `?title=${props.menu_name}&key=${props.menu_sub_key}`
+              );
             }}
           >
             {props.menu_name}

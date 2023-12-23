@@ -8,79 +8,57 @@ import Skill from "../components/main/Skill";
 import About from "../components/main/About";
 import Contact from "../components/main/Contact";
 import { ViewBox } from "../components/custom/customComponent";
+import { useRouter } from "next/navigation";
+import "@/app/css/mainStyle.css";
 
 export default function Main() {
   const scrollBox = React.useRef<HTMLElement>(null);
+  const router = useRouter();
   React.useEffect(() => {
     const wheelHandler = (e: any) => {
       e.preventDefault();
       const { deltaY } = e;
       const { scrollTop } = scrollBox.current!;
       const pageHeight = window.innerHeight;
-
       if (deltaY > 0) {
         if (scrollTop >= 0 && scrollTop + 100 < pageHeight) {
-          scrollBox.current?.scrollTo({
-            top: pageHeight,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#About");
+          router.refresh();
         } else if (
-          scrollTop >= pageHeight &&
+          scrollTop >= pageHeight - 10 &&
           scrollTop + 100 < pageHeight * 2
         ) {
-          scrollBox.current?.scrollTo({
-            top: pageHeight * 2,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#Skill");
+          router.refresh();
         } else if (
-          scrollTop >= pageHeight &&
+          scrollTop >= pageHeight - 10 &&
           scrollTop + 100 < pageHeight * 3
         ) {
-          scrollBox.current?.scrollTo({
-            top: pageHeight * 3,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#Projects");
+          router.refresh();
         } else {
-          scrollBox.current?.scrollTo({
-            top: pageHeight * 4,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#Contact");
+          router.refresh();
         }
       } else {
         if (scrollTop >= 0 && scrollTop - 100 < pageHeight) {
-          scrollBox.current?.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#Home");
+          router.refresh();
         } else if (
           scrollTop >= pageHeight &&
           scrollTop - 100 < pageHeight * 2
         ) {
-          scrollBox.current?.scrollTo({
-            top: pageHeight * 1,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#About");
+          router.refresh();
         } else if (
           scrollTop >= pageHeight &&
           scrollTop - 100 < pageHeight * 3
         ) {
-          scrollBox.current?.scrollTo({
-            top: pageHeight * 2,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#Skill");
+          router.refresh();
         } else {
-          scrollBox.current?.scrollTo({
-            top: pageHeight * 3,
-            left: 0,
-            behavior: "smooth",
-          });
+          router.push("/#Projects");
+          router.refresh();
         }
       }
     };
