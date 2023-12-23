@@ -133,7 +133,7 @@ export default function BoardPage() {
           backgroundColor: "white",
         }}
       >
-        <div ref={htmlStr}></div>
+        <div ref={htmlStr} style={{ padding: "15px" }}></div>
       </Box>
       <ConfirmationMessage
         open={open}
