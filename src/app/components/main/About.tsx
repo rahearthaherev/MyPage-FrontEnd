@@ -1,6 +1,19 @@
-import { Grid, Slider, createTheme, ThemeProvider, Paper } from "@mui/material";
+import {
+  Grid,
+  Slider,
+  createTheme,
+  ThemeProvider,
+  Paper,
+  Box,
+} from "@mui/material";
 import * as React from "react";
-import { CardText, HeadText, Text } from "../custom/customComponent";
+import {
+  CardText,
+  HeadText,
+  SmallBoldText,
+  SmallText,
+  Text,
+} from "../custom/customComponent";
 import { grey } from "@mui/material/colors";
 
 const theme = createTheme({
@@ -73,6 +86,8 @@ export default function About() {
           Sparrow プロジェクト参加(2022.09~2022.11)
           <br />
           株式会社トマトに入社(2022.09~)
+          <br />
+          日本語能力試験1級(2022.01)
         </CardText>
       );
     } else if (year >= 2021) {
@@ -96,10 +111,23 @@ export default function About() {
 
   return (
     <>
-      <Grid item xs={12} sx={{ width: "100%", marginBottom: "300px" }}>
-        <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "30px" }}>
+      <Grid item xs={12} sx={{ width: "100%", marginBottom: "150px" }}>
+        <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "20px" }}>
           About
         </HeadText>
+        <Box display="flex" sx={{ height: "150px", marginBottom: "20px" }}>
+          <Box sx={{ marginLeft: "20px" }}>
+            <SmallBoldText>生年月日：平成7年3月5日</SmallBoldText>
+            <SmallBoldText>大学専攻：コンピュータ工学複数専攻</SmallBoldText>
+            <SmallBoldText>住所：東京都八王子市絹ケ丘</SmallBoldText>
+            <SmallBoldText>保有資格：日本語能力試験一級</SmallBoldText>
+          </Box>
+          <Box sx={{ marginLeft: "auto", marginRight: "20px" }}>
+            <SmallBoldText>国籍：韓国</SmallBoldText>
+            <SmallBoldText>性別：男性</SmallBoldText>
+            <SmallBoldText>最寄駅：北野駅</SmallBoldText>
+          </Box>
+        </Box>
         <ThemeProvider theme={theme}>
           <Grid container>
             <Grid
