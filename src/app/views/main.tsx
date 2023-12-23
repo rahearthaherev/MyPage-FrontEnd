@@ -9,6 +9,7 @@ import About from "../components/main/About";
 import Contact from "../components/main/Contact";
 import { ViewBox } from "../components/custom/customComponent";
 import { useRouter } from "next/navigation";
+import "@/app/css/mainStyle.css";
 
 export default function Main() {
   const scrollBox = React.useRef<HTMLElement>(null);

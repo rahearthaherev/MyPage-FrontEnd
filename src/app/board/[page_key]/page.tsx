@@ -14,10 +14,11 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import IMenuItem from "@/app/interfaces/IMenuItem";
 import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
-import { Editor } from "@tinymce/tinymce-react";
+import "@/app/css/boardStyle.css";
 
 export default function BoardPage() {
   const [open, setOpen] = React.useState(false);
+  const htmlStr = React.useRef<HTMLDivElement>(null);
   const params = useParams();
   const router = useRouter();
   const uParams = useSearchParams();
@@ -59,19 +60,26 @@ export default function BoardPage() {
     getBoard();
   }, []);
 
+  useEffect(() => {
+    if (htmlStr.current) {
+      htmlStr.current.innerHTML = board?.content!;
+      console.log(htmlStr.current.innerHTML);
+    }
+  }, [board]);
   return (
     <Box
       sx={{
         width: { lg: "1080px", xs: "100vh" },
         paddingTop: "64px",
+        marginBottom: "15px",
+        border: "1px solid lightgrey",
       }}
     >
       <Box
         sx={{
           padding: "15px",
           backgroundColor: "white",
-          border: "1px solid lightgrey",
-          borderBottom: "none",
+          borderBottom: "1px solid lightgrey",
           justifyContent: "space-between",
           display: "flex",
         }}
@@ -125,22 +133,7 @@ export default function BoardPage() {
           backgroundColor: "white",
         }}
       >
-        <style>{`
-          .tox-tinymce {
-            border : 1px solid lightgrey;
-            border-radius: 0px;
-          }
-          `}</style>
-        <Editor
-          apiKey="z02cdv9608f71uovwru8ob6wiq5r7avhcd8fr67murk3rq4j"
-          initialValue={board?.content}
-          init={{
-            readonly: true,
-            menubar: false,
-            toolbar: false,
-            height: "calc(100vh - 150px)",
-          }}
-        />
+        <div ref={htmlStr}></div>
       </Box>
       <ConfirmationMessage
         open={open}
