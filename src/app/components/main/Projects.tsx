@@ -266,6 +266,7 @@ export default function Projects() {
                     moveTo(index);
                   }}
                   key={index}
+                  sx={{ borderRadius: "10px" }}
                 >
                   <TripleDotIcon
                     className="rotate-animation"
@@ -282,6 +283,7 @@ export default function Projects() {
                     moveTo(index);
                   }}
                   key={index}
+                  sx={{ borderRadius: "10px" }}
                 >
                   <DotIcon fontSize="small" color="action" key={index} />
                 </ButtonBase>

@@ -69,7 +69,6 @@ export const MenuListContext = React.createContext<ISideMenuList | undefined>(
 );
 
 export default function SideVar() {
-  //
   const [menuCategory, setMenuCategory] = React.useState<IMenuCategory[]>([]);
   const [detailMenuList, setDetailMenuList] = React.useState<IMenuItem[]>([]);
 
