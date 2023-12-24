@@ -73,13 +73,13 @@ export default function BoardPage() {
         paddingTop: "64px",
         marginBottom: "15px",
         border: "1px solid lightgrey",
+        backgroundColor: "white",
       }}
     >
       <Box
         sx={{
           padding: "15px",
           backgroundColor: "white",
-          borderBottom: "1px solid lightgrey",
           justifyContent: "space-between",
           display: "flex",
         }}
@@ -128,13 +128,7 @@ export default function BoardPage() {
         </Box>
       </Box>
       <Divider></Divider>
-      <Box
-        sx={{
-          backgroundColor: "white",
-        }}
-      >
-        <div ref={htmlStr} style={{ padding: "15px" }}></div>
-      </Box>
+      <div ref={htmlStr} style={{ padding: "15px" }}></div>
       <ConfirmationMessage
         open={open}
         setOpen={() => {
