@@ -176,6 +176,7 @@ export default function Projects() {
               const endDate: Date = new Date(mainProject.endDate);
               const endYear = endDate.getFullYear();
               const endMonth = endDate.getMonth().toString().padStart(2, "0");
+
               return (
                 <ProjectPaper key={mainProject.projectId}>
                   <Box
@@ -186,7 +187,8 @@ export default function Projects() {
                       Project名：{mainProject.projectName}
                     </Text>
                     <Text sx={{ marginLeft: "auto", fontSize: "15px" }}>
-                      開発期間：{startYear}.{startMonth} ~ {endYear}.{endMonth}
+                      開発期間：{startYear}.{startMonth} ~{" "}
+                      {mainProject.endDate ? `${endYear}.${endMonth}` : ""}
                     </Text>
                   </Box>
                   <Box sx={{ marginBottom: "20px" }}>
