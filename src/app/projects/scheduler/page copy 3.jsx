@@ -9,11 +9,14 @@ class Scheduler extends Component {
   constructor(props) {
     super(props);
 
+    const storedEvents = localStorage.getItem('events');
+
     this.state = {
       openDialog: false,
-      events: [],
+      events: storedEvents ? JSON.parse(storedEvents) : [],
       newEvent: { title: '', description: '', start: '', end: '' },
       selectedEvent: null,
+      error: null, 
     };
   }
 
@@ -22,7 +25,7 @@ class Scheduler extends Component {
   };
 
   handleDialogClose = () => {
-    this.setState({ openDialog: false });
+    this.setState({ openDialog: false, selectedEvent: null, error: null }); 
   };
 
   handleInputChange = (e) => {
@@ -33,20 +36,41 @@ class Scheduler extends Component {
   };
 
   handleEventAdd = () => {
-    this.setState((prevState) => ({
-      events: [...prevState.events, prevState.newEvent],
-      newEvent: { title: '', description: '', start: '', end: '' },
-      selectedEvent: null,
-    }));
+    const { selectedEvent, newEvent } = this.state;
+  
+    if (!selectedEvent) {
+      const startDate = new Date(newEvent.start);
+      const endDate = new Date(newEvent.end);
+  
+      if (!newEvent.title || !newEvent.start || !newEvent.end || isNaN(startDate) || isNaN(endDate)) {
+        this.setState({ error: '제목, 시작일 및 종료일은 필수 입력 사항이며 올바른 날짜 및 시간 형식을 입력하세요.' });
+        return;
+      }
+  
+      this.setState(
+        (prevState) => ({
+          events: [...prevState.events, prevState.newEvent],
+          newEvent: { title: '', description: '', start: '', end: '' },
+          selectedEvent: null,
+          error: null,
+        }),
+        () => {
+          localStorage.setItem('events', JSON.stringify(this.state.events));
+          this.handleDialogClose();
+        }
+      );
+    } else {
+      this.handleDialogClose();
+    }
   };
 
   handleEventClick = (info) => {
-    this.setState({ selectedEvent: info.event });
+    this.setState({ selectedEvent: info.event, error: null });
     this.handleDialogOpen();
   };
 
   render() {
-    const { openDialog, events, newEvent, selectedEvent } = this.state;
+    const { openDialog, events, newEvent, selectedEvent, error } = this.state;
 
     return (
       <div>
@@ -59,16 +83,11 @@ class Scheduler extends Component {
         <Dialog open={openDialog} onClose={this.handleDialogClose}>
           <DialogTitle>일정 {selectedEvent ? '상세 정보' : '추가'}</DialogTitle>
           <DialogContent>
+            {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
             {selectedEvent ? (
               <>
                 <InputLabel>일정 제목</InputLabel>
-                <TextField
-                  value={selectedEvent.title}
-                  fullWidth
-                  margin="normal"
-                  disabled
-                />
-
+                <TextField value={selectedEvent.title} fullWidth margin="normal" disabled />
                 <InputLabel>일정 내용</InputLabel>
                 <TextField
                   value={selectedEvent.extendedProps.description}
@@ -76,22 +95,10 @@ class Scheduler extends Component {
                   margin="normal"
                   disabled
                 />
-
                 <InputLabel>일정 시작일</InputLabel>
-                <TextField
-                  value={selectedEvent.startStr}
-                  fullWidth
-                  margin="normal"
-                  disabled
-                />
-
+                <TextField value={selectedEvent.startStr} fullWidth margin="normal" disabled />
                 <InputLabel>일정 종료일</InputLabel>
-                <TextField
-                  value={selectedEvent.endStr}
-                  fullWidth
-                  margin="normal"
-                  disabled
-                />
+                <TextField value={selectedEvent.endStr} fullWidth margin="normal" disabled />
               </>
             ) : (
               <>
@@ -104,7 +111,6 @@ class Scheduler extends Component {
                   fullWidth
                   margin="normal"
                 />
-
                 <InputLabel>일정 내용</InputLabel>
                 <TextField
                   label="일정 내용을 입력해주세요"
@@ -114,8 +120,7 @@ class Scheduler extends Component {
                   fullWidth
                   margin="normal"
                 />
-
-                <InputLabel>일정 시작일 (년-월-일-ap.pm-시-분)</InputLabel>
+                <InputLabel>일정 시작일</InputLabel>
                 <TextField
                   name="start"
                   type="datetime-local"
@@ -124,8 +129,7 @@ class Scheduler extends Component {
                   fullWidth
                   margin="normal"
                 />
-
-                <InputLabel>일정 종료일 (년-월-일-ap.pm-시-분)</InputLabel>
+                <InputLabel>일정 종료일</InputLabel>
                 <TextField
                   name="end"
                   type="datetime-local"
@@ -137,9 +141,13 @@ class Scheduler extends Component {
               </>
             )}
 
-            <Button onClick={selectedEvent ? this.handleDialogClose : () => { this.handleEventAdd(); this.handleDialogClose(); }}>
-              {selectedEvent ? '닫기' : '추가'}
-            </Button>
+<Button
+  variant="contained"
+  onClick={this.handleEventAdd}
+  style={{ marginTop: '10px' }} 
+>
+  {selectedEvent ? '닫기' : '추가'}
+</Button>
           </DialogContent>
         </Dialog>
 
