@@ -10,6 +10,7 @@ import DocumentIcon from "@mui/icons-material/TextSnippetOutlined";
 import ClothsIcon from "@mui/icons-material/CheckroomOutlined";
 import DefaultIcon from "@mui/icons-material/FormatIndentIncreaseOutlined";
 import CalendarIcon from "@mui/icons-material/CalendarMonthOutlined";
+import ImageResizingIcon from "@mui/icons-material/CropRotateOutlined";
 import {
   Divider,
   List,
@@ -110,6 +111,9 @@ export default function MenuList(props: IMenuCategory) {
                     case "Scheduler":
                       url.current = `/projects/scheduler`;
                       break;
+                    case "ImageResizer":
+                      url.current = `/projects/imageresizer`;
+                      break;
                     default:
                       url.current = `/projects`;
                   }
@@ -179,6 +183,8 @@ function toIcon(value: string) {
       return <ClothsIcon />;
     case Icon.Calendar:
       return <CalendarIcon />;
+    case Icon.Image:
+      return <ImageResizingIcon />;
     default:
       return <DefaultIcon />;
   }

@@ -7,6 +7,7 @@ export const Board = "board";
 export const Document = "document";
 export const Cloth = "cloth";
 export const Calendar = "calendar";
+export const Image = "image";
 
 export const Clear = "clear";
 export const Fog = "fog";
