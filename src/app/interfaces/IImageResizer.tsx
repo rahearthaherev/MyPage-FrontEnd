@@ -6,6 +6,6 @@ export default interface IImageResizer {
   newHeight: number;
   oldExtention: string;
   newExtention?: string;
-  name: string;
-  Type: string;
+  fileName: string;
+  type: string;
 }

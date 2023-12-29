@@ -8,6 +8,7 @@ import {
   Input,
   InputLabel,
   MenuItem,
+  Modal,
   Select,
   TextField,
 } from "@mui/material";
@@ -16,6 +17,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Image from "next/image";
 import IImageResizer from "@/app/interfaces/IImageResizer";
 import axios from "axios";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 
 interface ImageDimensions {
   width: number;
@@ -30,12 +33,15 @@ export default function ImageResizer() {
   const [selectedFile, setSelectedFile] = React.useState(
     "/assets/images/defaultImage.png"
   );
+  const [resizedFile, setResizedFile] = React.useState("");
   const [originWidth, setOriginWidth] = React.useState<number>(0);
   const [originHeight, setOriginHeight] = React.useState<number>(0);
   const [originExtention, setOriginExtention] = React.useState<string>("");
   const [name, setName] = React.useState("");
   const [top, setTop] = React.useState<number | string>(0);
   const [left, setLeft] = React.useState<number | string>(0);
+
+  const [open, setOpen] = React.useState(false);
 
   const imageRef = React.useRef<HTMLImageElement>(null);
 
@@ -46,11 +52,10 @@ export default function ImageResizer() {
     const file = event.target.files[0];
 
     if (file) {
-      const filename = file.name;
-      setName(filename);
-      const extension = filename.split(".").pop();
-      setFileExtension(extension);
-      setOriginExtention(extension);
+      const filename = file.name.split(".");
+      setName(filename[0]);
+      setFileExtension(filename[1]);
+      setOriginExtention(filename[1]);
       const dimensions = await getImageDimensions(file);
       setOriginWidth(dimensions.width);
       setOriginHeight(dimensions.height);
@@ -78,7 +83,11 @@ export default function ImageResizer() {
       setWidth(0);
       return;
     }
-    if (changeType !== "Fixed" && value > originWidth) {
+    if (
+      (changeType !== "Fixed" && value > originWidth) ||
+      changeType === "Top" ||
+      changeType === "Bottom"
+    ) {
       setWidth(originWidth);
       return;
     }
@@ -92,10 +101,15 @@ export default function ImageResizer() {
       setHeight(0);
       return;
     }
-    if (changeType !== "Fixed" && value > originHeight) {
+    if (
+      (changeType !== "Fixed" && value > originHeight) ||
+      changeType === "Right" ||
+      changeType === "Left"
+    ) {
       setHeight(originHeight);
       return;
     }
+
     const num = parseInt(event.target.value, 10);
     setHeight(num);
   };
@@ -130,19 +144,32 @@ export default function ImageResizer() {
   };
 
   const handleExecute = async () => {
+    if (width * height === 0) {
+      return;
+    }
     const reImage: IImageResizer = {
-      image: selectedFile,
+      image: selectedFile.split(",")[1],
       oldWidth: originWidth,
       oldHeight: originHeight,
       newWidth: width,
       newHeight: height,
       oldExtention: originExtention,
       newExtention: fileExtention,
-      name: name,
-      Type: changeType,
+      fileName: name,
+      type: changeType,
     };
-    console.log(reImage);
-    await axios.post("", reImage);
+
+    try {
+      const resp = await axios.post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/imageresizing",
+        reImage
+      );
+      const imageDataUrl = `data:image/${fileExtention};base64,${resp.data}`;
+      setResizedFile(imageDataUrl);
+      setOpen(!open);
+    } catch (error) {
+      console.error("오류가 발생했습니다:", error);
+    }
   };
 
   const getImageDimensions = (file: File): Promise<ImageDimensions> => {
@@ -162,6 +189,15 @@ export default function ImageResizer() {
 
       img.src = URL.createObjectURL(file);
     });
+  };
+
+  const downloadImage = () => {
+    const link = document.createElement("a");
+    link.href = resizedFile;
+    link.download = name + "." + fileExtention;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   React.useEffect(() => {
@@ -205,7 +241,7 @@ export default function ImageResizer() {
             >
               <MenuItem value={"png"}>png</MenuItem>
               <MenuItem value={"jpg"}>jpg</MenuItem>
-              <MenuItem value={"pdf"}>pdf</MenuItem>
+              <MenuItem value={"pdf"}>pdf(未完成)</MenuItem>
             </Select>
           </FormControl>
           <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -313,6 +349,51 @@ export default function ImageResizer() {
           <></>
         )}
       </Box>
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(!open);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute" as "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            border: "2px solid lightgrey",
+            boxShadow: 24,
+            p: 4,
+            textAlign: "center",
+          }}
+        >
+          {resizedFile !== "" ? (
+            <Image
+              src={resizedFile}
+              alt="resizedImage Pre-view"
+              width={width}
+              height={height}
+              style={{ border: "1px solid grey", margin: "auto" }}
+            />
+          ) : (
+            <></>
+          )}
+          <Box sx={{ marginTop: "50px" }}>
+            <ButtonGroup>
+              <Button
+                variant="contained"
+                startIcon={<CloudDownloadIcon />}
+                onClick={downloadImage}
+              >
+                Download Image
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   );
 }
