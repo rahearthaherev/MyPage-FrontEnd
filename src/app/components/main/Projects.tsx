@@ -16,6 +16,7 @@ import TripleDotIcon from "@mui/icons-material/MoreHorizOutlined";
 import axios from "axios";
 import IMainProject from "@/app/interfaces/IMainProject";
 import IMainProjectSkill from "@/app/interfaces/IMainProjectSkill";
+import ProjectAddModal from "./ProjectAdd";
 
 export default function Projects() {
   const sliderBox = React.useRef<HTMLElement>(null);
@@ -24,6 +25,12 @@ export default function Projects() {
   const [projectSkillList, setProjectSkillList] = React.useState<
     IMainProjectSkill[]
   >([]);
+
+  const [open, setOpen] = React.useState(false);
+  const [type, setType] = React.useState("");
+  const handleOpen = () => {
+    setOpen(!open);
+  };
 
   const moveLeft = (isSingle: boolean) => {
     if (sliderIndex === 0) {
@@ -95,10 +102,30 @@ export default function Projects() {
 
   return (
     <>
-      <Grid item xs={12} sx={{ marginBottom: "200px", width: "100%" }}>
-        <HeadText variant="h5" textAlign="center" sx={{ marginBottom: "30px" }}>
+      <Grid item xs={12} sx={{ marginBottom: "120px", width: "100%" }}>
+        <HeadText variant="h5" textAlign="center">
           Projects
         </HeadText>
+        <Box sx={{ textAlign: "right", paddingRight: "150px" }}>
+          <Button
+            variant="contained"
+            size="small"
+            color="primary"
+            onClick={() => {
+              setType("add");
+              handleOpen();
+            }}
+          >
+            A
+          </Button>
+          <Button variant="contained" size="small" color="secondary">
+            M
+          </Button>
+          <Button variant="contained" size="small" color="error">
+            D
+          </Button>
+        </Box>
+
         <style>
           {`
             @keyframes rotate {
@@ -294,6 +321,7 @@ export default function Projects() {
           })}
         </Box>
       </Grid>
+      <ProjectAddModal type={type} open={open} setOpen={handleOpen} />
     </>
   );
 }
