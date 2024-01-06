@@ -1,4 +1,6 @@
 import { Box, Paper, Typography, styled } from "@mui/material";
+import MuiChip from "@mui/material/Chip";
+import React from "react";
 
 export const HeadText = styled(Typography)({
   fontFamily: "Playpen Sans, cursive",
@@ -129,3 +131,31 @@ export const ViewBox = styled(Box)({
   overflowY: "auto",
   overflowX: "hidden",
 });
+
+export const ClickableChip = (props: {
+  skill: string;
+  selected: boolean;
+  addSkill: () => void;
+  removeSkill: () => void;
+}) => {
+  const [variant, setVariant] = React.useState<"outlined" | "filled">(
+    props.selected ? "filled" : "outlined"
+  );
+  const skill: string = props.skill;
+  return (
+    <MuiChip
+      label={skill}
+      sx={{ margin: "5px" }}
+      variant={variant}
+      onClick={(e: any) => {
+        if (variant === "outlined") {
+          props.addSkill();
+          setVariant("filled");
+        } else {
+          props.removeSkill();
+          setVariant("outlined");
+        }
+      }}
+    />
+  );
+};

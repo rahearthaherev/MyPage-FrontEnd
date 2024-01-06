@@ -14,11 +14,15 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React from "react";
+import { ClickableChip } from "../custom/customComponent";
+import IMainProjectSkill from "@/app/interfaces/IMainProjectSkill";
 
 export default function ProjectAddModal(props: {
   type: string;
   open: boolean;
   setOpen: () => void;
+  project?: IMainProject;
+  skill?: IMainProjectSkill[];
 }) {
   const { open, setOpen } = props;
 
@@ -34,8 +38,28 @@ export default function ProjectAddModal(props: {
   const [endProcess, setEndProcess] = React.useState("基本設計");
   const [description, setDescription] = React.useState(" ");
 
-  const getProject = async () => {
-    //axios.post()
+  const [skillStack, setSkillStack] = React.useState<string[]>([]);
+
+  const selectedSkillStack = React.useRef<string[]>([]);
+
+  const addSkillStack = (skill: string) => {
+    selectedSkillStack.current.push(skill);
+    console.log(selectedSkillStack.current);
+  };
+
+  const removeSkillStack = (remove: string) => {
+    selectedSkillStack.current = selectedSkillStack.current.filter(
+      (skill) => skill !== remove
+    );
+    console.log(selectedSkillStack.current);
+  };
+
+  const getSkillStack = async () => {
+    axios
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillstackname")
+      .then((resp) => {
+        setSkillStack(resp.data);
+      });
   };
 
   const addProject = async () => {
@@ -57,13 +81,32 @@ export default function ProjectAddModal(props: {
   };
 
   React.useEffect(() => {
-    if (props.type === "modify") {
+    if (props.type === "Modify") {
+      const project = props.project;
+      const skills = props.skill?.filter(
+        (skill) => skill.projectId === project?.projectId
+      );
+      selectedSkillStack.current = skills?.map((skill) => skill.skillName)!;
+      setProjectName(project?.projectName!);
+      setStartDate(project?.startDate.toString().substr(0, 10)!);
+      if (project?.endDate) {
+        setEndDate(project?.endDate.toString().substr(0, 10));
+      }
+      setTeamNumber(project?.teamNumber!);
+      setStartProcess(project?.startProcess!);
+      setEndProcess(project?.endProcess!);
+      setDescription(project?.description!);
     }
   }, [props]);
+
+  React.useEffect(() => {
+    getSkillStack();
+  }, []);
+
   return (
     <>
       <Dialog open={open} onClose={setOpen}>
-        <DialogTitle>Project Add</DialogTitle>
+        <DialogTitle>Project {props.type}</DialogTitle>
         <DialogContent>
           <Box>
             <TextField
@@ -176,6 +219,25 @@ export default function ProjectAddModal(props: {
               }}
               fullWidth
             />
+          </Box>
+          <Box sx={{ marginTop: "10px" }}>
+            {skillStack.map((skill: string, index) => {
+              return (
+                <ClickableChip
+                  key={index}
+                  skill={skill}
+                  selected={
+                    selectedSkillStack.current.includes(skill) ? true : false
+                  }
+                  addSkill={() => {
+                    addSkillStack(skill);
+                  }}
+                  removeSkill={() => {
+                    removeSkillStack(skill);
+                  }}
+                />
+              );
+            })}
           </Box>
         </DialogContent>
         <DialogActions>

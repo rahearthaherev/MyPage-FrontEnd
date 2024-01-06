@@ -25,7 +25,6 @@ export default function Projects() {
   const [projectSkillList, setProjectSkillList] = React.useState<
     IMainProjectSkill[]
   >([]);
-
   const [open, setOpen] = React.useState(false);
   const [type, setType] = React.useState("");
   const handleOpen = () => {
@@ -112,13 +111,21 @@ export default function Projects() {
             size="small"
             color="primary"
             onClick={() => {
-              setType("add");
+              setType("Add");
               handleOpen();
             }}
           >
             A
           </Button>
-          <Button variant="contained" size="small" color="secondary">
+          <Button
+            variant="contained"
+            size="small"
+            color="secondary"
+            onClick={() => {
+              setType("Modify");
+              handleOpen();
+            }}
+          >
             M
           </Button>
           <Button variant="contained" size="small" color="error">
@@ -321,7 +328,13 @@ export default function Projects() {
           })}
         </Box>
       </Grid>
-      <ProjectAddModal type={type} open={open} setOpen={handleOpen} />
+      <ProjectAddModal
+        type={type}
+        open={open}
+        setOpen={handleOpen}
+        project={projectList[sliderIndex]}
+        skill={projectSkillList}
+      />
     </>
   );
 }
