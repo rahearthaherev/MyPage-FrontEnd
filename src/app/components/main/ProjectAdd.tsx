@@ -25,7 +25,7 @@ export default function ProjectAddModal(props: {
   skill?: IMainProjectSkill[];
 }) {
   const { open, setOpen } = props;
-
+  const [projectId, setProjectId] = React.useState(" ");
   const [projectName, setProjectName] = React.useState(" ");
   const [startDate, setStartDate] = React.useState(
     new Date().toISOString().substr(0, 10)
@@ -39,43 +39,76 @@ export default function ProjectAddModal(props: {
   const [description, setDescription] = React.useState(" ");
 
   const [skillStack, setSkillStack] = React.useState<string[]>([]);
+  const [password, setPassword] = React.useState(" ");
 
   const selectedSkillStack = React.useRef<string[]>([]);
 
   const addSkillStack = (skill: string) => {
     selectedSkillStack.current.push(skill);
-    console.log(selectedSkillStack.current);
   };
 
   const removeSkillStack = (remove: string) => {
     selectedSkillStack.current = selectedSkillStack.current.filter(
       (skill) => skill !== remove
     );
-    console.log(selectedSkillStack.current);
   };
 
   const getSkillStack = async () => {
-    axios
+    await axios
       .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillstackname")
       .then((resp) => {
         setSkillStack(resp.data);
       });
   };
 
-  const addProject = async () => {
+  const submitProject = async () => {
     const project: IMainProject = {
       index: 0,
-      projectId: "",
-      projectName: projectName,
+      projectId: projectId,
+      projectName: projectName.trim(),
       startDate: startDate,
       endDate: endDate,
-      description: description,
+      description: description.trim(),
       teamNumber: teamNumber,
       startProcess: startProcess,
       endProcess: endProcess,
     };
-    if (process.env.NEXT_PUBLIC_SPRING_SERVER) {
-      //await axios.post(process.env.NEXT_PUBLIC_SPRING_SERVER, project);
+    if (props.type === "Add") {
+      const newIndex = (
+        await axios.get(
+          process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillindex"
+        )
+      ).data;
+
+      const newProjectId = (
+        await axios.post(
+          process.env.NEXT_PUBLIC_SPRING_SERVER + "/addproject",
+          project
+        )
+      ).data;
+      console.log(selectedSkillStack.current);
+      const newProjectSkillList: IMainProjectSkill[] =
+        selectedSkillStack.current.map((skill, index) => {
+          return {
+            projectId: newProjectId,
+            skillName: skill,
+            index: newIndex + index,
+          };
+        });
+      console.log(newProjectSkillList);
+
+      await axios.post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/addskilllist",
+        newProjectSkillList
+      );
+    } else if (props.type === "Modify") {
+      console.log(project);
+      console.log(selectedSkillStack.current);
+      //await axios.post(process.env.NEXT_PUBLIC_SPRING_SERVER + "", project);
+      //await axios.post(
+      //  process.env.NEXT_PUBLIC_SPRING_SERVER + "",
+      //  selectedSkillStack.current
+      //);
     }
     setOpen();
   };
@@ -87,6 +120,7 @@ export default function ProjectAddModal(props: {
         (skill) => skill.projectId === project?.projectId
       );
       selectedSkillStack.current = skills?.map((skill) => skill.skillName)!;
+      setProjectId(project?.projectId!);
       setProjectName(project?.projectName!);
       setStartDate(project?.startDate.toString().substr(0, 10)!);
       if (project?.endDate) {
@@ -96,6 +130,16 @@ export default function ProjectAddModal(props: {
       setStartProcess(project?.startProcess!);
       setEndProcess(project?.endProcess!);
       setDescription(project?.description!);
+    }
+    if (props.type === "Add") {
+      selectedSkillStack.current = [];
+      setProjectName(" ");
+      setStartDate(new Date().toISOString().substr(0, 10));
+      setEndDate(new Date().toISOString().substr(0, 10));
+      setTeamNumber(1);
+      setStartProcess("基本設計");
+      setEndProcess("基本設計");
+      setDescription(" ");
     }
   }, [props]);
 
@@ -241,7 +285,29 @@ export default function ProjectAddModal(props: {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={addProject}>ADD</Button>
+          {props.type === "Modify" ? (
+            <TextField
+              margin="dense"
+              id="password"
+              label="Password"
+              type="text"
+              variant="standard"
+              value={password}
+              size="small"
+              onChange={(e: any) => {
+                setPassword(e.target.value);
+              }}
+              sx={{
+                width: "90px",
+                marginBottom: "20px",
+                marginRight: "auto",
+                marginLeft: "15px",
+              }}
+            />
+          ) : (
+            <></>
+          )}
+          <Button onClick={submitProject}>Submit</Button>
         </DialogActions>
       </Dialog>
     </>

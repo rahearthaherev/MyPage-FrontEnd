@@ -188,7 +188,8 @@ export default function Projects() {
             sx={{
               overflowX: "scroll",
               width: "600px",
-              margin: "15px",
+              margin: "0px 15px 10px 15px",
+
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               "&::-webkit-scrollbar": {
