@@ -17,6 +17,8 @@ import axios from "axios";
 import IMainProject from "@/app/interfaces/IMainProject";
 import IMainProjectSkill from "@/app/interfaces/IMainProjectSkill";
 import ProjectAddModal from "./ProjectAdd";
+import ConfirmationMessage from "../common/ConfirmationMessage";
+import { useRouter } from "next/navigation";
 
 export default function Projects() {
   const sliderBox = React.useRef<HTMLElement>(null);
@@ -25,11 +27,16 @@ export default function Projects() {
   const [projectSkillList, setProjectSkillList] = React.useState<
     IMainProjectSkill[]
   >([]);
-
   const [open, setOpen] = React.useState(false);
+  const [alertOpen, setAlertOpen] = React.useState(false);
   const [type, setType] = React.useState("");
+
   const handleOpen = () => {
     setOpen(!open);
+  };
+
+  const handleAlertOpen = () => {
+    setAlertOpen(!alertOpen);
   };
 
   const moveLeft = (isSingle: boolean) => {
@@ -96,6 +103,16 @@ export default function Projects() {
       });
   };
 
+  const deleteProject = async () => {
+    await axios.post(
+      process.env.NEXT_PUBLIC_SPRING_SERVER + "/deleteproject",
+      projectList[sliderIndex]
+    );
+    handleAlertOpen();
+    getProjectList();
+    moveLeft(false);
+  };
+
   React.useEffect(() => {
     getProjectList();
   }, []);
@@ -112,16 +129,29 @@ export default function Projects() {
             size="small"
             color="primary"
             onClick={() => {
-              setType("add");
+              setType("Add");
               handleOpen();
             }}
           >
             A
           </Button>
-          <Button variant="contained" size="small" color="secondary">
+          <Button
+            variant="contained"
+            size="small"
+            color="secondary"
+            onClick={() => {
+              setType("Modify");
+              handleOpen();
+            }}
+          >
             M
           </Button>
-          <Button variant="contained" size="small" color="error">
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
+            onClick={handleAlertOpen}
+          >
             D
           </Button>
         </Box>
@@ -181,7 +211,8 @@ export default function Projects() {
             sx={{
               overflowX: "scroll",
               width: "600px",
-              margin: "15px",
+              margin: "0px 15px 10px 15px",
+
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               "&::-webkit-scrollbar": {
@@ -195,14 +226,15 @@ export default function Projects() {
             {projectList.map((mainProject, index) => {
               const startDate: Date = new Date(mainProject.startDate);
               const startYear = startDate.getFullYear();
-              const startMonth = startDate
-                .getMonth()
+              const startMonth = (startDate.getMonth() + 1)
                 .toString()
                 .padStart(2, "0");
 
               const endDate: Date = new Date(mainProject.endDate);
               const endYear = endDate.getFullYear();
-              const endMonth = endDate.getMonth().toString().padStart(2, "0");
+              const endMonth = (endDate.getMonth() + 1)
+                .toString()
+                .padStart(2, "0");
 
               return (
                 <ProjectPaper key={mainProject.projectId}>
@@ -321,7 +353,19 @@ export default function Projects() {
           })}
         </Box>
       </Grid>
-      <ProjectAddModal type={type} open={open} setOpen={handleOpen} />
+      <ProjectAddModal
+        type={type}
+        open={open}
+        setOpen={handleOpen}
+        refresh={getProjectList}
+        project={projectList[sliderIndex]}
+        skill={projectSkillList}
+      />
+      <ConfirmationMessage
+        open={alertOpen}
+        setOpen={handleAlertOpen}
+        func={deleteProject}
+      />
     </>
   );
 }
