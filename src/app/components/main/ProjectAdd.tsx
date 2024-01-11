@@ -16,11 +16,13 @@ import axios from "axios";
 import React from "react";
 import { ClickableChip } from "../custom/customComponent";
 import IMainProjectSkill from "@/app/interfaces/IMainProjectSkill";
+import { useRouter } from "next/navigation";
 
 export default function ProjectAddModal(props: {
   type: string;
   open: boolean;
   setOpen: () => void;
+  refresh: () => void;
   project?: IMainProject;
   skill?: IMainProjectSkill[];
 }) {
@@ -37,6 +39,7 @@ export default function ProjectAddModal(props: {
   const [startProcess, setStartProcess] = React.useState("基本設計");
   const [endProcess, setEndProcess] = React.useState("基本設計");
   const [description, setDescription] = React.useState(" ");
+  const [index, setIndex] = React.useState(0);
 
   const [skillStack, setSkillStack] = React.useState<string[]>([]);
   const [password, setPassword] = React.useState(" ");
@@ -63,7 +66,7 @@ export default function ProjectAddModal(props: {
 
   const submitProject = async () => {
     const project: IMainProject = {
-      index: 0,
+      index: index,
       projectId: projectId,
       projectName: projectName.trim(),
       startDate: startDate,
@@ -73,20 +76,18 @@ export default function ProjectAddModal(props: {
       startProcess: startProcess,
       endProcess: endProcess,
     };
-    if (props.type === "Add") {
-      const newIndex = (
-        await axios.get(
-          process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillindex"
-        )
-      ).data;
 
+    const newIndex = (
+      await axios.get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/getskillindex")
+    ).data;
+
+    if (props.type === "Add") {
       const newProjectId = (
         await axios.post(
           process.env.NEXT_PUBLIC_SPRING_SERVER + "/addproject",
           project
         )
       ).data;
-      console.log(selectedSkillStack.current);
       const newProjectSkillList: IMainProjectSkill[] =
         selectedSkillStack.current.map((skill, index) => {
           return {
@@ -95,22 +96,33 @@ export default function ProjectAddModal(props: {
             index: newIndex + index,
           };
         });
-      console.log(newProjectSkillList);
 
       await axios.post(
         process.env.NEXT_PUBLIC_SPRING_SERVER + "/addskilllist",
         newProjectSkillList
       );
     } else if (props.type === "Modify") {
-      console.log(project);
-      console.log(selectedSkillStack.current);
-      //await axios.post(process.env.NEXT_PUBLIC_SPRING_SERVER + "", project);
-      //await axios.post(
-      //  process.env.NEXT_PUBLIC_SPRING_SERVER + "",
-      //  selectedSkillStack.current
-      //);
+      await axios.post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/modifyproject",
+        project
+      );
+
+      const newProjectSkillList: IMainProjectSkill[] =
+        selectedSkillStack.current.map((skill, index) => {
+          return {
+            projectId: projectId,
+            skillName: skill,
+            index: newIndex + index,
+          };
+        });
+
+      await axios.post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/modifyskilllist",
+        newProjectSkillList
+      );
     }
     setOpen();
+    props.refresh();
   };
 
   React.useEffect(() => {
@@ -130,6 +142,7 @@ export default function ProjectAddModal(props: {
       setStartProcess(project?.startProcess!);
       setEndProcess(project?.endProcess!);
       setDescription(project?.description!);
+      setIndex(project?.index!);
     }
     if (props.type === "Add") {
       selectedSkillStack.current = [];
