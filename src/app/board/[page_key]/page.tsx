@@ -17,7 +17,8 @@ import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
 import "@/app/css/boardStyle.css";
 
 export default function BoardPage() {
-  const [open, setOpen] = React.useState(false);
+  const [deleteopen, setDeleteOpen] = React.useState(false);
+  const [modifyOpen, setModifyOpen] = React.useState(false);
   const htmlStr = React.useRef<HTMLDivElement>(null);
   const params = useParams();
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function BoardPage() {
       process.env.NEXT_PUBLIC_SPRING_SERVER + "/board/deleteboard",
       board
     );
-    setOpen(!open);
+    setDeleteOpen(!deleteopen);
     router.refresh();
     router.push(`/board?title=${props.menu_name}&key=${props.menu_sub_key}`);
   };
@@ -111,13 +112,18 @@ export default function BoardPage() {
           </Box>
           <Box>
             <ButtonGroup>
-              <Button variant="contained" onClick={handleModifyButton}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setModifyOpen(!modifyOpen);
+                }}
+              >
                 Modify
               </Button>
               <Button
                 variant="contained"
                 onClick={() => {
-                  setOpen(!open);
+                  setDeleteOpen(!deleteopen);
                 }}
                 color="error"
               >
@@ -130,11 +136,19 @@ export default function BoardPage() {
       <Divider></Divider>
       <div ref={htmlStr} style={{ padding: "15px" }}></div>
       <ConfirmationMessage
-        open={open}
+        open={deleteopen}
         setOpen={() => {
-          setOpen(!open);
+          setDeleteOpen(!deleteopen);
         }}
         func={handleDeleteButton}
+      />
+      <ConfirmationMessage
+        open={modifyOpen}
+        setOpen={() => {
+          setModifyOpen(!modifyOpen);
+        }}
+        func={handleModifyButton}
+        msg="Please, input password for modify"
       />
     </Box>
   );

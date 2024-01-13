@@ -11,12 +11,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import { ClickableChip } from "../custom/customComponent";
 import IMainProjectSkill from "@/app/interfaces/IMainProjectSkill";
-import { useRouter } from "next/navigation";
 
 export default function ProjectAddModal(props: {
   type: string;
@@ -43,7 +43,7 @@ export default function ProjectAddModal(props: {
 
   const [skillStack, setSkillStack] = React.useState<string[]>([]);
   const [password, setPassword] = React.useState(" ");
-
+  const [alertMss, setAlertMss] = React.useState("");
   const selectedSkillStack = React.useRef<string[]>([]);
 
   const addSkillStack = (skill: string) => {
@@ -102,6 +102,10 @@ export default function ProjectAddModal(props: {
         newProjectSkillList
       );
     } else if (props.type === "Modify") {
+      if (password != "0000") {
+        setAlertMss("Password is wrong");
+        return;
+      }
       await axios.post(
         process.env.NEXT_PUBLIC_SPRING_SERVER + "/modifyproject",
         project
@@ -162,7 +166,13 @@ export default function ProjectAddModal(props: {
 
   return (
     <>
-      <Dialog open={open} onClose={setOpen}>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setAlertMss("");
+          setOpen();
+        }}
+      >
         <DialogTitle>Project {props.type}</DialogTitle>
         <DialogContent>
           <Box>
@@ -317,6 +327,15 @@ export default function ProjectAddModal(props: {
                 marginLeft: "15px",
               }}
             />
+          ) : (
+            <></>
+          )}
+          {alertMss.length > 5 ? (
+            <Box display="flex" sx={{ margin: "0px", padding: "0px" }}>
+              <Typography sx={{ color: "red", marginLeft: "auto" }}>
+                {alertMss}
+              </Typography>
+            </Box>
           ) : (
             <></>
           )}
