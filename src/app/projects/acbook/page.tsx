@@ -1,4 +1,5 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
+import Link from "next/link";
 
 export default function accountBookMain() {
   return (
@@ -15,6 +16,8 @@ export default function accountBookMain() {
             <Button
               variant="text"
               color="primary"
+              component={Link}
+              href="/projects/acbook/write"
               sx={{
                 width: "100%",
                 height: "100vh",
@@ -28,6 +31,8 @@ export default function accountBookMain() {
             <Button
               variant="text"
               color="secondary"
+              component={Link}
+              href="/projects/acbook/history"
               sx={{
                 width: "100%",
                 height: "100vh",
@@ -41,6 +46,8 @@ export default function accountBookMain() {
             <Button
               variant="text"
               color="error"
+              component={Link}
+              href="/projects/acbook/setting"
               sx={{
                 width: "100%",
                 height: "100vh",

@@ -1,0 +1,9 @@
+.fc-day:hover {
+  cursor: pointer;
+  background-color: rgb(240, 240, 240);
+}
+
+.fc-col-header-cell:hover {
+  cursor: auto;
+  background-color: white;
+}
