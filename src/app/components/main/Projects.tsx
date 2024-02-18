@@ -18,7 +18,6 @@ import IMainProject from "@/app/interfaces/IMainProject";
 import IMainProjectSkill from "@/app/interfaces/IMainProjectSkill";
 import ProjectAddModal from "./ProjectAdd";
 import ConfirmationMessage from "../common/ConfirmationMessage";
-import { useRouter } from "next/navigation";
 
 export default function Projects() {
   const sliderBox = React.useRef<HTMLElement>(null);

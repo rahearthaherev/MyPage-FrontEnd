@@ -1,0 +1,36 @@
+.fc-day:hover {
+  cursor: pointer;
+  background-color: rgb(240, 240, 240);
+}
+
+.fc-col-header-cell:hover {
+  cursor: auto;
+  background-color: white;
+}
+
+.fc-event-title {
+  color: black;
+}
+
+.fc-event {
+  border: 0px;
+  background-color: white;
+  text-align: right;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

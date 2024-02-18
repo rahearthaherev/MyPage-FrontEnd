@@ -10,9 +10,18 @@ export default function ConfirmationMessage(props: {
   func: () => void;
   open: boolean;
   setOpen: () => void;
+  msg?: string;
 }) {
   const [password, setPassword] = React.useState<string>("");
   const [wrong, setWrong] = React.useState<boolean>(false);
+  const [msg, setMsg] = React.useState<string>(
+    "Are you sure you want to delete it?"
+  );
+  React.useEffect(() => {
+    if (props.msg) {
+      setMsg(props.msg);
+    }
+  }, [props]);
   return (
     <>
       <Dialog
@@ -23,7 +32,7 @@ export default function ConfirmationMessage(props: {
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete it?
+            {msg}
           </DialogContentText>
           <TextField
             autoFocus
