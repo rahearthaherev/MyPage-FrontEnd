@@ -20,6 +20,7 @@
     "@mantine/rte": "^5.10.5",
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.18",
+    "@mui/x-charts": "^6.19.4",
     "@mui/x-data-grid": "^6.18.1",
     "@mui/x-date-pickers": "^6.18.2",
     "@mui/x-tree-view": "^6.17.0",
