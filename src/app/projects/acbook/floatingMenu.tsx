@@ -3,10 +3,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grow from "@mui/material/Grow";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import { useRouter } from "next/navigation";
 
 export default function FloatingMenus() {
+  const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
-
+  function handleGoToWrite() {
+    router.push("/projects/acbook/write");
+  }
   return (
     <Box sx={{ position: "fixed", bottom: 20, right: 80 }}>
       <MenuOpenIcon
@@ -35,6 +39,7 @@ export default function FloatingMenus() {
             }}
             onMouseLeave={() => setIsHovered(false)}
             onMouseEnter={() => setIsHovered(true)}
+            onClick={handleGoToWrite}
           >
             Write
           </Button>

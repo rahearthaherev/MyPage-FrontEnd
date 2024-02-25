@@ -3,7 +3,9 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Box } from "@mui/material";
 
-export default function Calendar() {
+export default function Calendar(props: {
+  setSelectedDate: (date: Date) => void;
+}) {
   const events = [
     { title: "3548円", date: "2024-02-16", content: "test1" },
     { title: "-1244円", date: "2024-02-16", content: "test2" },
@@ -18,7 +20,7 @@ export default function Calendar() {
           right: "prev,next today",
         }}
         dateClick={(e) => {
-          //alert(e.dateStr);
+          props.setSelectedDate(e.date);
         }}
         events={events}
         titleFormat={{
