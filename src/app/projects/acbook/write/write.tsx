@@ -5,28 +5,50 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Box from "@mui/material/Box";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
 import {
+  ButtonGroup,
   Grid,
   Input,
   InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
   TextField,
 } from "@mui/material";
 import IAccountBookItem from "@/app/interfaces/IAccountBookItem";
 
+const defalutItem: IAccountBookItem = {
+  category: "食費",
+  amount: 0,
+  description: "",
+};
+
 export default function WriteForm() {
   const [title, setTitle] = React.useState(" ");
   const [selectedType, setSelectedType] = React.useState("支出");
   const [selectedPayment, setSelectedPayment] = React.useState("通帳");
   const [selectedAccount, setSelectedAccount] = React.useState("");
-  const [count, setCount] = React.useState(0);
-  const [acBookList, setAcBookList] = React.useState<IAccountBookItem[]>();
+  const count = React.useRef(0);
+  const [rerenderingFlag, setRerenderingFlag] = React.useState(true);
+  const [acBookList, setAcBookList] = React.useState<IAccountBookItem[]>([
+    {
+      category: "食費",
+      amount: 0,
+      description: "",
+    },
+  ]);
+  function handleTitle(e: any) {
+    setTitle(e.target.value);
+  }
 
   function handleType(e: any) {
     setSelectedType(e.target.value);
@@ -40,20 +62,40 @@ export default function WriteForm() {
     setSelectedAccount(e.target.value);
   }
 
-  function handleAcBookList(e: any) {
-    alert(e.target.key);
-    //const item: IAccountBookItem = {category: "", amount: "", description: ""}
+  function handleCategory(e: any) {
+    const index = e.target.name;
+    acBookList[index].category = e.target.value;
+    setRerenderingFlag(!rerenderingFlag);
   }
 
-  React.useEffect(() => {
-    const defalutItem: IAccountBookItem = {
-      category: "食費",
-      amount: 0,
-      description: "",
-    };
-    setAcBookList([defalutItem]);
-    alert(acBookList[0].category);
-  }, []);
+  function handleDescription(e: any) {
+    const index = e.target.id;
+    acBookList[index].description = e.target.value;
+    console.log(index);
+    setRerenderingFlag(!rerenderingFlag);
+  }
+
+  function handleAmount(e: any) {
+    const index = e.target.id;
+    const value = e.target.value.replace(/\D/g, "");
+    acBookList[index].amount = value;
+    setRerenderingFlag(!rerenderingFlag);
+  }
+
+  function handlePlusButton() {
+    const newItem: IAccountBookItem = { ...defalutItem };
+    acBookList.push(newItem);
+    count.current++;
+    setRerenderingFlag(!rerenderingFlag);
+  }
+
+  function handleMinusButton() {
+    acBookList.pop();
+    count.current++;
+    setRerenderingFlag(!rerenderingFlag);
+  }
+
+  React.useEffect(() => {}, []);
   return (
     <Grid container padding="10px" spacing={2}>
       <Grid item xs={6}>
@@ -63,7 +105,12 @@ export default function WriteForm() {
           fullWidth
         >
           <InputLabel sx={{ fontSize: "23px" }}>Title</InputLabel>
-          <Input id="component-simple" value={title} />
+          <Input
+            id="component-simple"
+            value={title}
+            autoFocus
+            onChange={handleTitle}
+          />
         </FormControl>
 
         <FormControl sx={{ marginBottom: "5px" }}>
@@ -131,30 +178,105 @@ export default function WriteForm() {
           </RadioGroup>
         </FormControl>
       </Grid>
-      <Grid>
+      <Grid item xs={12}>
         <TableContainer component={Paper}>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Category</TableCell>
                 <TableCell>Description</TableCell>
-                <TableCell>Amount</TableCell>
+                <TableCell align="right">Amount</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
+              {acBookList.map((item, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell width={80}>
+                      <Select
+                        variant="standard"
+                        id={index.toString()}
+                        label="Category"
+                        value={item.category}
+                        disableUnderline
+                        onChange={handleCategory}
+                        sx={{ width: 80 }}
+                        name={index.toString()}
+                      >
+                        <MenuItem value="食費">食費</MenuItem>
+                        <MenuItem value="保険">保険</MenuItem>
+                        <MenuItem value="ネコ">ネコ</MenuItem>
+                        <MenuItem value="趣味">趣味</MenuItem>
+                        <MenuItem value="住居">住居</MenuItem>
+                        <MenuItem value="通信">通信</MenuItem>
+                        <MenuItem value="日用">日用</MenuItem>
+                        <MenuItem value="交通">交通</MenuItem>
+                        <MenuItem value="衣類">衣類</MenuItem>
+                        <MenuItem value="文化">文化</MenuItem>
+                        <MenuItem value="美容">美容</MenuItem>
+                        <MenuItem value="医療">医療</MenuItem>
+                        <MenuItem value="その他">その他</MenuItem>
+                      </Select>
+                    </TableCell>
+                    <TableCell align="center">
+                      <TextField
+                        id={index.toString()}
+                        value={item.description}
+                        InputProps={{ disableUnderline: true }}
+                        variant="standard"
+                        onChange={handleDescription}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell align="right" width={130}>
+                      <TextField
+                        id={index.toString()}
+                        value={item.amount + "円"}
+                        InputProps={{
+                          disableUnderline: true,
+                        }}
+                        inputProps={{
+                          style: { textAlign: "right" },
+                        }}
+                        variant="standard"
+                        fullWidth
+                        onChange={handleAmount}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
               <TableRow>
-                <TableCell>
-                  <TextField
-                    key={count}
-                    id={count.toString()}
-                    value={acBookList[count].category}
-                    onChange={handleAcBookList}
-                    variant="outlined"
-                    fullWidth
-                  />
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell align="right">
+                  <ButtonGroup>
+                    <AddBoxOutlinedIcon
+                      fontSize="small"
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          backgroundColor: "rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                      onClick={handlePlusButton}
+                    />
+                    <IndeterminateCheckBoxOutlinedIcon
+                      fontSize="small"
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          backgroundColor: "rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                      onClick={handleMinusButton}
+                    />
+                  </ButtonGroup>
                 </TableCell>
               </TableRow>
-            </TableBody>
+            </TableFooter>
           </Table>
         </TableContainer>
       </Grid>

@@ -11,6 +11,9 @@ export default function FloatingMenus() {
   function handleGoToWrite() {
     router.push("/projects/acbook/write");
   }
+  function handleGoToHistory() {
+    router.push("/projects/acbook/history");
+  }
   return (
     <Box sx={{ position: "fixed", bottom: 20, right: 80 }}>
       <MenuOpenIcon
@@ -46,6 +49,21 @@ export default function FloatingMenus() {
           <Button
             variant="outlined"
             color="secondary"
+            sx={{
+              margin: "5px",
+              width: "70px",
+              height: "70px",
+              borderRadius: "35px",
+            }}
+            onMouseLeave={() => setIsHovered(false)}
+            onMouseEnter={() => setIsHovered(true)}
+            onClick={handleGoToHistory}
+          >
+            History
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
             sx={{
               margin: "5px",
               width: "70px",
