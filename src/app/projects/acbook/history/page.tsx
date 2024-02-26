@@ -1,20 +1,32 @@
 "use client";
 
 import * as React from "react";
-import { Box, Divider, Grid } from "@mui/material";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import "@/app/css/book.css";
 import Calendar from "../calendar";
 import HistoryTable from "./table";
-import PieGraph from "./pie";
+import Statistics from "./statistics";
+import FloatingMenus from "../floatingMenu";
+
+const CALENDAL = "Calendar";
+const STATISTICS = "Statistics";
+
+function formatDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}年${month}月${day}日`;
+}
 
 export default function bookHistory() {
   const [category, setCategory] = React.useState("Day");
   const [view, setView] = React.useState("Calendar");
+  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
   const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategory((event.target as HTMLInputElement).value);
   };
@@ -38,7 +50,7 @@ export default function bookHistory() {
               height: "100vh",
               padding: "15px",
               paddingTop: "0px",
-              overflowY: "scroll",
+              overflowY: "auto",
             }}
           >
             <Box
@@ -73,6 +85,12 @@ export default function bookHistory() {
                   />
                 </RadioGroup>
               </FormControl>
+              <Box
+                marginLeft="auto"
+                sx={{ lineHeight: "50px", paddingTop: "10px" }}
+              >
+                <Typography>{formatDate(selectedDate)}</Typography>
+              </Box>
             </Box>
             <HistoryTable />
           </Grid>
@@ -107,15 +125,28 @@ export default function bookHistory() {
                     label="Calendar"
                   />
                   <FormControlLabel
-                    value="Graph"
+                    value="Statistics"
                     control={<Radio />}
-                    label="Graph"
+                    label="Statistics"
                   />
                 </RadioGroup>
               </FormControl>
             </Box>
-            {/* <Calendar /> */}
-            <PieGraph />
+            {view == CALENDAL ? (
+              <Calendar setSelectedDate={setSelectedDate} />
+            ) : (
+              <></>
+            )}
+            {view == STATISTICS ? <Statistics /> : <></>}
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+              }}
+            >
+              <FloatingMenus />
+            </Box>
           </Grid>
         </Grid>
       </Box>

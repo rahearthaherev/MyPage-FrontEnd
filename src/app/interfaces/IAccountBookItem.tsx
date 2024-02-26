@@ -1,6 +1,6 @@
 export default interface IAccountBookItem {
-  itemKey: string;
-  subKey: string;
+  itemKey?: string;
+  subKey?: string;
   category:
     | "食費"
     | "保険"

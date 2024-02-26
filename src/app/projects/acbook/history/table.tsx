@@ -9,6 +9,10 @@ import Paper from "@mui/material/Paper";
 import IAccountBookItem from "@/app/interfaces/IAccountBookList";
 import { TableFooter } from "@mui/material";
 import IAccountBookList from "@/app/interfaces/IAccountBookList";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
+import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
+import axios from "axios";
 
 const test: IAccountBookList = {
   key: "test",
@@ -36,6 +40,8 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+function deleteTag(key: string) {}
+
 export default function HistoryTable() {
   const [lists, setLists] = React.useState<IAccountBookItem[]>([
     test,
@@ -50,7 +56,16 @@ export default function HistoryTable() {
     test,
     test,
   ]);
+  const [confirmMsgOpen, setConfirmMsgOpen] = React.useState(false);
   const sum = React.useRef<number>(0);
+  const seletedTag = React.useRef<IAccountBookItem>();
+
+  function handleConfirmMsg() {
+    setConfirmMsgOpen(!confirmMsgOpen);
+  }
+  function handleDeleteTac() {
+    axios.delete("");
+  }
   return (
     <>
       <TableContainer component={Paper} sx={{ marginTop: "10px" }}>
@@ -58,12 +73,12 @@ export default function HistoryTable() {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell>Payment</TableCell>
               <TableCell>Account</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Amount</TableCell>
+              <TableCell align="right">Amount</TableCell>
+              <TableCell width="30px">Modify</TableCell>
             </TableRow>
           </TableHead>
           {lists?.map((list) => {
@@ -80,12 +95,33 @@ export default function HistoryTable() {
                   <TableCell component="th" scope="row">
                     {list.title}
                   </TableCell>
-                  <TableCell>{list.payment}</TableCell>
                   <TableCell>{list.account}</TableCell>
                   <TableCell>{list.type}</TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
+                  <TableCell align="center" sx={{ lineHeight: "10px" }}>
+                    <AddBoxOutlinedIcon
+                      fontSize="small"
+                      onClick={handleConfirmMsg}
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          backgroundColor: "rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                    />
+                    <IndeterminateCheckBoxOutlinedIcon
+                      fontSize="small"
+                      onClick={handleConfirmMsg}
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          backgroundColor: "rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
                 {list.items?.map((item) => {
                   sum.current = sum.current + item.amount;
@@ -101,11 +137,14 @@ export default function HistoryTable() {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell align="right">{item.category}</TableCell>
+                      <TableCell align="center">{item.category}</TableCell>
 
-                      <TableCell align="right">{item.description}</TableCell>
+                      <TableCell align="center">{item.description}</TableCell>
                       <TableCell align="right">{item.amount}円</TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{ lineHeight: "10px" }}
+                      ></TableCell>
                     </TableRow>
                   );
                 })}
@@ -120,12 +159,22 @@ export default function HistoryTable() {
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell align="right">Sum : {sum.current}円</TableCell>
+              <TableCell>Sum : </TableCell>
+              <TableCell align="right">円</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
       </TableContainer>
+      <ConfirmationMessage
+        func={() => {
+          handleDeleteTac();
+        }}
+        open={confirmMsgOpen}
+        setOpen={() => {
+          handleConfirmMsg();
+        }}
+        msg="Do you want to delete it?"
+      />
     </>
   );
 }
