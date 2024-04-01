@@ -10,10 +10,12 @@ import "@/app/css/book.css";
 import Calendar from "../calendar";
 import HistoryTable from "./table";
 import Statistics from "./statistics";
+import Asset from "./assets";
 import FloatingMenus from "../floatingMenu";
 
 const CALENDAL = "Calendar";
 const STATISTICS = "Statistics";
+const Assets = "Assets";
 
 function formatDate(date: Date) {
   const year = date.getFullYear();
@@ -25,7 +27,7 @@ function formatDate(date: Date) {
 
 export default function bookHistory() {
   const [category, setCategory] = React.useState("Day");
-  const [view, setView] = React.useState("Calendar");
+  const [view, setView] = React.useState("Assets");
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
   const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategory((event.target as HTMLInputElement).value);
@@ -120,6 +122,11 @@ export default function bookHistory() {
                   onChange={handleView}
                 >
                   <FormControlLabel
+                    value="Assets"
+                    control={<Radio />}
+                    label="Assets"
+                  />
+                  <FormControlLabel
                     value="Calendar"
                     control={<Radio />}
                     label="Calendar"
@@ -138,6 +145,7 @@ export default function bookHistory() {
               <></>
             )}
             {view == STATISTICS ? <Statistics /> : <></>}
+            {view == Assets ? <Asset /> : <></>}
             <Box
               style={{
                 display: "flex",

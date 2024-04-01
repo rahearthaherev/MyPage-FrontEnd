@@ -1,11 +1,14 @@
 import IAccountBookItem from "./IAccountBookItem";
 
 export default interface IAccountBookList {
-  key: string;
+  key?: string;
   date: Date;
-  type: "支出" | "輸入" | "貯金" | "移動";
-  payment: "通帳" | "現金" | "クレジット";
+  type: string;
+  payment: string;
   account: string;
+  from?: string;
+  to?: string;
+  amount?: number;
   title: string;
-  items: IAccountBookItem[];
+  details: IAccountBookItem[];
 }

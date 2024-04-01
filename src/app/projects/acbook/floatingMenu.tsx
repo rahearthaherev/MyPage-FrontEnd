@@ -20,7 +20,7 @@ export default function FloatingMenus() {
         fontSize="large"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ color: "rgb(25, 118, 210)" }}
+        style={{ color: "rgba(76,76,76,1)" }}
       />
       <Grow in={isHovered} timeout={500}>
         <Box

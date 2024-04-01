@@ -26,6 +26,8 @@ import {
   TextField,
 } from "@mui/material";
 import IAccountBookItem from "@/app/interfaces/IAccountBookItem";
+import axios from "axios";
+import IAccountBookList from "@/app/interfaces/IAccountBookList";
 
 const defalutItem: IAccountBookItem = {
   category: "食費",
@@ -33,7 +35,7 @@ const defalutItem: IAccountBookItem = {
   description: "",
 };
 
-export default function WriteForm() {
+export default function WriteForm(props: { date: Date }) {
   const [title, setTitle] = React.useState(" ");
   const [selectedType, setSelectedType] = React.useState("支出");
   const [selectedPayment, setSelectedPayment] = React.useState("通帳");
@@ -109,6 +111,28 @@ export default function WriteForm() {
     acBookList.pop();
     count.current++;
     setRerenderingFlag(!rerenderingFlag);
+  }
+
+  function handleReset() {
+    setAcBookList([]);
+  }
+
+  function handleSubmit() {
+    const item: IAccountBookList = {
+      date: props.date,
+      type: selectedType,
+      payment: selectedPayment,
+      account: selectedAccount,
+      from: from,
+      to: to,
+      title: title,
+      details: acBookList,
+    };
+    // axios.post(
+    //   process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/write",
+    //   item
+    // );
+    console.log(item);
   }
 
   React.useEffect(() => {}, []);
@@ -394,8 +418,10 @@ export default function WriteForm() {
       <Grid item xs={12}>
         <Box textAlign="right">
           <ButtonGroup>
-            <Button variant="outlined">Submit</Button>
-            <Button variant="outlined" color="error">
+            <Button variant="outlined" onClick={handleSubmit}>
+              Submit
+            </Button>
+            <Button variant="outlined" color="error" onClick={handleReset}>
               Reset
             </Button>
           </ButtonGroup>

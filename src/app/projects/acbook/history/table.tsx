@@ -21,9 +21,9 @@ const test: IAccountBookList = {
   payment: "通帳",
   account: "三菱UFJ",
   title: "Test",
-  items: [
+  details: [
     {
-      itemKey: "test",
+      key: "test",
       subKey: "test",
       category: "食費",
       description: "test",
@@ -123,8 +123,8 @@ export default function HistoryTable() {
                     />
                   </TableCell>
                 </TableRow>
-                {list.items?.map((item) => {
-                  sum.current = sum.current + item.amount;
+                {list.details?.map((detail) => {
+                  sum.current = sum.current + detail.amount;
                   return (
                     <TableRow
                       key={list.key}
@@ -137,10 +137,10 @@ export default function HistoryTable() {
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
-                      <TableCell align="center">{item.category}</TableCell>
+                      <TableCell align="center">{detail.category}</TableCell>
 
-                      <TableCell align="center">{item.description}</TableCell>
-                      <TableCell align="right">{item.amount}円</TableCell>
+                      <TableCell align="center">{detail.description}</TableCell>
+                      <TableCell align="right">{detail.amount}円</TableCell>
                       <TableCell
                         align="center"
                         sx={{ lineHeight: "10px" }}

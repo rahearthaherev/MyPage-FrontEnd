@@ -48,10 +48,12 @@ export default function WriteMain() {
                 marginLeft="auto"
                 sx={{ lineHeight: "50px", paddingTop: "10px" }}
               >
-                <Typography>{formatDate(selectedDate)}</Typography>
+                <Typography fontSize="20px">
+                  {formatDate(selectedDate)}
+                </Typography>
               </Box>
             </Box>
-            <WriteForm />
+            <WriteForm date={selectedDate} />
           </Grid>
           <Divider orientation="vertical" flexItem />
           <Grid

@@ -102,15 +102,15 @@ export default function Projects() {
       });
   };
 
-  const deleteProject = async () => {
-    await axios.post(
-      process.env.NEXT_PUBLIC_SPRING_SERVER + "/deleteproject",
-      projectList[sliderIndex]
-    );
-    handleAlertOpen();
-    getProjectList();
-    moveLeft(false);
-  };
+  // const deleteProject = async () => {
+  //   await axios.post(
+  //     process.env.NEXT_PUBLIC_SPRING_SERVER + "/deleteproject",
+  //     projectList[sliderIndex]
+  //   );
+  //   handleAlertOpen();
+  //   getProjectList();
+  //   moveLeft(false);
+  // };
 
   React.useEffect(() => {
     getProjectList();
@@ -122,7 +122,7 @@ export default function Projects() {
         <HeadText variant="h5" textAlign="center">
           Projects
         </HeadText>
-        <Box sx={{ textAlign: "right", paddingRight: "150px" }}>
+        {/* <Box sx={{ textAlign: "right", paddingRight: "150px" }}>
           <Button
             variant="contained"
             size="small"
@@ -153,7 +153,7 @@ export default function Projects() {
           >
             D
           </Button>
-        </Box>
+        </Box> */}
 
         <style>
           {`
@@ -352,7 +352,7 @@ export default function Projects() {
           })}
         </Box>
       </Grid>
-      <ProjectAddModal
+      {/* <ProjectAddModal
         type={type}
         open={open}
         setOpen={handleOpen}
@@ -364,7 +364,7 @@ export default function Projects() {
         open={alertOpen}
         setOpen={handleAlertOpen}
         func={deleteProject}
-      />
+      /> */}
     </>
   );
 }
