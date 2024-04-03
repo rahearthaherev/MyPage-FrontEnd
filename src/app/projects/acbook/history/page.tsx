@@ -12,6 +12,8 @@ import HistoryTable from "./table";
 import Statistics from "./statistics";
 import Asset from "./assets";
 import FloatingMenus from "../floatingMenu";
+import axios from "axios";
+import IAccountBookList from "@/app/interfaces/IAccountBookList";
 
 const CALENDAL = "Calendar";
 const STATISTICS = "Statistics";
@@ -29,12 +31,61 @@ export default function bookHistory() {
   const [category, setCategory] = React.useState("Day");
   const [view, setView] = React.useState("Assets");
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
+  const [yearHistory, setYearHistory] = React.useState<IAccountBookList>();
+  const [monthHistory, setMonthHistory] = React.useState<IAccountBookList>();
+  const [dateHistory, setDateHistory] = React.useState<IAccountBookList>();
+
   const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategory((event.target as HTMLInputElement).value);
   };
   const handleView = (event: React.ChangeEvent<HTMLInputElement>) => {
     setView((event.target as HTMLInputElement).value);
   };
+
+  function getYearHistory() {
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER +
+          "/projects/acbook/getyearhistory",
+        selectedDate
+      )
+      .then((resp: any) => {
+        setYearHistory(resp.data);
+        console.log(resp.data);
+      });
+  }
+
+  function getMonthHistory() {
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER +
+          "/projects/acbook/getmonthhistory",
+        selectedDate
+      )
+      .then((resp: any) => {
+        setMonthHistory(resp.data);
+        console.log(resp.data);
+      });
+  }
+
+  function getDateHistory() {
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER +
+          "/projects/acbook/getdatehistory",
+        selectedDate
+      )
+      .then((resp: any) => {
+        setDateHistory(resp.data);
+        console.log(resp.data);
+      });
+  }
+
+  React.useEffect(() => {
+    getYearHistory();
+    getMonthHistory();
+    getDateHistory();
+  }, [selectedDate]);
   return (
     <>
       <Box
@@ -145,7 +196,7 @@ export default function bookHistory() {
               <></>
             )}
             {view == STATISTICS ? <Statistics /> : <></>}
-            {view == Assets ? <Asset /> : <></>}
+            {view == Assets ? <Asset date={selectedDate} /> : <></>}
             <Box
               style={{
                 display: "flex",

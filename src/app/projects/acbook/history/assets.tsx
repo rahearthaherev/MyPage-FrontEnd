@@ -1,10 +1,10 @@
-import { Box, Grid, Paper } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 
 const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
-export default function Asset() {
-  const date = new Date();
+export default function Asset(props: { date: Date }) {
+  const date = props.date;
   const [selectedYear, setSelectedYear] = React.useState(date.getFullYear());
   const [selectedMonth, setSelectedMonth] = React.useState(
     String(date.getMonth() + 1).padStart(2, "0")
@@ -16,7 +16,6 @@ export default function Asset() {
   const [month, setMonth] = React.useState(
     String(date.getMonth() + 1).padStart(2, "0")
   );
-  const [day, setDay] = React.useState(String(date.getDate()).padStart(2, "0"));
   return (
     <>
       <Box padding="20px">
@@ -59,21 +58,57 @@ export default function Asset() {
                     lineHeight="50px"
                     paddingRight="15px"
                   >
-                    {selectedYear == year && selectedMonth == month
-                      ? "今月"
-                      : ""}
+                    当月
                   </Grid>
                 </Grid>
               </Box>
               <Box
+                padding="15px"
                 sx={{
                   height: "200px",
                   backgroundColor: "white",
                 }}
               >
-                <Grid container>
+                <Grid container height="100%">
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当月の支出
+                    </Typography>
+                  </Grid>
                   <Grid item xs={6}></Grid>
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当月の輸入
+                    </Typography>
+                  </Grid>
                   <Grid item xs={6}></Grid>
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当月の貯金
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}></Grid>
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当月の残額
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Box>
             </Paper>
@@ -117,11 +152,56 @@ export default function Asset() {
                     lineHeight="50px"
                     paddingRight="15px"
                   >
-                    {selectedDay == day ? "今日" : ""}
+                    当日
                   </Grid>
                 </Grid>
               </Box>
-              <Box sx={{ height: "200px", backgroundColor: "white" }}></Box>
+              <Box
+                sx={{ height: "200px", backgroundColor: "white" }}
+                padding="15px"
+              >
+                <Grid container height="100%">
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当日の支出
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}></Grid>
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当日の輸入
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}></Grid>
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当日の貯金
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}></Grid>
+                  <Grid item xs={6} height="25%">
+                    <Typography
+                      fontSize="15px"
+                      fontWeight="700"
+                      lineHeight="50px"
+                    >
+                      当日の残額
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
             </Paper>
           </Grid>
           <Grid xs={12} item>

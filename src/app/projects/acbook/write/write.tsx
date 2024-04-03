@@ -123,15 +123,15 @@ export default function WriteForm(props: { date: Date }) {
       type: selectedType,
       payment: selectedPayment,
       account: selectedAccount,
-      from: from,
-      to: to,
+      beforeAccount: from,
+      afterAccount: to,
       title: title,
       details: acBookList,
     };
-    // axios.post(
-    //   process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/write",
-    //   item
-    // );
+    axios.post(
+      process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/write",
+      item
+    );
     console.log(item);
   }
 
@@ -276,26 +276,23 @@ export default function WriteForm(props: { date: Date }) {
                 value={to}
                 onChange={handleTo}
               >
-                {selectedPayment == "現金" ? (
+                <FormControlLabel
+                  value="現金"
+                  control={<Radio />}
+                  label="現金"
+                />
+                <>
                   <FormControlLabel
-                    value="現金"
+                    value="三菱UFJ"
                     control={<Radio />}
-                    label="現金"
+                    label="三菱UFJ"
                   />
-                ) : (
-                  <>
-                    <FormControlLabel
-                      value="三菱UFJ"
-                      control={<Radio />}
-                      label="三菱UFJ"
-                    />
-                    <FormControlLabel
-                      value="SBJ銀行"
-                      control={<Radio />}
-                      label="SBJ銀行"
-                    />
-                  </>
-                )}
+                  <FormControlLabel
+                    value="SBJ銀行"
+                    control={<Radio />}
+                    label="SBJ銀行"
+                  />
+                </>
               </RadioGroup>
             </FormControl>
           </>
@@ -405,8 +402,8 @@ export default function WriteForm(props: { date: Date }) {
           </TableContainer>
         ) : (
           <TextField
-            label="Amount"
-            value={movingValue + "円"}
+            label="Amount(￥)"
+            value={movingValue}
             inputProps={{
               style: { textAlign: "right" },
             }}
