@@ -6,8 +6,8 @@ export default interface IAccountBookList {
   type: string;
   payment: string;
   account: string;
-  from?: string;
-  to?: string;
+  beforeAccount?: string;
+  afterAccount?: string;
   amount?: number;
   title: string;
   details: IAccountBookItem[];

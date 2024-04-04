@@ -115,6 +115,7 @@ export default function WriteForm(props: { date: Date }) {
 
   function handleReset() {
     setAcBookList([]);
+    setTitle(" ");
   }
 
   function handleSubmit() {
@@ -128,11 +129,18 @@ export default function WriteForm(props: { date: Date }) {
       title: title,
       details: acBookList,
     };
-    axios.post(
-      process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/write",
-      item
-    );
-    console.log(item);
+    if (selectedType == "支出" || selectedType == "輸入") {
+      axios.post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/write",
+        item
+      );
+    } else {
+      axios.post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/save",
+        item
+      );
+    }
+    handleReset();
   }
 
   React.useEffect(() => {}, []);
