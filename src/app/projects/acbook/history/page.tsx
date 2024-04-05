@@ -31,9 +31,11 @@ export default function bookHistory() {
   const [category, setCategory] = React.useState("Day");
   const [view, setView] = React.useState("Assets");
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
-  const [yearHistory, setYearHistory] = React.useState<IAccountBookList>();
-  const [monthHistory, setMonthHistory] = React.useState<IAccountBookList>();
-  const [dateHistory, setDateHistory] = React.useState<IAccountBookList>();
+  const [yearHistory, setYearHistory] = React.useState<IAccountBookList[]>([]);
+  const [monthHistory, setMonthHistory] = React.useState<IAccountBookList[]>(
+    []
+  );
+  const [dateHistory, setDateHistory] = React.useState<IAccountBookList[]>([]);
 
   const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategory((event.target as HTMLInputElement).value);
@@ -196,7 +198,16 @@ export default function bookHistory() {
               <></>
             )}
             {view == STATISTICS ? <Statistics /> : <></>}
-            {view == Assets ? <Asset date={selectedDate} /> : <></>}
+            {view == Assets ? (
+              <Asset
+                date={selectedDate}
+                yearHistory={yearHistory}
+                monthHistory={monthHistory}
+                dateHistory={dateHistory}
+              />
+            ) : (
+              <></>
+            )}
             <Box
               style={{
                 display: "flex",

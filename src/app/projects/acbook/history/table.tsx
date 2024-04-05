@@ -66,6 +66,7 @@ export default function HistoryTable() {
   function handleDeleteTac() {
     axios.delete("");
   }
+
   return (
     <>
       <TableContainer component={Paper} sx={{ marginTop: "10px" }}>
