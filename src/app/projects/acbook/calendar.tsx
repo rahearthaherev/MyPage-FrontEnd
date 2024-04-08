@@ -4,6 +4,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { Box } from "@mui/material";
 
 export default function Calendar(props: {
+  date: Date;
   setSelectedDate: (date: Date) => void;
 }) {
   const events = [
@@ -15,6 +16,7 @@ export default function Calendar(props: {
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
+        initialDate={props.date}
         selectable
         headerToolbar={{
           right: "prev,next today",

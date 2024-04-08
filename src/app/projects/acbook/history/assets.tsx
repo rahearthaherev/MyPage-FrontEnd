@@ -1,6 +1,7 @@
 import IAccountBookItem from "@/app/interfaces/IAccountBookItem";
 import IAccountBookList from "@/app/interfaces/IAccountBookList";
 import { Box, Grid, Paper, Typography } from "@mui/material";
+import axios from "axios";
 import React from "react";
 
 const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
@@ -33,6 +34,10 @@ export default function Asset(props: {
   dateHistory: IAccountBookList[];
 }) {
   const date = props.date;
+  const [total, setTotal] = React.useState(0);
+  const [credit, setCredit] = React.useState(0);
+  const [cash, setCash] = React.useState(0);
+  const [account, setAccount] = React.useState(0);
   const [selectedYear, setSelectedYear] = React.useState(date.getFullYear());
   const [selectedMonth, setSelectedMonth] = React.useState(
     String(date.getMonth() + 1).padStart(2, "0")
@@ -58,19 +63,39 @@ export default function Asset(props: {
     save: number;
     balance: number;
   }>();
+
   const [year, setYear] = React.useState(date.getFullYear());
   const [month, setMonth] = React.useState(
     String(date.getMonth() + 1).padStart(2, "0")
   );
+
   React.useEffect(() => {
     setYearAsset(calAssets(props.yearHistory));
-  }, [year]);
-  React.useEffect(() => {
     setMonthAsset(calAssets(props.monthHistory));
-  }, [month]);
-  React.useEffect(() => {
     setDateAsset(calAssets(props.dateHistory));
-  }, [date]);
+    axios
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/gettotal")
+      .then((resp: any) => {
+        setTotal(resp.data);
+      });
+    axios
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/getcredit")
+      .then((resp: any) => {
+        setCredit(resp.data);
+      });
+    axios
+      .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/getcash")
+      .then((resp: any) => {
+        setCash(resp.data);
+      });
+    axios
+      .get(
+        process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/getaccount"
+      )
+      .then((resp: any) => {
+        setAccount(resp.data);
+      });
+  }, []);
   return (
     <>
       <Box padding="20px">
@@ -489,7 +514,7 @@ export default function Asset(props: {
                   paddingRight="15px"
                   fontWeight={700}
                 >
-                  円
+                  {total}円
                 </Grid>
                 <Grid
                   item
@@ -511,7 +536,7 @@ export default function Asset(props: {
                   paddingRight="15px"
                   fontWeight={700}
                 >
-                  円
+                  {credit}円
                 </Grid>
                 <Grid
                   item
@@ -537,7 +562,7 @@ export default function Asset(props: {
                   fontWeight={700}
                   borderTop="1px solid lightgrey"
                 >
-                  円
+                  {cash}円
                 </Grid>
                 <Grid
                   item
@@ -563,7 +588,7 @@ export default function Asset(props: {
                   fontWeight={700}
                   borderTop="1px solid lightgrey"
                 >
-                  円
+                  {account}円
                 </Grid>
               </Grid>
             </Paper>

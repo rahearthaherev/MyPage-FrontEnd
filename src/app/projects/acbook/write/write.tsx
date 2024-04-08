@@ -332,6 +332,7 @@ export default function WriteForm(props: { date: Date }) {
                           sx={{ width: 80 }}
                           name={index.toString()}
                         >
+                          <MenuItem value="給与">給与</MenuItem>
                           <MenuItem value="食費">食費</MenuItem>
                           <MenuItem value="保険">保険</MenuItem>
                           <MenuItem value="ネコ">ネコ</MenuItem>

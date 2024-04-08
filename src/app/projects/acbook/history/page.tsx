@@ -53,7 +53,6 @@ export default function bookHistory() {
       )
       .then((resp: any) => {
         setYearHistory(resp.data);
-        console.log(resp.data);
       });
   }
 
@@ -66,7 +65,6 @@ export default function bookHistory() {
       )
       .then((resp: any) => {
         setMonthHistory(resp.data);
-        console.log(resp.data);
       });
   }
 
@@ -79,7 +77,6 @@ export default function bookHistory() {
       )
       .then((resp: any) => {
         setDateHistory(resp.data);
-        console.log(resp.data);
       });
   }
 
@@ -147,7 +144,12 @@ export default function bookHistory() {
                 <Typography>{formatDate(selectedDate)}</Typography>
               </Box>
             </Box>
-            <HistoryTable />
+            <HistoryTable
+              yearHistory={yearHistory}
+              monthHistory={monthHistory}
+              dateHistory={dateHistory}
+              category={category}
+            />
           </Grid>
           <Divider orientation="vertical" flexItem />
           <Grid
@@ -193,7 +195,7 @@ export default function bookHistory() {
               </FormControl>
             </Box>
             {view == CALENDAL ? (
-              <Calendar setSelectedDate={setSelectedDate} />
+              <Calendar date={selectedDate} setSelectedDate={setSelectedDate} />
             ) : (
               <></>
             )}

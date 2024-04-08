@@ -72,7 +72,7 @@ export default function WriteMain() {
                 padding: "10px",
               }}
             ></Box>
-            <Calendar setSelectedDate={setSelectedDate} />
+            <Calendar date={selectedDate} setSelectedDate={setSelectedDate} />
             <Box
               style={{
                 display: "flex",
