@@ -58,10 +58,18 @@ export default function WriteForm(props: { date: Date }) {
 
   function handleType(e: any) {
     setSelectedType(e.target.value);
+    if (e.target.value == "支出") {
+      acBookList[0].category = "食費";
+      setRerenderingFlag(!rerenderingFlag);
+    } else if (e.target.value == "輸入") {
+      acBookList[0].category = "給与";
+      setRerenderingFlag(!rerenderingFlag);
+    }
   }
 
   function handlePayment(e: any) {
     setSelectedPayment(e.target.value);
+    setSelectedAccount("");
   }
 
   function handleAccount(e: any) {
@@ -227,6 +235,12 @@ export default function WriteForm(props: { date: Date }) {
                     control={<Radio />}
                     label="現金"
                   />
+                ) : selectedPayment == "クレジット" ? (
+                  <FormControlLabel
+                    value="クレジット"
+                    control={<Radio />}
+                    label="クレジット"
+                  />
                 ) : (
                   <>
                     <FormControlLabel
@@ -322,31 +336,50 @@ export default function WriteForm(props: { date: Date }) {
                   return (
                     <TableRow key={index}>
                       <TableCell width={80}>
-                        <Select
-                          variant="standard"
-                          id={index.toString()}
-                          label="Category"
-                          value={item.category}
-                          disableUnderline
-                          onChange={handleCategory}
-                          sx={{ width: 80 }}
-                          name={index.toString()}
-                        >
-                          <MenuItem value="給与">給与</MenuItem>
-                          <MenuItem value="食費">食費</MenuItem>
-                          <MenuItem value="保険">保険</MenuItem>
-                          <MenuItem value="ネコ">ネコ</MenuItem>
-                          <MenuItem value="趣味">趣味</MenuItem>
-                          <MenuItem value="住居">住居</MenuItem>
-                          <MenuItem value="通信">通信</MenuItem>
-                          <MenuItem value="日用">日用</MenuItem>
-                          <MenuItem value="交通">交通</MenuItem>
-                          <MenuItem value="衣類">衣類</MenuItem>
-                          <MenuItem value="文化">文化</MenuItem>
-                          <MenuItem value="美容">美容</MenuItem>
-                          <MenuItem value="医療">医療</MenuItem>
-                          <MenuItem value="その他">その他</MenuItem>
-                        </Select>
+                        {selectedType == "支出" ? (
+                          <>
+                            <Select
+                              variant="standard"
+                              id={index.toString()}
+                              label="Category"
+                              value={item.category}
+                              disableUnderline
+                              onChange={handleCategory}
+                              sx={{ width: 80 }}
+                              name={index.toString()}
+                            >
+                              <MenuItem value="食費">食費</MenuItem>
+                              <MenuItem value="保険">保険</MenuItem>
+                              <MenuItem value="ネコ">ネコ</MenuItem>
+                              <MenuItem value="趣味">趣味</MenuItem>
+                              <MenuItem value="住居">住居</MenuItem>
+                              <MenuItem value="通信">通信</MenuItem>
+                              <MenuItem value="日用">日用</MenuItem>
+                              <MenuItem value="交通">交通</MenuItem>
+                              <MenuItem value="衣類">衣類</MenuItem>
+                              <MenuItem value="文化">文化</MenuItem>
+                              <MenuItem value="美容">美容</MenuItem>
+                              <MenuItem value="医療">医療</MenuItem>
+                              <MenuItem value="その他">その他</MenuItem>
+                            </Select>
+                          </>
+                        ) : (
+                          <>
+                            <Select
+                              variant="standard"
+                              id={index.toString()}
+                              label="Category"
+                              value={item.category}
+                              disableUnderline
+                              onChange={handleCategory}
+                              sx={{ width: 80 }}
+                              name={index.toString()}
+                            >
+                              <MenuItem value="給与">給与</MenuItem>
+                              <MenuItem value="その他">その他</MenuItem>
+                            </Select>
+                          </>
+                        )}
                       </TableCell>
                       <TableCell align="center">
                         <TextField

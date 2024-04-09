@@ -1,3 +1,4 @@
+import IAcAssets from "@/app/interfaces/IAcAssests";
 import IAccountBookItem from "@/app/interfaces/IAccountBookItem";
 import IAccountBookList from "@/app/interfaces/IAccountBookList";
 import { Box, Grid, Paper, Typography } from "@mui/material";
@@ -5,27 +6,6 @@ import axios from "axios";
 import React from "react";
 
 const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-
-function calAssets(history: IAccountBookList[]) {
-  let result: { pay: number; get: number; save: number; balance: number } = {
-    pay: 0,
-    get: 0,
-    save: 0,
-    balance: 0,
-  };
-  history.map((detail, index) => {
-    if (detail.type == "支出") {
-      result.pay += detail.amount!;
-    } else if (detail.type == "輸入") {
-      result.get += detail.amount!;
-    } else if (detail.type == "貯金") {
-      result.save += detail.amount!;
-    } else {
-      result.balance += detail.amount!;
-    }
-  });
-  return result;
-}
 
 export default function Asset(props: {
   date: Date;
@@ -45,34 +25,37 @@ export default function Asset(props: {
   const [selectedDay, setSelectedDay] = React.useState(
     String(date.getDate()).padStart(2, "0")
   );
-  const [yearAsset, setYearAsset] = React.useState<{
-    pay: number;
-    get: number;
-    save: number;
-    balance: number;
-  }>();
-  const [monthAsset, setMonthAsset] = React.useState<{
-    pay: number;
-    get: number;
-    save: number;
-    balance: number;
-  }>();
-  const [dateAsset, setDateAsset] = React.useState<{
-    pay: number;
-    get: number;
-    save: number;
-    balance: number;
-  }>();
+  const [yearAsset, setYearAsset] = React.useState<IAcAssets>();
+  const [monthAsset, setMonthAsset] = React.useState<IAcAssets>();
+  const [dateAsset, setDateAsset] = React.useState<IAcAssets>();
 
   const [year, setYear] = React.useState(date.getFullYear());
   const [month, setMonth] = React.useState(
     String(date.getMonth() + 1).padStart(2, "0")
   );
 
+  function calAssets(history: IAccountBookList[]) {
+    let result: IAcAssets = {
+      pay: 0,
+      get: 0,
+      save: 0,
+      balance: 0,
+    };
+    history.map((detail, index) => {
+      if (detail.type == "支出") {
+        result.pay += detail.amount!;
+      } else if (detail.type == "輸入") {
+        result.get += detail.amount!;
+      } else if (detail.type == "貯金") {
+        result.save += detail.amount!;
+      } else {
+        result.balance += detail.amount!;
+      }
+    });
+    return result;
+  }
+
   React.useEffect(() => {
-    setYearAsset(calAssets(props.yearHistory));
-    setMonthAsset(calAssets(props.monthHistory));
-    setDateAsset(calAssets(props.dateHistory));
     axios
       .get(process.env.NEXT_PUBLIC_SPRING_SERVER + "/projects/acbook/gettotal")
       .then((resp: any) => {
@@ -96,6 +79,13 @@ export default function Asset(props: {
         setAccount(resp.data);
       });
   }, []);
+
+  React.useEffect(() => {
+    setYearAsset(calAssets(props.yearHistory));
+    setMonthAsset(calAssets(props.monthHistory));
+    setDateAsset(calAssets(props.dateHistory));
+  }, [props.yearHistory, props.monthHistory, props.dateHistory]);
+
   return (
     <>
       <Box padding="20px">

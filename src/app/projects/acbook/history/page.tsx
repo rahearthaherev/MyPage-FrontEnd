@@ -199,7 +199,17 @@ export default function bookHistory() {
             ) : (
               <></>
             )}
-            {view == STATISTICS ? <Statistics /> : <></>}
+            {view == STATISTICS ? (
+              <Statistics
+                yearHistory={yearHistory}
+                monthHistory={monthHistory}
+                dateHistory={dateHistory}
+                category={category}
+                date={selectedDate}
+              />
+            ) : (
+              <></>
+            )}
             {view == Assets ? (
               <Asset
                 date={selectedDate}

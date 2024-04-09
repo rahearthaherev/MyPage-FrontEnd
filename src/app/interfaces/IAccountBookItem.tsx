@@ -2,6 +2,7 @@ export default interface IAccountBookItem {
   key?: string;
   subKey?: string;
   category:
+    | "給与"
     | "食費"
     | "保険"
     | "ネコ"
