@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { Box, Typography } from "@mui/material";
+import { Box, InputLabel, NativeSelect, Typography } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -18,33 +18,52 @@ export default function Statistics(props: {
   category: string;
   date: Date;
 }) {
+  const [selectedCategory, setSelectedCategory] = React.useState("");
+
   const [data, setData] = React.useState<
     { id: number; value: number; label: string }[]
   >([]);
 
   const [detailList, setDetailList] = React.useState<
-    { date: Date; description: string; amount: number }[]
+    { date: Date; type: string; description: string; amount: number }[]
   >([]);
 
-  function handleDetails(e: any) {
-    console.log(e);
+  function handleSelectedCategory(e: any) {
+    setSelectedCategory(e.target.value);
+  }
+  function handleclassificationList() {
     if (props.category == "Day") {
-      setDetailList(classificationList(props.dateHistory, e.target.value));
+      setDetailList(classificationList(props.dateHistory, selectedCategory));
     } else if (props.category == "Month") {
-      setDetailList(classificationList(props.monthHistory, e.target.value));
+      setDetailList(classificationList(props.monthHistory, selectedCategory));
     } else {
-      setDetailList(classificationList(props.yearHistory, e.target.value));
+      setDetailList(classificationList(props.yearHistory, selectedCategory));
     }
   }
+  React.useEffect(() => {
+    const result: {
+      date: Date;
+      type: string;
+      description: string;
+      amount: number;
+    }[] = [];
+  }, []);
+
+  React.useEffect(() => {
+    handleclassificationList();
+  }, [selectedCategory]);
 
   React.useEffect(() => {
     setData([]);
     if (props.category == "Day") {
       setData(classificationData(props.dateHistory));
+      setDetailList(classificationList(props.dateHistory, "全種"));
     } else if (props.category == "Month") {
       setData(classificationData(props.monthHistory));
+      setDetailList(classificationList(props.monthHistory, "全種"));
     } else {
       setData(classificationData(props.yearHistory));
+      setDetailList(classificationList(props.yearHistory, "全種"));
     }
   }, [
     props.category,
@@ -73,11 +92,28 @@ export default function Statistics(props: {
           ]}
           width={500}
           height={250}
-          onItemClick={handleDetails}
         />
       </Box>
-      <Box textAlign="center" sx={{ marginRight: "85px", marginTop: "5px" }}>
-        <Typography>Date : {formatDate(props.date)}</Typography>
+      <Box textAlign="right" sx={{ marginRight: "0px", marginTop: "5px" }}>
+        <NativeSelect
+          defaultValue={data[0]?.label}
+          size="small"
+          value={selectedCategory}
+          onChange={handleSelectedCategory}
+          inputProps={{
+            name: "category",
+            id: "uncontrolled-native",
+          }}
+        >
+          <option value="全種">{"全種"}</option>
+          {data.map((item, index) => {
+            return (
+              <option key={index} value={item.label}>
+                {item.label}
+              </option>
+            );
+          })}
+        </NativeSelect>
       </Box>
       <Box>
         <TableContainer component={Paper} sx={{ marginTop: "10px" }}>
@@ -85,6 +121,7 @@ export default function Statistics(props: {
             <TableHead>
               <TableRow>
                 <TableCell width="150px">Date</TableCell>
+                <TableCell width="150px">Category</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Amount</TableCell>
               </TableRow>
@@ -93,11 +130,12 @@ export default function Statistics(props: {
               {detailList.map((detail, index) => {
                 return (
                   <TableRow key={index}>
-                    <TableCell align="right">
+                    <TableCell align="left">
                       {formatDate(detail.date)}
                     </TableCell>
+                    <TableCell>{detail.type}</TableCell>
                     <TableCell>{detail.description}</TableCell>
-                    <TableCell>{detail.amount}</TableCell>
+                    <TableCell align="right">{detail.amount}</TableCell>
                   </TableRow>
                 );
               })}
@@ -105,6 +143,7 @@ export default function Statistics(props: {
             </TableBody>
             <TableFooter>
               <TableRow>
+                <TableCell></TableCell>
                 <TableCell></TableCell>
                 <TableCell align="right">Total</TableCell>
                 <TableCell align="right" width="50px">
@@ -119,13 +158,19 @@ export default function Statistics(props: {
   );
 }
 function classificationList(historyList: IAccountBookList[], type: string) {
-  const result: { date: Date; description: string; amount: number }[] = [];
+  const result: {
+    date: Date;
+    type: string;
+    description: string;
+    amount: number;
+  }[] = [];
   historyList.map((history, index) => {
     if (history.type == "支出") {
       history.details.map((detail, index) => {
         if (detail.category == type) {
           result.push({
             date: history.date,
+            type: detail.category,
             description: detail.description,
             amount: detail.amount,
           });
@@ -133,6 +178,21 @@ function classificationList(historyList: IAccountBookList[], type: string) {
       });
     }
   });
+  if (type == "全種") {
+    historyList.map((history, index) => {
+      if (history.type == "支出") {
+        history.details.map((detail, index) => {
+          result.push({
+            date: history.date,
+            type: detail.category,
+            description: detail.description,
+            amount: detail.amount,
+          });
+        });
+      }
+    });
+  }
+
   return result;
 }
 
@@ -205,7 +265,8 @@ function classificationData(historyList: IAccountBookList[]) {
   return resultData;
 }
 
-function formatDate(date: Date) {
+function formatDate(d: Date) {
+  const date = new Date(d);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
