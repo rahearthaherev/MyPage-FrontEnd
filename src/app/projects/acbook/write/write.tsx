@@ -58,6 +58,9 @@ export default function WriteForm(props: { date: Date }) {
 
   function handleType(e: any) {
     setSelectedType(e.target.value);
+    if (acBookList.length == 0) {
+      return;
+    }
     if (e.target.value == "支出") {
       acBookList[0].category = "食費";
       setRerenderingFlag(!rerenderingFlag);
@@ -136,6 +139,7 @@ export default function WriteForm(props: { date: Date }) {
       afterAccount: to,
       title: title,
       details: acBookList,
+      amount: movingValue,
     };
     if (selectedType == "支出" || selectedType == "輸入") {
       axios.post(
