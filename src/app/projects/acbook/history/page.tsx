@@ -10,10 +10,14 @@ import "@/app/css/book.css";
 import Calendar from "../calendar";
 import HistoryTable from "./table";
 import Statistics from "./statistics";
+import Asset from "./assets";
 import FloatingMenus from "../floatingMenu";
+import axios from "axios";
+import IAccountBookList from "@/app/interfaces/IAccountBookList";
 
 const CALENDAL = "Calendar";
 const STATISTICS = "Statistics";
+const Assets = "Assets";
 
 function formatDate(date: Date) {
   const year = date.getFullYear();
@@ -25,14 +29,62 @@ function formatDate(date: Date) {
 
 export default function bookHistory() {
   const [category, setCategory] = React.useState("Day");
-  const [view, setView] = React.useState("Calendar");
+  const [view, setView] = React.useState("Assets");
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
+  const [yearHistory, setYearHistory] = React.useState<IAccountBookList[]>([]);
+  const [monthHistory, setMonthHistory] = React.useState<IAccountBookList[]>(
+    []
+  );
+  const [dateHistory, setDateHistory] = React.useState<IAccountBookList[]>([]);
+
   const handleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategory((event.target as HTMLInputElement).value);
   };
   const handleView = (event: React.ChangeEvent<HTMLInputElement>) => {
     setView((event.target as HTMLInputElement).value);
   };
+
+  function getYearHistory() {
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER +
+          "/projects/acbook/getyearhistory",
+        selectedDate
+      )
+      .then((resp: any) => {
+        setYearHistory(resp.data);
+      });
+  }
+
+  function getMonthHistory() {
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER +
+          "/projects/acbook/getmonthhistory",
+        selectedDate
+      )
+      .then((resp: any) => {
+        setMonthHistory(resp.data);
+      });
+  }
+
+  function getDateHistory() {
+    axios
+      .post(
+        process.env.NEXT_PUBLIC_SPRING_SERVER +
+          "/projects/acbook/getdatehistory",
+        selectedDate
+      )
+      .then((resp: any) => {
+        setDateHistory(resp.data);
+      });
+  }
+
+  React.useEffect(() => {
+    getYearHistory();
+    getMonthHistory();
+    getDateHistory();
+  }, [selectedDate]);
   return (
     <>
       <Box
@@ -92,7 +144,12 @@ export default function bookHistory() {
                 <Typography>{formatDate(selectedDate)}</Typography>
               </Box>
             </Box>
-            <HistoryTable />
+            <HistoryTable
+              yearHistory={yearHistory}
+              monthHistory={monthHistory}
+              dateHistory={dateHistory}
+              category={category}
+            />
           </Grid>
           <Divider orientation="vertical" flexItem />
           <Grid
@@ -120,6 +177,11 @@ export default function bookHistory() {
                   onChange={handleView}
                 >
                   <FormControlLabel
+                    value="Assets"
+                    control={<Radio />}
+                    label="Assets"
+                  />
+                  <FormControlLabel
                     value="Calendar"
                     control={<Radio />}
                     label="Calendar"
@@ -133,11 +195,31 @@ export default function bookHistory() {
               </FormControl>
             </Box>
             {view == CALENDAL ? (
-              <Calendar setSelectedDate={setSelectedDate} />
+              <Calendar date={selectedDate} setSelectedDate={setSelectedDate} />
             ) : (
               <></>
             )}
-            {view == STATISTICS ? <Statistics /> : <></>}
+            {view == STATISTICS ? (
+              <Statistics
+                yearHistory={yearHistory}
+                monthHistory={monthHistory}
+                dateHistory={dateHistory}
+                category={category}
+                date={selectedDate}
+              />
+            ) : (
+              <></>
+            )}
+            {view == Assets ? (
+              <Asset
+                date={selectedDate}
+                yearHistory={yearHistory}
+                monthHistory={monthHistory}
+                dateHistory={dateHistory}
+              />
+            ) : (
+              <></>
+            )}
             <Box
               style={{
                 display: "flex",
