@@ -27,7 +27,7 @@ function formatDate(date: Date) {
   return `${year}年${month}月${day}日`;
 }
 
-export default function bookHistory() {
+export default function BookHistory() {
   const [category, setCategory] = React.useState("Day");
   const [view, setView] = React.useState("Assets");
   const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
