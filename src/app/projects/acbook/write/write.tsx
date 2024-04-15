@@ -33,6 +33,7 @@ const defalutItem: IAccountBookItem = {
   category: "食費",
   amount: 0,
   description: "",
+  tax: 0,
 };
 
 export default function WriteForm(props: { date: Date }) {
@@ -45,13 +46,16 @@ export default function WriteForm(props: { date: Date }) {
   const [from, setFrom] = React.useState("現金");
   const [to, setTo] = React.useState("SBJ銀行");
   const [movingValue, setMovingValue] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
   const [acBookList, setAcBookList] = React.useState<IAccountBookItem[]>([
     {
       category: "食費",
       amount: 0,
+      tax: 0,
       description: "",
     },
   ]);
+
   function handleTitle(e: any) {
     setTitle(e.target.value);
   }
@@ -88,7 +92,13 @@ export default function WriteForm(props: { date: Date }) {
   function handleDescription(e: any) {
     const index = e.target.id;
     acBookList[index].description = e.target.value;
-    console.log(index);
+    setRerenderingFlag(!rerenderingFlag);
+  }
+
+  function handleTax(e: any) {
+    const index = e.target.name;
+    acBookList[index].tax = e.target.value;
+
     setRerenderingFlag(!rerenderingFlag);
   }
 
@@ -105,9 +115,14 @@ export default function WriteForm(props: { date: Date }) {
   }
 
   function handleAmount(e: any) {
+    let total: number = 0;
     const index = e.target.id;
     const value = e.target.value.replace(/\D/g, "");
     acBookList[index].amount = value;
+    acBookList.map((detail, index) => {
+      total = Number(total) + Number(detail.amount);
+    });
+    setTotal(total);
     setRerenderingFlag(!rerenderingFlag);
   }
 
@@ -127,6 +142,7 @@ export default function WriteForm(props: { date: Date }) {
   function handleReset() {
     setAcBookList([]);
     setTitle(" ");
+    setTotal(0);
   }
 
   function handleSubmit() {
@@ -332,6 +348,7 @@ export default function WriteForm(props: { date: Date }) {
                 <TableRow>
                   <TableCell>Category</TableCell>
                   <TableCell>Description</TableCell>
+                  <TableCell>Tax</TableCell>
                   <TableCell align="right">Amount</TableCell>
                 </TableRow>
               </TableHead>
@@ -395,7 +412,23 @@ export default function WriteForm(props: { date: Date }) {
                           fullWidth
                         />
                       </TableCell>
-                      <TableCell align="right" width={130}>
+                      <TableCell>
+                        <Select
+                          id={index.toString()}
+                          variant="standard"
+                          label="Tax"
+                          defaultValue={item.tax}
+                          disableUnderline
+                          onChange={handleTax}
+                          sx={{ width: 60 }}
+                          name={index.toString()}
+                        >
+                          <MenuItem value="0">税込</MenuItem>
+                          <MenuItem value="8">8%</MenuItem>
+                          <MenuItem value="10">10%</MenuItem>
+                        </Select>
+                      </TableCell>
+                      <TableCell align="right" width={100}>
                         <TextField
                           id={index.toString()}
                           value={item.amount + "円"}
@@ -416,9 +449,7 @@ export default function WriteForm(props: { date: Date }) {
               </TableBody>
               <TableFooter>
                 <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell align="right">
+                  <TableCell>
                     <ButtonGroup>
                       <AddBoxOutlinedIcon
                         fontSize="small"
@@ -442,6 +473,9 @@ export default function WriteForm(props: { date: Date }) {
                       />
                     </ButtonGroup>
                   </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell align="right">Total : {total}</TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
