@@ -6,12 +6,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { TableFooter } from "@mui/material";
+import { Box, TableFooter } from "@mui/material";
 import IAccountBookList from "@/app/interfaces/IAccountBookList";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import IAccountBookItem from "@/app/interfaces/IAccountBookItem";
+import ModifyHistoryForm from "./modify";
 
 export default function HistoryTable(props: {
   yearHistory: IAccountBookList[];
@@ -21,21 +22,33 @@ export default function HistoryTable(props: {
   getHisgory: () => void;
 }) {
   const [history, setHistory] = React.useState<IAccountBookList[]>();
+  const [selectedHistory, setSelectedHistory] =
+    React.useState<IAccountBookList>();
+  const [selectedDetails, setSelectedDetails] =
+    React.useState<IAccountBookItem[]>();
+  const [open, setOpen] = React.useState(false);
   const sum = React.useRef<number>(0);
-  const router = useRouter();
+
+  function handleModifyButton(
+    history: IAccountBookList,
+    details: IAccountBookItem[]
+  ) {
+    setOpen(true);
+  }
 
   function handleDeleteButton(e: any) {
     const key = e.target.id;
-
-    axios
-      .delete(
-        process.env.NEXT_PUBLIC_SPRING_SERVER +
-          "/projects/acbook/deletehistory/" +
-          key
-      )
-      .then((resp) => {
-        props.getHisgory();
-      });
+    if (confirm("Do you want to delete this history?")) {
+      axios
+        .delete(
+          process.env.NEXT_PUBLIC_SPRING_SERVER +
+            "/projects/acbook/deletehistory/" +
+            key
+        )
+        .then((resp) => {
+          props.getHisgory();
+        });
+    }
   }
 
   React.useEffect(() => {
@@ -52,6 +65,7 @@ export default function HistoryTable(props: {
     props.dateHistory,
     props.monthHistory,
     props.yearHistory,
+    history,
   ]);
   return (
     <>
@@ -96,6 +110,8 @@ export default function HistoryTable(props: {
                   <TableCell align="center" sx={{ lineHeight: "10px" }}>
                     <AddBoxOutlinedIcon
                       fontSize="small"
+                      id={list.key}
+                      onClick={handleModifyButton}
                       sx={{
                         "&:hover": {
                           cursor: "pointer",
@@ -156,17 +172,36 @@ export default function HistoryTable(props: {
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell
+                    colSpan={4}
                     align="right"
-                    sx={{ fontSize: "10px", color: "grey" }}
-                  ></TableCell>
-                  <TableCell
-                    align="right"
-                    colSpan={3}
                     sx={{ fontSize: "10px", color: "grey" }}
                   >
-                    税込 : {total0} | 8%税込 : {Math.floor(total8 * 1.08)}円 |
-                    10%税込 :{Math.floor(total10 * 1.1)}円 | Total :
-                    {list.amount}円
+                    <Box display="flex" textAlign="center">
+                      <Box display="inline" width="25%">
+                        税込 : {total0}円
+                      </Box>
+                      <Box
+                        display="inline"
+                        width="25%"
+                        borderLeft="1px solid grey"
+                      >
+                        8%税込 : {Math.floor(total8 * 1.08)}円
+                      </Box>
+                      <Box
+                        display="inline"
+                        width="25%"
+                        borderLeft="1px solid grey"
+                      >
+                        10%税込 :{Math.floor(total10 * 1.1)}円
+                      </Box>
+                      <Box
+                        display="inline"
+                        width="25%"
+                        borderLeft="1px solid grey"
+                      >
+                        Total :{list.amount}円
+                      </Box>
+                    </Box>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -186,6 +221,14 @@ export default function HistoryTable(props: {
           </TableFooter>
         </Table>
       </TableContainer>
+      <ModifyHistoryForm
+        history={selectedHistory!}
+        details={selectedDetails!}
+        open={open}
+        setOpen={() => {
+          setOpen(!open);
+        }}
+      />
     </>
   );
 }
