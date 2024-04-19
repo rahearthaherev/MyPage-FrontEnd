@@ -17,5 +17,6 @@ export default interface IAccountBookItem {
     | "医療"
     | "その他";
   description: string;
+  tax: number;
   amount: number;
 }

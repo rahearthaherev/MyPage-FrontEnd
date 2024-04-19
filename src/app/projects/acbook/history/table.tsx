@@ -6,41 +6,51 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import IAccountBookItem from "@/app/interfaces/IAccountBookList";
-import { ListItem, TableFooter } from "@mui/material";
+import { Box, TableFooter } from "@mui/material";
 import IAccountBookList from "@/app/interfaces/IAccountBookList";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
-import ConfirmationMessage from "@/app/components/common/ConfirmationMessage";
 import axios from "axios";
+import IAccountBookItem from "@/app/interfaces/IAccountBookItem";
+import ModifyHistoryForm from "./modify";
 
 export default function HistoryTable(props: {
   yearHistory: IAccountBookList[];
   monthHistory: IAccountBookList[];
   dateHistory: IAccountBookList[];
   category: string;
+  getHisgory: () => void;
 }) {
   const [history, setHistory] = React.useState<IAccountBookList[]>();
-  const [confirmMsgOpen, setConfirmMsgOpen] = React.useState(false);
+  const [selectedHistory, setSelectedHistory] =
+    React.useState<IAccountBookList>();
+  const [selectedDetails, setSelectedDetails] =
+    React.useState<IAccountBookItem[]>();
+  const [open, setOpen] = React.useState(false);
   const sum = React.useRef<number>(0);
-  const seletedTag = React.useRef<IAccountBookItem>();
 
-  function handleConfirmMsg() {
-    setConfirmMsgOpen(!confirmMsgOpen);
-  }
-  function handleDeleteTac() {
-    axios.delete("");
-  }
-
-  function formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const day = ("0" + date.getDate()).slice(-2);
-
-    return `${year}-${month}-${day}`;
+  function handleModifyButton(
+    history: IAccountBookList,
+    details: IAccountBookItem[]
+  ) {
+    setOpen(true);
   }
 
-  function deleteTag(key: string) {}
+  function handleDeleteButton(e: any) {
+    const key = e.target.id;
+    if (confirm("Do you want to delete this history?")) {
+      axios
+        .delete(
+          process.env.NEXT_PUBLIC_SPRING_SERVER +
+            "/projects/acbook/deletehistory/" +
+            key
+        )
+        .then((resp) => {
+          props.getHisgory();
+        });
+    }
+  }
+
   React.useEffect(() => {
     if (props.category == "Day") {
       setHistory(props.dateHistory);
@@ -50,7 +60,13 @@ export default function HistoryTable(props: {
       setHistory(props.yearHistory);
     }
     sum.current = 0;
-  }, [props.category]);
+  }, [
+    props.category,
+    props.dateHistory,
+    props.monthHistory,
+    props.yearHistory,
+    history,
+  ]);
   return (
     <>
       <TableContainer component={Paper} sx={{ marginTop: "10px" }}>
@@ -70,6 +86,9 @@ export default function HistoryTable(props: {
             if (list.type == "支出" || list.type == "貯金") {
               sum.current -= list.amount!;
             }
+            let total0 = 0;
+            let total8 = 0;
+            let total10 = 0;
             return (
               <TableBody key={list.key}>
                 <TableRow
@@ -89,19 +108,10 @@ export default function HistoryTable(props: {
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell align="center" sx={{ lineHeight: "10px" }}>
-                    <AddBoxOutlinedIcon
-                      fontSize="small"
-                      onClick={handleConfirmMsg}
-                      sx={{
-                        "&:hover": {
-                          cursor: "pointer",
-                          backgroundColor: "rgba(0, 0, 0, 0.1)",
-                        },
-                      }}
-                    />
                     <IndeterminateCheckBoxOutlinedIcon
                       fontSize="small"
-                      onClick={handleConfirmMsg}
+                      onClick={handleDeleteButton}
+                      id={list.key}
                       sx={{
                         "&:hover": {
                           cursor: "pointer",
@@ -112,6 +122,16 @@ export default function HistoryTable(props: {
                   </TableCell>
                 </TableRow>
                 {list.details?.map((detail) => {
+                  if (detail.tax == 8) {
+                    console.log("total8");
+                    console.log(detail);
+                    total8 += Number(detail.amount);
+                    console.log(total8);
+                  } else if (detail.tax == 10) {
+                    total10 += Number(detail.amount);
+                  } else {
+                    total0 += Number(detail.amount);
+                  }
                   return (
                     <TableRow
                       key={list.key}
@@ -137,24 +157,40 @@ export default function HistoryTable(props: {
                 })}
                 <TableRow></TableRow>
                 <TableRow>
-                  <TableCell align="left">
-                    {/* Date : {formatDate(list.date)} */}
-                  </TableCell>
-                  <TableCell></TableCell>
+                  <TableCell align="left"></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell
+                    colSpan={4}
                     align="right"
                     sx={{ fontSize: "10px", color: "grey" }}
                   >
-                    Sum :{" "}
-                  </TableCell>
-                  <TableCell
-                    align="right"
-                    colSpan={2}
-                    sx={{ fontSize: "10px", color: "grey" }}
-                  >
-                    {list.amount}円
+                    <Box display="flex" textAlign="center">
+                      <Box display="inline" width="25%">
+                        税込 : {total0}円
+                      </Box>
+                      <Box
+                        display="inline"
+                        width="25%"
+                        borderLeft="1px solid grey"
+                      >
+                        8%税込 : {Math.floor(total8 * 1.08)}円
+                      </Box>
+                      <Box
+                        display="inline"
+                        width="25%"
+                        borderLeft="1px solid grey"
+                      >
+                        10%税込 :{Math.floor(total10 * 1.1)}円
+                      </Box>
+                      <Box
+                        display="inline"
+                        width="25%"
+                        borderLeft="1px solid grey"
+                      >
+                        Total :{list.amount}円
+                      </Box>
+                    </Box>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -166,23 +202,21 @@ export default function HistoryTable(props: {
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
-              <TableCell align="right">Sum : </TableCell>
+              <TableCell align="right"></TableCell>
               <TableCell colSpan={2} align="right">
-                {sum.current}円
+                Total : {sum.current}円
               </TableCell>
             </TableRow>
           </TableFooter>
         </Table>
       </TableContainer>
-      <ConfirmationMessage
-        func={() => {
-          handleDeleteTac();
-        }}
-        open={confirmMsgOpen}
+      <ModifyHistoryForm
+        history={selectedHistory!}
+        details={selectedDetails!}
+        open={open}
         setOpen={() => {
-          handleConfirmMsg();
+          setOpen(!open);
         }}
-        msg="Do you want to delete it?"
       />
     </>
   );

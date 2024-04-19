@@ -80,10 +80,14 @@ export default function BookHistory() {
       });
   }
 
-  React.useEffect(() => {
+  function getHistory() {
     getYearHistory();
     getMonthHistory();
     getDateHistory();
+  }
+
+  React.useEffect(() => {
+    getHistory();
   }, [selectedDate]);
   return (
     <>
@@ -149,6 +153,7 @@ export default function BookHistory() {
               monthHistory={monthHistory}
               dateHistory={dateHistory}
               category={category}
+              getHisgory={getHistory}
             />
           </Grid>
           <Divider orientation="vertical" flexItem />
