@@ -108,17 +108,6 @@ export default function HistoryTable(props: {
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell align="center" sx={{ lineHeight: "10px" }}>
-                    <AddBoxOutlinedIcon
-                      fontSize="small"
-                      id={list.key}
-                      onClick={handleModifyButton}
-                      sx={{
-                        "&:hover": {
-                          cursor: "pointer",
-                          backgroundColor: "rgba(0, 0, 0, 0.1)",
-                        },
-                      }}
-                    />
                     <IndeterminateCheckBoxOutlinedIcon
                       fontSize="small"
                       onClick={handleDeleteButton}
